@@ -1,17 +1,15 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import {
-	Button,
-	Checkbox,
-	InputLabel,
-	NativeSelect,
-	TextField,
-} from "@mui/material";
+import { Button, Checkbox, TextField } from "@mui/material";
 import { INVOKE_URL } from "./App";
+import { generateRequestId, generateShortcode } from "./utils/generators";
+import { useState } from "react";
+import SuccessModal from "./SuccessModal";
 // import * as Yup from "yup";
 
 // these will be dynamically taken from their login and generated
 const userID = "12345";
-const requestID = "77783";
+const requestID = generateRequestId();
+const shortcode = generateShortcode();
 
 // const validationSchema = Yup.object({
 // 	organisation: Yup.string().required("Organisation is required"), // in future maybe we turn this into a dropdown with "add new?" and generate a uuid
@@ -27,20 +25,21 @@ const requestID = "77783";
 // });
 const initialValues = {
 	createdBy: userID, // hidden field populated dynamically
-	organisation: "amanda",
+	organisation: "",
 	logo: null,
 	private: true, // default true
 	visible: true, // default true
-	areaOfInterest: "aoi", // saving me time with testing...
-	attributes: "testing,api,flow",
-	description: "attempting to upload to dynamodb",
-	status: "pending", // default status
+	title: "",
+	description: "",
 };
 
 export const RequestForm = () => {
+	const [successModalVisible, setSuccessModalVisible] = useState(false);
+	let requestTitle;
+	let requestDescription;
 	// formik has built in props regarding submission so we don't need to define them ourselves
 	const handleSubmit = async (values) => {
-		values = { ...values, requestID: requestID };
+		values = { ...values, requestID: requestID, shortcode: shortcode };
 		console.log("Form data:", values);
 		try {
 			const response = await fetch(`${INVOKE_URL}items`, {
@@ -55,128 +54,110 @@ export const RequestForm = () => {
 				throw new Error("Network response was not ok");
 			}
 
-			const data = await response.json();
-			console.log("Success:", data);
+			const result = await response.json();
+			console.log("Success:", result);
+			requestTitle = values.title;
+			requestDescription = values.description;
+			setSuccessModalVisible(true);
 		} catch (error) {
 			console.error("Error:", error);
 		}
 	};
 
 	return (
-		<Formik
-			initialValues={initialValues}
-			// validation schema currently not valid
-			onSubmit={handleSubmit}
-		>
-			{({ isSubmitting, setFieldValue }) => (
-				<Form>
-					{/* Hidden field for Created By */}
-					<Field type="hidden" name="createdBy" />
-
-					{/* Organisation */}
-					<Field
-						type="text"
-						name="organisation"
-						label="Organisation"
-						component={TextField}
-					/>
-					<ErrorMessage name="organisation" component="div" className="error" />
-
-					{/* Logo */}
-					<div>
-						<label>
-							Logo <em>(optional)</em>:
-						</label>
-						<input
-							type="file"
-							name="logo"
-							onChange={(event) => {
-								setFieldValue("logo", event.currentTarget.files[0]);
-							}}
-						/>
-					</div>
-
-					{/* Private to Org */}
-					<div>
-						<label>
-							<Field type="checkbox" name="private" component={Checkbox} />
-							Is the data private? (Only members of the organisation can access)
-						</label>
-					</div>
-
-					{/* Visible on Kapta Web */}
-					<div>
-						<label>
-							<Field
-								type="checkbox"
-								name="visible"
-								component={Checkbox}
-								label=""
-							/>
-							Does the request appear on Kapta Web searches?
-						</label>
-					</div>
-
-					{/* Area of Interest */}
-					<Field
-						name="areaOfInterest"
-						component={TextField}
-						fullWidth
-						label="Area of Interest"
-						placeholder="This should be a list of polygons relevant to the area"
-					/>
-					<ErrorMessage
-						name="areaOfInterest"
-						component="div"
-						className="error"
-					/>
-
-					{/* Attributes */}
-					<Field
-						name="attributes"
-						component={TextField}
-						label="Attributes (JSON)"
-						fullWidth
-					/>
-					<ErrorMessage name="attributes" component="div" className="error" />
-
-					{/* Description */}
-					<Field
-						name="description"
-						component={TextField}
-						label="Description (JSON)"
-						fullWidth
-					/>
-					<ErrorMessage name="description" component="div" className="error" />
-
-					{/* Status */}
-					<InputLabel>
-						Status
-						<Field
-							name="status"
-							component={NativeSelect}
-							type="select"
-							style={{ paddingLeft: 20 }}
-						>
-							<option value="pending">Pending</option>
-							<option value="published">Published</option>
-							<option value="closed">Closed</option>
-						</Field>
-					</InputLabel>
-
-					<ErrorMessage name="status" component="div" className="error" />
-
-					{/* Submit Button */}
-					<Button
-						type="submit"
-						disabled={isSubmitting}
-						color="success"
-						variant="contained"
-					>
-						Submit Request
-					</Button>
-				</Form>
+		<>
+			{successModalVisible && (
+				<SuccessModal
+					title={requestTitle}
+					description={requestDescription}
+					requestID={requestID}
+					shortcode={shortcode}
+					setSuccessModalVisible={setSuccessModalVisible}
+				/>
 			)}
-		</Formik>
+			<h2>Please tell us about your request</h2>
+			<Formik
+				initialValues={initialValues}
+				// validation schema currently not valid
+				onSubmit={handleSubmit}
+			>
+				{({ isSubmitting, setFieldValue }) => (
+					<Form className="ground-data-request-form">
+						{/* Hidden field for Created By */}
+						<Field type="hidden" name="createdBy" />
+						<div>
+							{/* Organisation */}
+							<Field
+								type="text"
+								name="organisation"
+								label="Organisation"
+								as={TextField}
+							/>
+							<ErrorMessage
+								name="organisation"
+								component="div"
+								className="error"
+							/>
+
+							{/* Logo */}
+
+							<label>
+								Logo <em>(optional)</em>:
+							</label>
+							<input
+								type="file"
+								name="logo"
+								onChange={(event) => {
+									setFieldValue("logo", event.currentTarget.files[0]);
+								}}
+							/>
+						</div>
+
+						{/* Private to Org */}
+						<div>
+							<label>
+								<Field type="checkbox" name="private" as={Checkbox} />
+								Is the data private? (Only members of the organisation can
+								access)
+							</label>
+						</div>
+
+						{/* Visible on Kapta Web */}
+						<div>
+							<label>
+								<Field type="checkbox" name="visible" as={Checkbox} />
+								Does the request appear on Kapta Web searches?
+							</label>
+						</div>
+						{/* Title */}
+						<Field name="title" as={TextField} label="Title" fullWidth />
+						<ErrorMessage name="title" component="div" className="error" />
+
+						{/* Description */}
+						<Field
+							name="description"
+							as={TextField}
+							label="Description"
+							fullWidth
+						/>
+						<ErrorMessage
+							name="description"
+							component="div"
+							className="error"
+						/>
+
+						{/* Submit Button */}
+						<Button
+							type="submit"
+							disabled={isSubmitting}
+							color="success"
+							variant="contained"
+						>
+							Submit Request
+						</Button>
+					</Form>
+				)}
+			</Formik>
+		</>
 	);
 };

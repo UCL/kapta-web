@@ -1,0 +1,15 @@
+#success-dialog {
+	background-color: #dffae6dd;
+	backdrop-filter: blur(4px);
+	position: absolute;
+	top: 15%;
+	width: 60vw;
+	border: none;
+	border-radius: 8px;
+	z-index: 3;
+}
+
+.ground-data-request-form {
+	width: 90%;
+	text-align: center;
+}
