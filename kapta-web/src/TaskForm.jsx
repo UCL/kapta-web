@@ -1,15 +1,15 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Button, Checkbox, TextField } from "@mui/material";
-import { INVOKE_URL } from "./App";
-import { generateRequestId, generateShortcode } from "./utils/generators";
+import { REQUEST_URL } from "./App";
+import { generateTaskId, generateCampaignCode } from "./utils/generators";
 import { useState } from "react";
 import SuccessModal from "./SuccessModal";
 // import * as Yup from "yup";
 
 // these will be dynamically taken from their login and generated
 const userID = "12345";
-const requestID = generateRequestId();
-const shortcode = generateShortcode();
+const taskID = generateTaskId();
+const campaignCode = generateCampaignCode();
 
 // const validationSchema = Yup.object({
 // 	organisation: Yup.string().required("Organisation is required"), // in future maybe we turn this into a dropdown with "add new?" and generate a uuid
@@ -33,16 +33,16 @@ const initialValues = {
 	description: "",
 };
 
-export const RequestForm = () => {
+export default function TaskForm() {
 	const [successModalVisible, setSuccessModalVisible] = useState(false);
-	let requestTitle;
-	let requestDescription;
+	let taskTitle;
+	let taskDescription;
 	// formik has built in props regarding submission so we don't need to define them ourselves
 	const handleSubmit = async (values) => {
-		values = { ...values, requestID: requestID, shortcode: shortcode };
+		values = { ...values, taskID: taskID, campaignCode: campaignCode };
 		console.log("Form data:", values);
 		try {
-			const response = await fetch(`${INVOKE_URL}items`, {
+			const response = await fetch(`${REQUEST_URL}/requests`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
@@ -56,8 +56,8 @@ export const RequestForm = () => {
 
 			const result = await response.json();
 			console.log("Success:", result);
-			requestTitle = values.title;
-			requestDescription = values.description;
+			taskTitle = values.title;
+			taskDescription = values.description;
 			setSuccessModalVisible(true);
 		} catch (error) {
 			console.error("Error:", error);
@@ -68,10 +68,10 @@ export const RequestForm = () => {
 		<>
 			{successModalVisible && (
 				<SuccessModal
-					title={requestTitle}
-					description={requestDescription}
-					requestID={requestID}
-					shortcode={shortcode}
+					title={taskTitle}
+					description={taskDescription}
+					taskID={taskID}
+					campaignCode={campaignCode}
 					setSuccessModalVisible={setSuccessModalVisible}
 				/>
 			)}
@@ -160,4 +160,4 @@ export const RequestForm = () => {
 			</Formik>
 		</>
 	);
-};
+}
