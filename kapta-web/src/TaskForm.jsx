@@ -39,8 +39,13 @@ export default function TaskForm() {
 	let taskDescription;
 	// formik has built in props regarding submission so we don't need to define them ourselves
 	const handleSubmit = async (values) => {
+		// will need to convert image to base 64
+		// const imageBuffer = fs.readFileSync(imagePath);
+		// const base64Image = imageBuffer.toString('base64');
+
 		values = { ...values, taskID: taskID, campaignCode: campaignCode };
 		console.log("Form data:", values);
+
 		try {
 			const response = await fetch(`${REQUEST_URL}/requests`, {
 				method: "PUT",
