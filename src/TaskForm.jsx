@@ -87,7 +87,7 @@ export default function TaskForm() {
 				onSubmit={handleSubmit}
 			>
 				{({ isSubmitting, setFieldValue }) => (
-					<Form className="ground-data-request-form">
+					<Form className="task-request-form">
 						{/* Hidden field for Created By */}
 						<Field type="hidden" name="createdBy" />
 						<div>
