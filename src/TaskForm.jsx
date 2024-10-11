@@ -4,6 +4,7 @@ import { REQUEST_URL } from "./App";
 import { generateTaskId, generateCampaignCode } from "./utils/generators";
 import { useState } from "react";
 import SuccessModal from "./SuccessModal";
+import "./styles/task-form.css"
 // import * as Yup from "yup";
 
 // these will be dynamically taken from their login and generated
@@ -16,27 +17,26 @@ const campaignCode = generateCampaignCode();
 // 	logo: Yup.mixed(),
 // 	private: Yup.boolean(),
 // 	visible: Yup.boolean(),
-// 	areaOfInterest: Yup.string().required("Area of interest is required"), // is this just a list? Wasn't there talk about using the UN system of classification?
-// 	attributes: Yup.string().required("Attributes are required"), // do we want to check these two are specifically JSON format?
+// title: Yup.string().required("Title is required"),
 // 	description: Yup.string().required("Description is required"),
-// 	status: Yup.string()
-// 		.oneOf(["pending", "published", "closed"], "Invalid status")
-// 		.required("Status is required"), // do they actually choose this?
 // });
 const initialValues = {
 	createdBy: userID, // hidden field populated dynamically
 	organisation: "",
 	logo: null,
-	private: true, // default true
-	visible: true, // default true
+	private: false, 
+	visible: false, 
 	title: "",
 	description: "",
 };
 
-export default function TaskForm() {
+export default function TaskForm({ isVisible }) {
 	const [successModalVisible, setSuccessModalVisible] = useState(false);
-	let taskTitle;
-	let taskDescription;
+
+	if (!isVisible) return null;
+
+	var taskTitle;
+	var taskDescription;
 	// formik has built in props regarding submission so we don't need to define them ourselves
 	const handleSubmit = async (values) => {
 		// will need to convert image to base 64
@@ -80,7 +80,7 @@ export default function TaskForm() {
 					setSuccessModalVisible={setSuccessModalVisible}
 				/>
 			)}
-			<h2>Please tell us about your request</h2>
+			<h2>Please tell us about your task request</h2>
 			<Formik
 				initialValues={initialValues}
 				// validation schema currently not valid
