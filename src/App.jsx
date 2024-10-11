@@ -1,5 +1,5 @@
 import "./App.css";
-import { TaskForm } from "./TaskForm";
+import TaskForm from "./TaskForm";
 
 export const REQUEST_URL =
 	"https://5fpm1iy0s4.execute-api.eu-west-2.amazonaws.com";
