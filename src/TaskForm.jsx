@@ -1,10 +1,10 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Button, Checkbox, TextField } from "@mui/material";
-import { REQUEST_URL } from "./App";
+import { REQUEST_URL } from "./globals";
 import { generateTaskId, generateCampaignCode } from "./utils/generators";
 import { useState } from "react";
 import SuccessModal from "./SuccessModal";
-import "./styles/task-form.css"
+import "./styles/task-form.css";
 // import * as Yup from "yup";
 
 // these will be dynamically taken from their login and generated
@@ -24,8 +24,8 @@ const initialValues = {
 	createdBy: userID, // hidden field populated dynamically
 	organisation: "",
 	logo: null,
-	private: false, 
-	visible: false, 
+	private: false,
+	visible: false,
 	title: "",
 	description: "",
 };
