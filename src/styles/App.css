@@ -1,5 +1,17 @@
 :root {
 	font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+	--intrinsic-grey: #16161d;
+}
+html,
+body {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+#root {
+	background-color: var(--intrinsic-grey);
 }
 
 main {
@@ -7,5 +19,15 @@ main {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	/* height: 100vh; */
+	height: 100vh;
+
+	.btn--new-task {
+		color: whitesmoke;
+		border-color: whitesmoke;
+
+		&:hover {
+			background-color: whitesmoke;
+			color: var(--intrinsic-grey);
+		}
+	}
 }
