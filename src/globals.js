@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { UserContext } from "./UserContext";
+
 // export vars used throughout the app
 export const REQUEST_URL = import.meta.env.REQUEST_URL;
 export const WEB_POOL_ID = import.meta.env.WEB_POOL_ID;
@@ -15,3 +18,7 @@ if (WEB_POOL_ID !== "null" && CLIENT_ID !== "null") {
 		region: REGION,
 	};
 }
+
+export const useUserStore = () => {
+	return useContext(UserContext);
+};
