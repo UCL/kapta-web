@@ -4,7 +4,7 @@ import { REQUEST_URL } from "./globals";
 import { generateTaskId, generateCampaignCode } from "./utils/generators";
 import { useState } from "react";
 import SuccessModal from "./SuccessModal";
-import "./styles/task-form.css";
+import "./styles/forms.css";
 // import * as Yup from "yup";
 
 // these will be dynamically taken from their login and generated
@@ -73,21 +73,22 @@ export default function TaskForm({ isVisible }) {
 		<>
 			{successModalVisible && (
 				<SuccessModal
-					title={taskTitle}
-					description={taskDescription}
+					taskTitle={taskTitle}
+					taskDescription={taskDescription}
 					taskID={taskID}
 					campaignCode={campaignCode}
 					setSuccessModalVisible={setSuccessModalVisible}
 				/>
 			)}
-			<h2>Please tell us about your task request</h2>
+
 			<Formik
 				initialValues={initialValues}
 				// validation schema currently not valid
 				onSubmit={handleSubmit}
 			>
 				{({ isSubmitting, setFieldValue }) => (
-					<Form className="task-request-form">
+					<Form className="form task-request-form">
+						<h2>Please tell us about your task request</h2>
 						{/* Hidden field for Created By */}
 						<Field type="hidden" name="createdBy" />
 						<div>

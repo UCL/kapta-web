@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { UserContext } from "./UserContext";
+import { UserContext } from "./utils/UserContext";
 
 // export vars used throughout the app
 export const REQUEST_URL = import.meta.env.REQUEST_URL;

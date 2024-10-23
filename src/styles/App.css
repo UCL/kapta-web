@@ -20,14 +20,4 @@ main {
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
-
-	.btn--new-task {
-		color: whitesmoke;
-		border-color: whitesmoke;
-
-		&:hover {
-			background-color: whitesmoke;
-			color: var(--intrinsic-grey);
-		}
-	}
 }

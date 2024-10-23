@@ -1,0 +1,15 @@
+.task-request-form {
+	width: 75%;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+}
+
+.login__form {
+	margin-block-start: 1rem;
+	width: clamp(20rem, 50%, 40rem);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	gap: 0.8rem;
+}

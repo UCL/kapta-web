@@ -10,12 +10,14 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"react": "^18.3.1",
-		"react-dom": "^18.3.1",
+		"@aws-sdk/client-cognito-identity-provider": "^3.670.0",
 		"@emotion/react": "^11.13.3",
 		"@emotion/styled": "^11.13.0",
+		"@mui/icons-material": "^6.1.3",
 		"@mui/material": "^6.1.1",
 		"formik": "^2.4.6",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
 		"yup": "^1.4.0"
 	},
 	"devDependencies": {

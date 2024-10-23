@@ -1,5 +1,5 @@
 export const generateTaskId = () => {
-	return crypto.randomUUID().substring(0, 10);
+	return crypto.randomUUID();
 };
 
 export const generateCampaignCode = () => {

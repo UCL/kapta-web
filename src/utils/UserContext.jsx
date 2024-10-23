@@ -1,5 +1,5 @@
 import { useState, useCallback, createContext, useEffect } from "react";
-import { initiateAuthRefresh, signOut } from "./utils/auth";
+import { initiateAuthRefresh, signOut } from "./auth";
 
 // Create the User Context
 export const UserContext = createContext();
@@ -13,10 +13,6 @@ export const UserProvider = ({ children }) => {
 	const [displayName, setDisplayName] = useState(null);
 	const [email, setEmail] = useState(null);
 	const [loggedIn, setLoggedIn] = useState(false);
-
-	useEffect(() => {
-		checkForDetails();
-	}, [checkForDetails]); // check for details when component mounts ie app starts
 
 	const setUserDetails = useCallback((userDetails) => {
 		const base64Payload = userDetails.idToken.split(".")[1];
@@ -57,6 +53,10 @@ export const UserProvider = ({ children }) => {
 			return true;
 		} else return false;
 	}, [setUserDetails]);
+
+	useEffect(() => {
+		checkForDetails();
+	}); // check for details when component mounts ie app starts
 
 	// update localStorage values
 	const setLocalStorage = (idToken, accessToken, refreshToken) => {
