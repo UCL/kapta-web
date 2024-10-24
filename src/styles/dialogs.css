@@ -1,12 +1,42 @@
 #success-dialog {
-	background-color: #2d5b39dd;
+	background-color: #2d5b39eb;
 	backdrop-filter: blur(4px);
 	position: absolute;
-	top: 15%;
+	top: 20%;
 	width: 60vw;
 	border: none;
 	border-radius: 8px;
 	z-index: 3;
 	color: white;
 	text-align: center;
+
+	h3 {
+		font-family: "Krub", sans-serif;
+		font-weight: 700;
+		font-size: 1.5rem;
+		color: #c9ff79;
+	}
+	.task-info__container {
+		border: 1px solid var(--rose);
+	}
+	.task-info {
+		font-size: 1.2rem;
+		small {
+			display: block;
+			font-size: 0.8rem;
+			color: #e0e1e0;
+		}
+	}
+
+	.campaign-code {
+		font-size: 2rem;
+		letter-spacing: 0.4rem;
+		color: var(--rose);
+		font-weight: 700;
+		padding-bottom: 1rem;
+	}
+
+	p > u {
+		text-decoration-color: tomato;
+	}
 }

@@ -4,14 +4,16 @@ import App from "./App.jsx";
 import { UserProvider } from "./utils/UserContext.jsx";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { cyan, red, purple, teal } from "@mui/material/colors";
+import { pink, red, purple, orange } from "@mui/material/colors";
 
 const theme = createTheme({
 	palette: {
 		mode: "dark",
-		primary: teal,
-		secondary: purple,
-		info: cyan,
+		primary: orange,
+		secondary: {
+			main: purple[900],
+		},
+		info: pink,
 		error: red,
 		warning: {
 			main: "#E3D026",

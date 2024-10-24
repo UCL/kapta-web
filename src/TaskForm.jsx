@@ -1,5 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Button, Checkbox, TextField } from "@mui/material";
+import { Box, Button, Checkbox, TextField } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { REQUEST_URL } from "./globals";
 import { generateTaskId, generateCampaignCode } from "./utils/generators";
 import { useState } from "react";
@@ -32,11 +33,11 @@ const initialValues = {
 
 export default function TaskForm({ isVisible }) {
 	const [successModalVisible, setSuccessModalVisible] = useState(false);
+	const [title, setTitle] = useState("");
+	const [description, setDescription] = useState("");
 
 	if (!isVisible) return null;
 
-	var taskTitle;
-	var taskDescription;
 	// formik has built in props regarding submission so we don't need to define them ourselves
 	const handleSubmit = async (values) => {
 		// will need to convert image to base 64
@@ -47,6 +48,7 @@ export default function TaskForm({ isVisible }) {
 		console.log("Form data:", values);
 
 		try {
+			console.log(`${REQUEST_URL}/requests`);
 			const response = await fetch(`${REQUEST_URL}/requests`, {
 				method: "PUT",
 				headers: {
@@ -61,8 +63,8 @@ export default function TaskForm({ isVisible }) {
 
 			const result = await response.json();
 			console.log("Success:", result);
-			taskTitle = values.title;
-			taskDescription = values.description;
+			setTitle(values.title);
+			setDescription(values.description);
 			setSuccessModalVisible(true);
 		} catch (error) {
 			console.error("Error:", error);
@@ -73,11 +75,12 @@ export default function TaskForm({ isVisible }) {
 		<>
 			{successModalVisible && (
 				<SuccessModal
-					taskTitle={taskTitle}
-					taskDescription={taskDescription}
+					taskTitle={title}
+					taskDescription={description}
 					taskID={taskID}
 					campaignCode={campaignCode}
 					setSuccessModalVisible={setSuccessModalVisible}
+					isTask={true}
 				/>
 			)}
 
@@ -88,79 +91,96 @@ export default function TaskForm({ isVisible }) {
 			>
 				{({ isSubmitting, setFieldValue }) => (
 					<Form className="form task-request-form">
-						<h2>Please tell us about your task request</h2>
+						<h2 color="info">Tell us about your task</h2>
 						{/* Hidden field for Created By */}
-						<Field type="hidden" name="createdBy" />
-						<div>
-							{/* Organisation */}
+						<div className="form__body">
+							<Field type="hidden" name="createdBy" />
+							<Box display="flex" alignItems="stretch" justifyContent="center">
+								{/* Organisation */}
+								<Field
+									type="text"
+									name="organisation"
+									label="Organisation name"
+									as={TextField}
+									size="small"
+								/>
+								<ErrorMessage
+									name="organisation"
+									component="div"
+									className="error"
+								/>
+
+								{/* Logo */}
+
+								<Button
+									variant="contained"
+									tabIndex={-1}
+									startIcon={<CloudUploadIcon />}
+									className="logo-btn"
+								>
+									Logo
+									<input
+										hidden
+										type="file"
+										name="logo"
+										onChange={(event) => {
+											setFieldValue("logo", event.currentTarget.files[0]);
+										}}
+									/>
+								</Button>
+							</Box>
+
+							{/* Private to Org */}
+							<div>
+								<label>
+									<Field type="checkbox" name="private" as={Checkbox} />
+									Is the data private? (Only members of the organisation can
+									access)
+								</label>
+							</div>
+
+							{/* Visible on Kapta Web */}
+							<div>
+								<label>
+									<Field type="checkbox" name="visible" as={Checkbox} />
+									Does the request appear on Kapta Web searches?
+								</label>
+							</div>
+							{/* Title */}
 							<Field
-								type="text"
-								name="organisation"
-								label="Organisation"
+								name="title"
 								as={TextField}
+								label="Title"
+								required
+								fullWidth
+							/>
+							<ErrorMessage name="title" component="div" className="error" />
+
+							{/* Description */}
+							<Field
+								name="description"
+								as={TextField}
+								label="Description"
+								fullWidth
+								required
 							/>
 							<ErrorMessage
-								name="organisation"
+								name="description"
 								component="div"
 								className="error"
 							/>
 
-							{/* Logo */}
-
-							<label>
-								Logo <em>(optional)</em>:
-							</label>
-							<input
-								type="file"
-								name="logo"
-								onChange={(event) => {
-									setFieldValue("logo", event.currentTarget.files[0]);
-								}}
-							/>
+							{/* Submit Button */}
+							<Button
+								type="submit"
+								disabled={isSubmitting}
+								color="success"
+								variant="contained"
+								className="btn--submit"
+							>
+								Submit Request
+							</Button>
 						</div>
-
-						{/* Private to Org */}
-						<div>
-							<label>
-								<Field type="checkbox" name="private" as={Checkbox} />
-								Is the data private? (Only members of the organisation can
-								access)
-							</label>
-						</div>
-
-						{/* Visible on Kapta Web */}
-						<div>
-							<label>
-								<Field type="checkbox" name="visible" as={Checkbox} />
-								Does the request appear on Kapta Web searches?
-							</label>
-						</div>
-						{/* Title */}
-						<Field name="title" as={TextField} label="Title" fullWidth />
-						<ErrorMessage name="title" component="div" className="error" />
-
-						{/* Description */}
-						<Field
-							name="description"
-							as={TextField}
-							label="Description"
-							fullWidth
-						/>
-						<ErrorMessage
-							name="description"
-							component="div"
-							className="error"
-						/>
-
-						{/* Submit Button */}
-						<Button
-							type="submit"
-							disabled={isSubmitting}
-							color="success"
-							variant="contained"
-						>
-							Submit Request
-						</Button>
 					</Form>
 				)}
 			</Formik>

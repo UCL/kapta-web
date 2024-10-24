@@ -1,7 +1,13 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Krub:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+
 :root {
 	font-family: Verdana, Geneva, Tahoma, sans-serif;
 
 	--intrinsic-grey: #16161d;
+	--intrinsic-grey--translucent: #16161dd5;
+	--off-white: #eae1e1;
+	--rose: #f6909c;
 }
 html,
 body {
@@ -12,12 +18,37 @@ body {
 
 #root {
 	background-color: var(--intrinsic-grey);
+	z-index: -2;
 }
 
 main {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
+	display: grid;
+	/* flex-direction: column; */
 	align-items: center;
 	height: 100vh;
+	/* z-index: -2; */
+
+	.btn--login {
+		justify-self: center;
+	}
+}
+
+.btn-container {
+	justify-self: center;
+	position: absolute;
+	z-index: 1;
+	top: 5%;
+	display: flex;
+	justify-content: space-between;
+	width: 80vw;
+
+	.btn-container--tasks::before {
+		content: "TASKS";
+		position: absolute;
+		top: -2rem;
+		margin-left: 2.85rem;
+		font-size: 1.5rem;
+		font-weight: bold;
+		color: tomato;
+	}
 }

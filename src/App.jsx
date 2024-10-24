@@ -1,13 +1,21 @@
-import { Button } from "@mui/material";
+import { Button, ButtonGroup } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import "./styles/App.css";
 import TaskForm from "./TaskForm";
 import { useState } from "react";
 import LoginForm from "./LoginForm";
 import { useUserStore } from "./globals";
+import TaskList from "./TaskList";
+import { Map } from "./Mapbox";
+import SearchForm from "./SearchForm";
 
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
+	const [isTaskListVisible, setTaskListVisible] = useState(false);
+
 	const [isLoginFormVisible, setLoginFormVisible] = useState(false);
+	const [isSearchFormVisible, setSearchFormVisible] = useState(false);
 
 	const user = useUserStore();
 
@@ -15,7 +23,7 @@ export default function App() {
 
 	return (
 		<main>
-			{!isLoginFormVisible && (
+			{!isLoginFormVisible && !user.loggedIn && (
 				<Button
 					variant="outlined"
 					onClick={() => {
@@ -31,17 +39,50 @@ export default function App() {
 				setIsVisible={setLoginFormVisible}
 			/>
 			{user.loggedIn && (
-				<Button
-					color="white"
-					variant="outlined"
-					onClick={() => setTaskFormVisible(true)}
-					className="btn--new-task"
-				>
-					New Task Request
-				</Button>
-			)}
+				<>
+					<div className="btn-container">
+						<Button
+							color="info"
+							variant="outlined"
+							onClick={() => setSearchFormVisible(true)}
+							className="btn--search"
+							size="medium"
+						>
+							Search
+						</Button>
+						<div className="btn-container--tasks">
+							<ButtonGroup
+								disableElevation
+								variant="outlined"
+								aria-label="task button group"
+								size="medium"
+								color="info"
+							>
+								<Button
+									onClick={() => setTaskFormVisible(true)}
+									className="btn--new-task"
+									startIcon={<AddIcon />}
+								>
+									New
+								</Button>
+								<Button
+									onClick={() => setTaskListVisible(true)}
+									className="btn--view-tasks"
+									startIcon={<VisibilityIcon />}
+								>
+									View
+								</Button>
+							</ButtonGroup>
+						</div>
+					</div>
 
-			<TaskForm isVisible={isTaskFormVisible} />
+					<Map />
+
+					<TaskForm isVisible={isTaskFormVisible} />
+					<TaskList isVisible={isTaskListVisible} />
+					<SearchForm isVisible={isSearchFormVisible} />
+				</>
+			)}
 		</main>
 	);
 }

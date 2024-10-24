@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Divider } from "@mui/material";
 import "./styles/dialogs.css";
 
 export default function SuccessModal({
@@ -19,19 +19,30 @@ export default function SuccessModal({
 			{isTask && (
 				<>
 					{" "}
-					<p>Request ID: {taskID}</p>
-					<p>Task title:{taskTitle}</p>
-					<p>Task description:{taskDescription}</p>
-					<div>
-						<p>
-							Below is the campaign code for people to access your study on
-							Kapta Mobile and contribute to it.
+					<div className="task-info__container">
+						<p className="task-info">
+							<strong>{taskTitle}</strong> <small>{taskID}</small>
 						</p>
-						<div className="campaign-code">{campaignCode}</div>
+						<p className="task-info">{taskDescription}</p>
+					</div>
+					<div>
+						<Divider />
+						<p>
+							Below is the campaign code for people to access your study on{" "}
+							<u>Kapta Mobile</u> and contribute to it.
+						</p>
+						<div className="campaign-code">
+							{campaignCode}
+							{/* todo: add auto copy to clipboard when clicked? */}
+						</div>
 					</div>
 				</>
 			)}
-			<Button variant="contained" onClick={() => setSuccessModalVisible(false)}>
+			<Button
+				variant="contained"
+				color="secondary"
+				onClick={() => setSuccessModalVisible(false)}
+			>
 				Close
 			</Button>
 		</dialog>

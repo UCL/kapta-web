@@ -3,9 +3,33 @@
 	text-align: center;
 	display: flex;
 	flex-direction: column;
+	justify-self: center;
+	align-self: center;
+	background-color: var(--intrinsic-grey--translucent);
+	z-index: 1;
+	padding-bottom: 3rem;
+	margin-top: 5rem;
+	color: var(--off-white);
+	border: 1px solid tomato;
+	border-radius: 8px;
+
+	.form__body {
+		margin-inline: 3rem;
+	}
+
+	.btn--submit {
+		margin-top: 1rem;
+	}
 }
 
+.login__form--container {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	align-items: center;
+}
 .login__form {
+	justify-self: center;
 	margin-block-start: 1rem;
 	width: clamp(20rem, 50%, 40rem);
 	text-align: center;
