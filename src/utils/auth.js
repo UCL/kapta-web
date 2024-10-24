@@ -44,6 +44,7 @@ const signUp = (email, password, displayName) => {
 };
 
 const initiateAuth = (email, password) => {
+	console.log("initiating log in");
 	const client = new CognitoIdentityProviderClient(cognito);
 	const command = new InitiateAuthCommand({
 		AuthFlow: "USER_SRP_AUTH",

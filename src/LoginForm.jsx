@@ -20,6 +20,11 @@ export default function LoginForm({ isVisible, setIsVisible }) {
 		console.log("Form data:", values);
 		const { email, password } = values;
 
+		user.forceLogin(); // temp until cognito set up
+		setSuccessModalVisible(true);
+		setIsVisible(false);
+
+		// TODO: get this to work
 		return initiateAuth(email, password).then(({ response }) => {
 			if (!response) {
 				alert("Incorrect email or password");
@@ -30,7 +35,10 @@ export default function LoginForm({ isVisible, setIsVisible }) {
 			}
 		});
 	};
-
+	const initialValues = {
+		email: "",
+		password: "",
+	};
 	return (
 		<>
 			{successModalVisible && (
@@ -40,44 +48,52 @@ export default function LoginForm({ isVisible, setIsVisible }) {
 					isTask={false}
 				/>
 			)}
-			<IconButton
-				color="white"
-				aria-label="cancel"
-				onClick={() => setIsVisible(false)}
-			>
-				<HighlightOffIcon />
-			</IconButton>
-			<Formik onSubmit={handleSubmit}>
-				{({ isSubmitting }) => (
-					<Form className="form login__form">
-						<Field
-							type="email"
-							name="email"
-							label="Email Address"
-							as={TextField}
-						/>
-						<ErrorMessage name="email" component="div" className="error" />
+			<div className="login__form--container">
+				<IconButton
+					color="white"
+					aria-label="cancel"
+					onClick={() => setIsVisible(false)}
+				>
+					<HighlightOffIcon />
+				</IconButton>
+				<Formik onSubmit={handleSubmit} initialValues={initialValues}>
+					{({ isSubmitting }) => (
+						<Form className="form login__form">
+							<Field
+								type="email"
+								name="email"
+								label="Email Address"
+								as={TextField}
+								inputProps={{
+									autoComplete: "current-password",
+								}}
+							/>
+							<ErrorMessage name="email" component="div" className="error" />
 
-						<Field
-							type="password"
-							name="password"
-							label="Password"
-							as={TextField}
-						/>
-						<ErrorMessage name="email" component="div" className="error" />
+							<Field
+								type="password"
+								name="password"
+								label="Password"
+								as={TextField}
+								inputProps={{
+									autoComplete: "current-password",
+								}}
+							/>
+							<ErrorMessage name="email" component="div" className="error" />
 
-						{/* Submit Button */}
-						<Button
-							type="submit"
-							disabled={isSubmitting}
-							color="info"
-							variant="contained"
-						>
-							Log in
-						</Button>
-					</Form>
-				)}
-			</Formik>
+							{/* Submit Button */}
+							<Button
+								type="submit"
+								disabled={isSubmitting}
+								color="info"
+								variant="contained"
+							>
+								Log in
+							</Button>
+						</Form>
+					)}
+				</Formik>
+			</div>
 		</>
 	);
 }
