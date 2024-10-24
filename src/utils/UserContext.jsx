@@ -14,6 +14,11 @@ export const UserProvider = ({ children }) => {
 	const [email, setEmail] = useState(null);
 	const [loggedIn, setLoggedIn] = useState(false);
 
+	//temp function until cognito set up
+	const forceLogin = () => {
+		setLoggedIn(true);
+	};
+
 	const setUserDetails = useCallback((userDetails) => {
 		const base64Payload = userDetails.idToken.split(".")[1];
 		const decodedIdTokenPayload = JSON.parse(atob(base64Payload));
@@ -32,27 +37,64 @@ export const UserProvider = ({ children }) => {
 		); // the states won't have been updated in time, so use the original prop
 	}, []);
 
-	// Check for user tokens from localStorage and update user info
-	const checkForDetails = useCallback(() => {
-		const storedIdToken = localStorage.getItem("idToken");
-		const storedAccessToken = localStorage.getItem("accessToken");
-		const storedRefreshToken = localStorage.getItem("refreshToken");
+	function isTokenValid(token) {
+		const base64Payload = token.split(".")[1];
+		const decodedToken = JSON.parse(atob(base64Payload));
+		const expirationTime = decodedToken.exp;
+		const currentTime = Math.floor(Date.now() / 1000);
 
-		let userDetails = {
-			accessToken: storedAccessToken,
-			idToken: storedIdToken,
-			refreshToken: storedRefreshToken,
+		return expirationTime > currentTime;
+	}
+
+	const getLocalStorageTokens = useCallback(() => {
+		return {
+			idToken: localStorage.getItem("idToken"),
+			accessToken: localStorage.getItem("accessToken"),
+			refreshToken: localStorage.getItem("refreshToken"),
 		};
+	}, []);
+
+	// Function to refresh tokens
+	const refresh = useCallback(
+		async (refreshToken) => {
+			if (refreshToken) {
+				const response = await initiateAuthRefresh(refreshToken);
+				const authResult = response.AuthenticationResult;
+				setUserDetails({
+					accessToken: authResult.AccessToken,
+					idToken: authResult.IdToken,
+					refreshToken: authResult.RefreshToken,
+				});
+			}
+		},
+		[setUserDetails]
+	);
+
+	// Check for user tokens from localStorage and update user info
+	const checkForDetails = useCallback(async () => {
+		let userDetails = getLocalStorageTokens();
+		// check each of the tokens is there and not "null"
 		const userDetailsNotNull = Object.values(userDetails).every(
 			(value) => value !== null && value !== "null" && value !== undefined
 		);
 
-		// Only set user details if tokens exist and are not the string "null"
 		if (userDetailsNotNull) {
-			setUserDetails(userDetails);
-			return true;
-		} else return false;
-	}, [setUserDetails]);
+			const isValid = await isTokenValid(userDetails.idToken);
+			if (!isValid) {
+				await refresh(userDetails.refreshToken);
+				try {
+					userDetails = getLocalStorageTokens();
+					await isTokenValid();
+					setUserDetails(userDetails);
+				} catch (error) {
+					console.error("Error refreshing tokens", error);
+				}
+			} else {
+				setUserDetails(userDetails);
+				return true;
+			}
+		} else return false; // user will have to log in again
+	}, [setUserDetails, getLocalStorageTokens, refresh]);
 
 	useEffect(() => {
 		checkForDetails();
@@ -64,18 +106,6 @@ export const UserProvider = ({ children }) => {
 		localStorage.setItem("accessToken", accessToken || "null");
 		localStorage.setItem("refreshToken", refreshToken || "null");
 	};
-
-	// Function to refresh tokens
-	const refresh = useCallback(() => {
-		if (refreshToken) {
-			initiateAuthRefresh({ refreshToken }).then((response) => {
-				const authResult = response.AuthenticationResult;
-				setIdToken(authResult.IdToken);
-				setAccessToken(authResult.AccessToken);
-				setRefreshToken(authResult.RefreshToken);
-			});
-		}
-	}, [refreshToken]);
 
 	// Function to log out
 	const logout = useCallback(() => {
@@ -112,6 +142,7 @@ export const UserProvider = ({ children }) => {
 				logout,
 				setUserDetails,
 				checkForDetails,
+				forceLogin,
 			}}
 		>
 			{children}
