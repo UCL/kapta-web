@@ -2,10 +2,11 @@ import { useContext } from "react";
 import { UserContext } from "./utils/UserContext";
 
 // export vars used throughout the app
-export const REQUEST_URL = import.meta.env.REQUEST_URL;
-export const WEB_POOL_ID = import.meta.env.WEB_POOL_ID;
-export const CLIENT_ID = import.meta.env.CLIENT_ID;
-export const REGION = import.meta.env.REGION;
+export const REQUEST_URL = import.meta.env.VITE_REQUEST_URL;
+export const WEB_POOL_ID = import.meta.env.VITE_WEB_POOL_ID;
+export const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
+export const REGION = import.meta.env.VITE_REGION;
+export const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
 export let cognito = null;
 export let hasCognito = false;
