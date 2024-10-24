@@ -1,5 +1,7 @@
-import { Button, Divider } from "@mui/material";
+import { Button, Divider, Snackbar } from "@mui/material";
 import "./styles/dialogs.css";
+import { useState } from "react";
+import { copyToClipboard } from "./utils/copyToClipboard";
 
 export default function SuccessModal({
 	taskID = "",
@@ -13,6 +15,15 @@ export default function SuccessModal({
 	let title;
 	if (isTask) title = "Your submission has been successful. See details below";
 	else title = taskTitle;
+
+	const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+	const handleCopy = async (text) => {
+		const success = await copyToClipboard(text);
+		if (success) {
+			setSnackbarOpen(true);
+		}
+	};
 	return (
 		<dialog open id="success-dialog">
 			<h3>{title}</h3>
@@ -31,9 +42,11 @@ export default function SuccessModal({
 							Below is the campaign code for people to access your study on{" "}
 							Kapta Mobile and contribute to it.
 						</p>
-						<div className="campaign-code">
+						<div
+							className="campaign-code"
+							onClick={() => handleCopy(campaignCode)}
+						>
 							{campaignCode}
-							{/* todo: add auto copy to clipboard when clicked? */}
 						</div>
 					</div>
 				</>
@@ -45,6 +58,14 @@ export default function SuccessModal({
 			>
 				Close
 			</Button>
+
+			<Snackbar
+				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+				open={snackbarOpen}
+				autoHideDuration={2000}
+				onClose={() => setSnackbarOpen(false)}
+				message="Code copied to clipboard!"
+			/>
 		</dialog>
 	);
 }

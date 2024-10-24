@@ -79,7 +79,11 @@ export default function App() {
 					<Map />
 
 					<TaskForm isVisible={isTaskFormVisible} />
-					<TaskList isVisible={isTaskListVisible} />
+					<TaskList
+						isVisible={isTaskListVisible}
+						setIsVisible={setTaskListVisible}
+						user={user}
+					/>
 					<SearchForm isVisible={isSearchFormVisible} />
 				</>
 			)}

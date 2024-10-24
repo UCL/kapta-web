@@ -1,0 +1,22 @@
+.task-list__drawer {
+	z-index: 3;
+}
+.task-list__content {
+	margin-inline: 4%;
+	.task-card {
+		margin-bottom: 0.8rem;
+
+		.task-card__title {
+			display: flex;
+			justify-content: space-between;
+			strong {
+				font-size: larger;
+			}
+		}
+	}
+
+	.campaign-code {
+		color: var(--rose);
+		font-weight: 600;
+	}
+}
