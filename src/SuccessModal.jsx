@@ -29,7 +29,7 @@ export default function SuccessModal({
 						<Divider />
 						<p>
 							Below is the campaign code for people to access your study on{" "}
-							<u>Kapta Mobile</u> and contribute to it.
+							Kapta Mobile and contribute to it.
 						</p>
 						<div className="campaign-code">
 							{campaignCode}

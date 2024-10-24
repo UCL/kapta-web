@@ -35,8 +35,4 @@
 		font-weight: 700;
 		padding-bottom: 1rem;
 	}
-
-	p > u {
-		text-decoration-color: tomato;
-	}
 }
