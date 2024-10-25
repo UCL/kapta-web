@@ -6,10 +6,8 @@ import {
 	CardContent,
 	CircularProgress,
 	Drawer,
-	IconButton,
 	Snackbar,
 } from "@mui/material";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import DownloadIcon from "@mui/icons-material/Download";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -17,6 +15,7 @@ import { REQUEST_URL } from "./globals";
 import { useEffect, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
+import CloseButton from "./utils/CloseButton";
 export default function TaskList({
 	isVisible,
 	setIsVisible,
@@ -106,13 +105,7 @@ export default function TaskList({
 
 	return (
 		<Drawer anchor="right" open={isVisible} className="task-list__drawer">
-			<IconButton
-				color="white"
-				aria-label="close"
-				onClick={() => setIsVisible(false)}
-			>
-				<HighlightOffIcon />
-			</IconButton>
+			<CloseButton setIsVisible={setIsVisible} />
 			<div className="task-list__content">
 				<div className="task-list__header">
 					<h2>My Tasks</h2>

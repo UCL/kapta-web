@@ -84,6 +84,7 @@ export default function App() {
 
 					<TaskForm
 						isVisible={isTaskFormVisible}
+						setIsVisible={setTaskFormVisible}
 						user={user}
 						taskValues={taskValues}
 					/>

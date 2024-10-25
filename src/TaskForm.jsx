@@ -6,6 +6,7 @@ import { generateTaskId, generateCampaignCode } from "./utils/generators";
 import { useState } from "react";
 import SuccessModal from "./SuccessModal";
 import "./styles/forms.css";
+import CloseButton from "./utils/CloseButton";
 // import * as Yup from "yup";
 
 // these will be dynamically taken from their login and generated
@@ -21,7 +22,12 @@ const campaignCode = generateCampaignCode();
 // 	description: Yup.string().required("Description is required"),
 // });
 
-export default function TaskForm({ isVisible, taskValues, user }) {
+export default function TaskForm({
+	isVisible,
+	setIsVisible,
+	taskValues,
+	user,
+}) {
 	const [successModalVisible, setSuccessModalVisible] = useState(false);
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
@@ -35,7 +41,15 @@ export default function TaskForm({ isVisible, taskValues, user }) {
 		description: "",
 	};
 	if (taskValues) {
-		initialValues = { ...taskValues };
+		initialValues = {
+			createdBy: taskValues.created_by,
+			organisation: taskValues.organisation,
+			logo: taskValues.logo,
+			private: taskValues.private,
+			visible: taskValues.visible,
+			title: taskValues.task_title,
+			description: taskValues.task_description,
+		};
 	}
 
 	if (!isVisible) return null;
@@ -93,6 +107,7 @@ export default function TaskForm({ isVisible, taskValues, user }) {
 			>
 				{({ isSubmitting, setFieldValue }) => (
 					<Form className="form task-request-form">
+						<CloseButton setIsVisible={setIsVisible} />
 						<h2 color="info">Tell us about your task</h2>
 						{/* Hidden field for Created By */}
 						<div className="form__body">

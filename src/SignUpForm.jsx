@@ -1,11 +1,11 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Button, IconButton, TextField, useTheme } from "@mui/material";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import { Button, TextField, useTheme } from "@mui/material";
 import { useState } from "react";
 import SuccessModal from "./SuccessModal";
 import "./styles/forms.css";
 import { initiateAuth } from "./utils/auth";
 import { useUserStore } from "./globals";
+import CloseButton from "./utils/CloseButton";
 // import * as Yup from "yup";
 
 export default function SignUpForm({ isVisible, setIsVisible }) {
@@ -40,13 +40,7 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 					isTask={false}
 				/>
 			)}
-			<IconButton
-				color="white"
-				aria-label="cancel"
-				onClick={() => setIsVisible(false)}
-			>
-				<HighlightOffIcon />
-			</IconButton>
+			<CloseButton setIsVisible={setIsVisible} />
 			<Formik onSubmit={handleSubmit}>
 				{({ isSubmitting }) => (
 					<Form className="form login__form">
