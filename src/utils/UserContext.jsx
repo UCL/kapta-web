@@ -12,6 +12,7 @@ export const UserProvider = ({ children }) => {
 	const [refreshToken, setRefreshToken] = useState(null);
 	const [displayName, setDisplayName] = useState(null);
 	const [email, setEmail] = useState(null);
+	const [userId, setUserId] = useState(null);
 	const [loggedIn, setLoggedIn] = useState(false);
 
 	//temp function until cognito set up
@@ -24,6 +25,7 @@ export const UserProvider = ({ children }) => {
 		const decodedIdTokenPayload = JSON.parse(atob(base64Payload));
 		setDisplayName(decodedIdTokenPayload["preferred_username"]);
 		setEmail(decodedIdTokenPayload["email"]);
+		setUserId(decodedIdTokenPayload["sub"]);
 
 		setAccessToken(userDetails.accessToken);
 		setIdToken(userDetails.idToken);
@@ -137,6 +139,7 @@ export const UserProvider = ({ children }) => {
 				refreshToken,
 				displayName,
 				email,
+				userId,
 				loggedIn,
 				refresh,
 				logout,
