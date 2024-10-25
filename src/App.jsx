@@ -13,14 +13,18 @@ import SearchForm from "./SearchForm";
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
 	const [isTaskListVisible, setTaskListVisible] = useState(false);
+	const [taskValues, setTaskValues] = useState(null);
 
 	const [isLoginFormVisible, setLoginFormVisible] = useState(false);
 	const [isSearchFormVisible, setSearchFormVisible] = useState(false);
 
 	const user = useUserStore();
 
-	// TODO: add mapbox background thing
-
+	const showTaskForm = (task) => {
+		console.log("task exists!", task);
+		setTaskValues(task);
+		setTaskFormVisible(true);
+	};
 	return (
 		<main>
 			{!isLoginFormVisible && !user.loggedIn && (
@@ -78,11 +82,16 @@ export default function App() {
 
 					<Map />
 
-					<TaskForm isVisible={isTaskFormVisible} />
+					<TaskForm
+						isVisible={isTaskFormVisible}
+						user={user}
+						taskValues={taskValues}
+					/>
 					<TaskList
 						isVisible={isTaskListVisible}
 						setIsVisible={setTaskListVisible}
 						user={user}
+						showTaskForm={showTaskForm}
 					/>
 					<SearchForm isVisible={isSearchFormVisible} />
 				</>

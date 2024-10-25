@@ -9,7 +9,6 @@ import "./styles/forms.css";
 // import * as Yup from "yup";
 
 // these will be dynamically taken from their login and generated
-const userID = "12345";
 const taskID = generateTaskId();
 const campaignCode = generateCampaignCode();
 
@@ -21,20 +20,23 @@ const campaignCode = generateCampaignCode();
 // title: Yup.string().required("Title is required"),
 // 	description: Yup.string().required("Description is required"),
 // });
-const initialValues = {
-	createdBy: userID, // hidden field populated dynamically
-	organisation: "",
-	logo: null,
-	private: false,
-	visible: false,
-	title: "",
-	description: "",
-};
 
-export default function TaskForm({ isVisible }) {
+export default function TaskForm({ isVisible, taskValues, user }) {
 	const [successModalVisible, setSuccessModalVisible] = useState(false);
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
+	var initialValues = {
+		createdBy: user.userId, // hidden field populated dynamically
+		organisation: "",
+		logo: null,
+		private: false,
+		visible: false,
+		title: "",
+		description: "",
+	};
+	if (taskValues) {
+		initialValues = { ...taskValues };
+	}
 
 	if (!isVisible) return null;
 

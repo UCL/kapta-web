@@ -1,6 +1,12 @@
 .task-list__drawer {
 	z-index: 3;
 }
+.task-list__header {
+	margin-inline: 4%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
 .task-list__content {
 	margin-inline: 4%;
 	.task-card {
@@ -12,11 +18,23 @@
 			strong {
 				font-size: larger;
 			}
+			small {
+				opacity: 0.8;
+			}
 		}
 	}
+	.code-container {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
 
-	.campaign-code {
-		color: var(--rose);
-		font-weight: 600;
+		.show-hide-code-btn {
+			float: right;
+		}
+		.campaign-code {
+			color: var(--rose);
+			font-weight: 600;
+			margin-right: 0.8rem;
+		}
 	}
 }

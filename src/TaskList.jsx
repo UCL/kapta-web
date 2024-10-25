@@ -5,17 +5,24 @@ import {
 	CardActions,
 	CardContent,
 	CircularProgress,
-	Divider,
 	Drawer,
 	IconButton,
 	Snackbar,
 } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import DownloadIcon from "@mui/icons-material/Download";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { REQUEST_URL } from "./globals";
 import { useEffect, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
-export default function TaskList({ isVisible, setIsVisible, user }) {
+export default function TaskList({
+	isVisible,
+	setIsVisible,
+	user,
+	showTaskForm,
+}) {
 	// TODO: if given user or get user here then get all tasks created by them
 	const [tasks, setTasks] = useState([]);
 	const [metadataStore, setMetadataStore] = useState([]);
@@ -34,6 +41,7 @@ export default function TaskList({ isVisible, setIsVisible, user }) {
 				const result = await response.json();
 				const metadata = JSON.parse(result);
 				console.log(metadata);
+				setMetadataStore(metadata);
 
 				return metadata;
 			} catch (error) {
@@ -51,9 +59,10 @@ export default function TaskList({ isVisible, setIsVisible, user }) {
 				const fetchedTasks = JSON.parse(result);
 				console.log(fetchedTasks);
 
-				// for task in fetchedTasks:
-				//     metadata = getMetadata(task.taskID)
-				//     metadataStore.append(metadata)
+				// fetchedTasks.forEach((task) => {
+				// 	let metadata = getMetadata(task.taskID);
+				// 	metadataStore.append(metadata);
+				// });
 
 				setTasks(fetchedTasks);
 			} catch (error) {
@@ -66,7 +75,7 @@ export default function TaskList({ isVisible, setIsVisible, user }) {
 		if (isVisible) {
 			fetchTasks();
 		}
-	}, [isVisible]);
+	}, [isVisible, metadataStore]);
 
 	const toggleCodeVisibility = (taskId) => {
 		setVisibleCodes((prev) => ({
@@ -82,6 +91,17 @@ export default function TaskList({ isVisible, setIsVisible, user }) {
 		}
 	};
 
+	const handleDownload = () => {
+		// TODO: get data from s3
+		console.log("handle download");
+	};
+
+	const handleEdit = (task) => {
+		console.log(task);
+		showTaskForm(task);
+		setIsVisible(false);
+	};
+
 	if (!isVisible) return null;
 
 	return (
@@ -94,54 +114,74 @@ export default function TaskList({ isVisible, setIsVisible, user }) {
 				<HighlightOffIcon />
 			</IconButton>
 			<div className="task-list__content">
-				<h2>My Tasks</h2>
+				<div className="task-list__header">
+					<h2>My Tasks</h2>
+					{!isLoading && <span>Total: {tasks.length}</span>}
+				</div>
 				{isLoading ? (
 					<CircularProgress />
 				) : (
 					tasks.map((task) => (
-						<>
-							<Card key={task.task_id} className="task-card">
-								<CardContent>
-									<span className="task-card__title">
-										<strong>{task.task_title}</strong>{" "}
-										<small>{task.task_id}</small>
-									</span>
-									<p>{task.task_description}</p>
-
-									{showMetadata && metadataStore.task_id === task.task_id && (
-										// get metadata from metadataStore or fetch from dynamodb
-										<p>{metadataStore.info}</p>
-									)}
+						<Card key={task.task_id} className="task-card">
+							<CardContent>
+								<span className="task-card__title">
+									<strong>{task.task_title}</strong>{" "}
+									<small>{task.task_id}</small>
+								</span>
+								<div className="code-container">
 									{visibleCodes[task.task_id] && (
-										<p
+										<span
 											onClick={() => handleCopy(task.campaign_code)}
 											className="campaign-code"
 										>
 											{task.campaign_code}
-										</p>
+										</span>
 									)}
-								</CardContent>
-								<CardActions>
-									<ButtonGroup size="small" color="info">
-										<Button
-											variant="contained"
-											onClick={() => setShowMetadata(!showMetadata)}
-										>
-											View Metadata
-										</Button>
-										<Button
-											variant="outlined"
-											onClick={() => toggleCodeVisibility(task.task_id)}
-										>
-											{visibleCodes[task.task_id]
-												? "Hide Campaign Code"
-												: "View Campaign Code"}
-										</Button>
-									</ButtonGroup>
-								</CardActions>
-							</Card>
-							<Divider />
-						</>
+									<Button
+										className="show-hide-code-btn"
+										color="info"
+										variant="outlined"
+										onClick={() => toggleCodeVisibility(task.task_id)}
+										size="small"
+										startIcon={
+											visibleCodes[task.task_id] ? (
+												<VisibilityOffIcon />
+											) : (
+												<VisibilityIcon />
+											)
+										}
+									>
+										Code
+									</Button>
+								</div>
+								<p>{task.task_description}</p>
+
+								{showMetadata && metadataStore.task_id === task.task_id && (
+									// get metadata from metadataStore or fetch from dynamodb
+									<p>{metadataStore.info}</p>
+								)}
+							</CardContent>
+							<CardActions>
+								<ButtonGroup size="small" color="info">
+									<Button
+										variant="contained"
+										onClick={handleDownload}
+										startIcon={<DownloadIcon />}
+									>
+										Download Data
+									</Button>
+									<Button variant="outlined" onClick={() => handleEdit(task)}>
+										Edit Task
+									</Button>
+									<Button
+										variant="outlined"
+										onClick={() => setShowMetadata(!showMetadata)}
+									>
+										View Metadata
+									</Button>
+								</ButtonGroup>
+							</CardActions>
+						</Card>
 					))
 				)}
 			</div>
