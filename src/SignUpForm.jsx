@@ -40,38 +40,99 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 					isTask={false}
 				/>
 			)}
-			<CloseButton setIsVisible={setIsVisible} />
-			<Formik onSubmit={handleSubmit}>
-				{({ isSubmitting }) => (
-					<Form className="form login__form">
-						<Field
-							type="email"
-							name="email"
-							label="Email Address"
-							as={TextField}
-						/>
-						<ErrorMessage name="email" component="div" className="error" />
+			<div className="signup__form--container">
+				<CloseButton setIsVisible={setIsVisible} />
+				<Formik onSubmit={handleSubmit}>
+					{({ isSubmitting }) => (
+						<Form className="form signup__form">
+							<div className="form__row">
+								<Field
+									type="text"
+									name="givenName"
+									label="First Name"
+									as={TextField}
+									required
+								/>
+								<ErrorMessage
+									name="givenName"
+									component="div"
+									className="error"
+								/>
+								<Field
+									type="text"
+									name="familyName"
+									label="Last Name"
+									as={TextField}
+									required
+								/>
+								<ErrorMessage
+									name="familyName"
+									component="div"
+									className="error"
+								/>
+							</div>
+							<Field
+								type="email"
+								name="email"
+								label="Email Address"
+								as={TextField}
+								required
+								inputProps={{
+									autoComplete: "current-email",
+								}}
+							/>
+							<ErrorMessage name="email" component="div" className="error" />
 
-						<Field
-							type="password"
-							name="password"
-							label="Password"
-							as={TextField}
-						/>
-						<ErrorMessage name="email" component="div" className="error" />
+							<Field
+								type="password"
+								name="password"
+								label="Password"
+								as={TextField}
+								required
+								inputProps={{
+									autoComplete: "current-password",
+								}}
+							/>
+							<ErrorMessage name="email" component="div" className="error" />
 
-						{/* Submit Button */}
-						<Button
-							type="submit"
-							disabled={isSubmitting}
-							color="info"
-							variant="contained"
-						>
-							Log in
-						</Button>
-					</Form>
-				)}
-			</Formik>
+							<div className="form__row">
+								<Field
+									type="phone"
+									name="phoneNumber"
+									label="Phone Number (optional)"
+									as={TextField}
+								/>
+								<ErrorMessage
+									name="phoneNumber"
+									component="div"
+									className="error"
+								/>
+								<Field
+									type="text"
+									name="preferredUsername"
+									label="Display Name (optional)"
+									as={TextField}
+								/>
+								<ErrorMessage
+									name="preferredUsername"
+									component="div"
+									className="error"
+								/>
+							</div>
+
+							{/* Submit Button */}
+							<Button
+								type="submit"
+								disabled={isSubmitting}
+								color="info"
+								variant="contained"
+							>
+								Sign Up
+							</Button>
+						</Form>
+					)}
+				</Formik>
+			</div>
 		</>
 	);
 }
