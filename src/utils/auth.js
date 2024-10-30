@@ -43,18 +43,25 @@ const signUp = (email, password, displayName) => {
 	return client.send(command);
 };
 
-const initiateAuth = (email, password) => {
+const initiateAuth = async (email, password) => {
 	console.log("initiating log in");
 	const client = new CognitoIdentityProviderClient(cognito);
 	const command = new InitiateAuthCommand({
-		AuthFlow: "USER_SRP_AUTH",
+		AuthFlow: "USER_PASSWORD_AUTH",
 		AuthParameters: {
 			USERNAME: email,
 			PASSWORD: password,
 		},
 		ClientId: cognito.userPoolClientId,
 	});
-	return client.send(command);
+	try {
+		return await client.send(command);
+	} catch (error) {
+		console.error("InitiateAuth Error:", error, error.name);
+		if (error.name === "UserNotFoundException") {
+			return { response: 4359 };
+		} else throw error;
+	}
 };
 
 const initiateAuthRefresh = (refreshToken) => {
