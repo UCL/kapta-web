@@ -36,3 +36,29 @@
 		padding-bottom: 1rem;
 	}
 }
+
+#error-dialog {
+	background-color: #531919eb;
+	backdrop-filter: blur(4px);
+	position: absolute;
+	top: 8%;
+	width: 60vw;
+	border: none;
+	border-radius: 8px;
+	z-index: 3;
+	color: #f9e6e6;
+	text-align: center;
+}
+
+#confirm-dialog {
+	background-color: var(--dark-grey--translucent);
+	backdrop-filter: blur(4px);
+	position: absolute;
+	top: 20%;
+	width: 60vw;
+	border: none;
+	border-radius: 8px;
+	z-index: 2;
+	color: #f9e6e6;
+	text-align: center;
+}

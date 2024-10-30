@@ -3,44 +3,80 @@ import {
 	CognitoIdentityProviderClient,
 	InitiateAuthCommand,
 	GlobalSignOutCommand,
+	ConfirmSignUpCommand,
+	AdminGetUserCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 
 import { cognito } from "../globals";
 
-const validatePassword = (password) => {
-	const lower = "abcdefghijklmnopqrstuvwxyz";
-	const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	const digits = "0123456789";
-	const special = "!@#$%^&*()";
-
-	if (password.length < 8) {
-		// It's impossible to generate a passing password so break
-		return "Please enter a password of at least 8 characters";
-	}
-
-	// Make sure password contains at least one character from each set
-	const all = (arr, fn = Boolean) => arr.every(fn);
-	const any = (arr, fn = Boolean) => arr.some(fn);
-	let charSetPresence = [
-		any(lower.split("").map((item) => password.includes(item))),
-		any(upper.split("").map((item) => password.includes(item))),
-		any(digits.split("").map((item) => password.includes(item))),
-		any(special.split("").map((item) => password.includes(item))),
-	];
-	return all(charSetPresence);
-};
-
-const signUp = (email, password, displayName) => {
+const signUp = async (values) => {
 	const client = new CognitoIdentityProviderClient(cognito);
+	console.log(values);
 
 	const command = new SignUpCommand({
 		ClientId: cognito.userPoolClientId,
-		Username: email,
-		Password: password,
-		UserAttributes: [{ Name: "preferredUsername", Value: displayName }],
+		Username: values.email,
+		Password: values.password,
+		UserAttributes: [
+			{
+				Name: "email",
+				Value: values.email,
+			},
+			{
+				Name: "given_name",
+				Value: values.givenName,
+			},
+			{
+				Name: "family_name",
+				Value: values.familyName,
+			},
+			{
+				Name: "phone_number",
+				Value: values.phoneNumber,
+			},
+			{
+				Name: "preferred_username",
+				Value: values.preferredUsername,
+			},
+			{
+				Name: "custom:organisation",
+				Value: values.organisation,
+			},
+		].filter((attr) => attr.Value !== undefined && attr.Value !== null),
+	});
+	console.log("going to sign up");
+	// return client.send(command);
+	try {
+		const response = await client.send(command);
+		return response;
+		// return {
+		// 	email,
+		// 	phoneNumber,
+		// 	userSub: response.UserSub,
+		// 	codeDeliveryDetails: response.CodeDeliveryDetails
+		//   };
+	} catch (error) {
+		console.error("signup Error:", error, error.name);
+		throw error;
+	}
+};
+
+const confirmSignUp = async (code, recipient) => {
+	const client = new CognitoIdentityProviderClient(cognito);
+	const command = new ConfirmSignUpCommand({
+		ClientId: cognito.userPoolClientId,
+		Username: recipient,
+		ConfirmationCode: code,
 	});
 
-	return client.send(command);
+	try {
+		const response = await client.send(command);
+		console.log("User confirmed successfully", response);
+		return response;
+	} catch (error) {
+		console.error("Error confirming user", error);
+		throw error;
+	}
 };
 
 const initiateAuth = async (email, password) => {
@@ -55,11 +91,16 @@ const initiateAuth = async (email, password) => {
 		ClientId: cognito.userPoolClientId,
 	});
 	try {
-		return await client.send(command);
+		const response = await client.send(command);
+		if (response.AuthenticationResult) {
+			return { response: response.AuthenticationResult };
+		}
 	} catch (error) {
 		console.error("InitiateAuth Error:", error, error.name);
 		if (error.name === "UserNotFoundException") {
 			return { response: 4359 };
+		} else if (error.name === "UserNotConfirmedException") {
+			return { response: 4399 };
 		} else throw error;
 	}
 };
@@ -85,4 +126,4 @@ const signOut = (access_token) => {
 	return client.send(command);
 };
 
-export { signUp, validatePassword, initiateAuth, initiateAuthRefresh, signOut };
+export { signUp, confirmSignUp, initiateAuth, initiateAuthRefresh, signOut };

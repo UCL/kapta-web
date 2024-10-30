@@ -15,27 +15,22 @@ export const UserProvider = ({ children }) => {
 	const [userId, setUserId] = useState(null);
 	const [loggedIn, setLoggedIn] = useState(false);
 
-	//temp function until cognito set up
-	const forceLogin = () => {
-		setLoggedIn(true);
-	};
-
 	const setUserDetails = useCallback((userDetails) => {
-		const base64Payload = userDetails.idToken.split(".")[1];
+		const base64Payload = userDetails.IdToken.split(".")[1];
 		const decodedIdTokenPayload = JSON.parse(atob(base64Payload));
 		setDisplayName(decodedIdTokenPayload["preferred_username"]);
 		setEmail(decodedIdTokenPayload["email"]);
 		setUserId(decodedIdTokenPayload["sub"]);
 
-		setAccessToken(userDetails.accessToken);
-		setIdToken(userDetails.idToken);
-		setRefreshToken(userDetails.refreshToken);
+		setAccessToken(userDetails.AccessToken);
+		setIdToken(userDetails.IdToken);
+		setRefreshToken(userDetails.RefreshToken);
 		setLoggedIn(true);
 
 		setLocalStorage(
-			userDetails.idToken,
-			userDetails.accessToken,
-			userDetails.refreshToken
+			userDetails.IdToken,
+			userDetails.AccessToken,
+			userDetails.RefreshToken
 		); // the states won't have been updated in time, so use the original prop
 	}, []);
 
@@ -145,7 +140,6 @@ export const UserProvider = ({ children }) => {
 				logout,
 				setUserDetails,
 				checkForDetails,
-				forceLogin,
 			}}
 		>
 			{children}

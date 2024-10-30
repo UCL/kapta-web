@@ -1,34 +1,93 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Button, TextField, useTheme } from "@mui/material";
+import DangerousIcon from "@mui/icons-material/Dangerous";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useState } from "react";
 import SuccessModal from "./SuccessModal";
 import "./styles/forms.css";
-import { initiateAuth } from "./utils/auth";
+import { signUp } from "./utils/auth";
 import { useUserStore } from "./globals";
 import CloseButton from "./utils/CloseButton";
-// import * as Yup from "yup";
+import * as Yup from "yup";
+import ConfirmModal from "./utils/ConfirmationModal";
+
+function checkPasswordStrength(password) {
+	const checks = {
+		minLength: password.length >= 8,
+		hasLowercase: /[a-z]/.test(password),
+		hasUppercase: /[A-Z]/.test(password),
+		hasDigit: /\d/.test(password),
+		hasSymbol: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
+	};
+
+	return checks;
+}
 
 export default function SignUpForm({ isVisible, setIsVisible }) {
 	const [successModalVisible, setSuccessModalVisible] = useState(false);
 	const user = useUserStore();
 	useTheme();
+	const [password, setPassword] = useState("");
+	const [passwordStrength, setPasswordStrength] = useState({});
+	const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+	const [recipient, setRecipient] = useState("");
 
 	if (!isVisible) return null;
 
-	// formik has built in props regarding submission so we don't need to define them ourselves
+	const initialValues = {
+		givenName: "",
+		familyName: "",
+		email: "",
+		password: "",
+		preferredUsername: "",
+		phoneNumber: "",
+		confirmPassword: "",
+	};
+
+	const validationSchema = Yup.object({
+		givenName: Yup.string().required("Required"),
+		familyName: Yup.string().required("Required"),
+		email: Yup.string().email("Invalid email address").required("Required"),
+		password: Yup.string()
+			.test(
+				"password-strength",
+				"Password does not meet requirements",
+				function (value) {
+					if (!value) return false;
+					return checkPasswordStrength(value);
+				}
+			)
+			.required("Required"),
+		confirmPassword: Yup.string()
+			.oneOf([Yup.ref("password"), null], "Passwords must match")
+			.required("Required"),
+	});
 	const handleSubmit = async (values) => {
 		console.log("Form data:", values);
-		const { email, password } = values;
+		if (values.phoneNumber) {
+			setRecipient(values.phoneNumber);
+		} else {
+			setRecipient(values.email);
+		}
 
-		return initiateAuth(email, password).then(({ response }) => {
+		return signUp(values).then(({ response }) => {
+			console.log(response);
 			if (!response) {
-				alert("Incorrect email or password");
-				// TODO: show sign up
+				console.log("Error signing up");
 			} else {
+				//TODO: show sms thing then the rest
 				user.setUserDetails(response);
 				setSuccessModalVisible(true);
 			}
 		});
+	};
+
+	const handlePasswordChange = (e, setFieldValue) => {
+		const newPassword = e.target.value;
+		setFieldValue("password", newPassword);
+		console.log(newPassword);
+		setPassword(newPassword);
+		setPasswordStrength(checkPasswordStrength(newPassword));
 	};
 
 	return (
@@ -40,11 +99,23 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 					isTask={false}
 				/>
 			)}
+
+			{confirmModalVisible && (
+				<ConfirmModal
+					setIsVisible={setConfirmModalVisible}
+					recipient={recipient}
+				/>
+			)}
+
 			<div className="signup__form--container">
 				<CloseButton setIsVisible={setIsVisible} />
-				<Formik onSubmit={handleSubmit}>
-					{({ isSubmitting }) => (
-						<Form className="form signup__form">
+				<Formik
+					onSubmit={handleSubmit}
+					initialValues={initialValues}
+					validationSchema={validationSchema}
+				>
+					{({ isSubmitting, setFieldValue }) => (
+						<Form className="form signup__form" autoComplete="on">
 							<div className="form__row">
 								<Field
 									type="text"
@@ -70,6 +141,17 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 									component="div"
 									className="error"
 								/>
+								<Field
+									type="text"
+									name="preferredUsername"
+									label="Display Name (optional)"
+									as={TextField}
+								/>
+								<ErrorMessage
+									name="preferredUsername"
+									component="div"
+									className="error"
+								/>
 							</div>
 							<Field
 								type="email"
@@ -78,8 +160,9 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 								as={TextField}
 								required
 								inputProps={{
-									autoComplete: "current-email",
+									autoComplete: "new-email",
 								}}
+								autoComplete="new-email"
 							/>
 							<ErrorMessage name="email" component="div" className="error" />
 
@@ -90,10 +173,25 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 								as={TextField}
 								required
 								inputProps={{
-									autoComplete: "current-password",
+									autoComplete: "new-password",
 								}}
+								autoComplete="new-password"
+								onChange={(e) => handlePasswordChange(e, setFieldValue)}
 							/>
-							<ErrorMessage name="email" component="div" className="error" />
+							<ErrorMessage name="password" component="div" className="error" />
+
+							<Field
+								type="password"
+								name="confirmPassword"
+								label="Confirm Password"
+								as={TextField}
+								required
+							/>
+							<ErrorMessage
+								name="confirmPassword"
+								component="div"
+								className="error"
+							/>
 
 							<div className="form__row">
 								<Field
@@ -101,6 +199,7 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 									name="phoneNumber"
 									label="Phone Number (optional)"
 									as={TextField}
+									helpText="Please include your country code"
 								/>
 								<ErrorMessage
 									name="phoneNumber"
@@ -109,12 +208,12 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 								/>
 								<Field
 									type="text"
-									name="preferredUsername"
-									label="Display Name (optional)"
+									name="organisation"
+									label="Organisation (optional)"
 									as={TextField}
 								/>
 								<ErrorMessage
-									name="preferredUsername"
+									name="organisation"
 									component="div"
 									className="error"
 								/>
@@ -132,6 +231,55 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 						</Form>
 					)}
 				</Formik>
+				<div className="password-strength__container">
+					<h4>Password must contain:</h4>
+					<ul>
+						<li style={{ color: passwordStrength.minLength ? "green" : "red" }}>
+							{passwordStrength.minLength ? (
+								<CheckCircleIcon />
+							) : (
+								<DangerousIcon />
+							)}
+							At least 8 characters
+						</li>
+						<li
+							style={{ color: passwordStrength.hasLowercase ? "green" : "red" }}
+						>
+							{passwordStrength.hasLowercase ? (
+								<CheckCircleIcon />
+							) : (
+								<DangerousIcon />
+							)}
+							At least one lowercase letter
+						</li>
+						<li
+							style={{ color: passwordStrength.hasUppercase ? "green" : "red" }}
+						>
+							{passwordStrength.hasUppercase ? (
+								<CheckCircleIcon />
+							) : (
+								<DangerousIcon />
+							)}
+							At least one uppercase letter
+						</li>
+						<li style={{ color: passwordStrength.hasDigit ? "green" : "red" }}>
+							{passwordStrength.hasDigit ? (
+								<CheckCircleIcon />
+							) : (
+								<DangerousIcon />
+							)}
+							At least one digit
+						</li>
+						<li style={{ color: passwordStrength.hasSymbol ? "green" : "red" }}>
+							{passwordStrength.hasSymbol ? (
+								<CheckCircleIcon />
+							) : (
+								<DangerousIcon />
+							)}
+							At least one special character
+						</li>
+					</ul>
+				</div>
 			</div>
 		</>
 	);

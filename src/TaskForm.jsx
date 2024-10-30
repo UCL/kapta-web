@@ -32,7 +32,8 @@ export default function TaskForm({
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 	var initialValues = {
-		createdBy: user.userId, // hidden field populated dynamically
+		// createdBy: user.userId, // hidden field populated dynamically
+		createdBy: "kapta-web-generic-12345",
 		organisation: "",
 		logo: null,
 		private: false,

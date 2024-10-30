@@ -9,6 +9,8 @@ import { useUserStore } from "./globals";
 import TaskList from "./TaskList";
 import { Map } from "./Mapbox";
 import SearchForm from "./SearchForm";
+import SignUpForm from "./SignUpForm";
+import ErrorModal from "./utils/ErrorModal";
 
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
@@ -16,6 +18,11 @@ export default function App() {
 	const [taskValues, setTaskValues] = useState(null);
 
 	const [isLoginFormVisible, setLoginFormVisible] = useState(false);
+	const [signUpVisible, setSignUpVisible] = useState(false);
+
+	// const [errorModalVisible, setErrorModalVisible] = useState(false);
+	const [errorMsg, setErrorMsg] = useState("");
+
 	const [isSearchFormVisible, setSearchFormVisible] = useState(false);
 
 	const user = useUserStore();
@@ -27,7 +34,8 @@ export default function App() {
 	};
 	return (
 		<main>
-			{!isLoginFormVisible && !user.loggedIn && (
+			{errorMsg && <ErrorModal message={errorMsg} />}
+			{!isLoginFormVisible && !user.loggedIn && !signUpVisible && (
 				<Button
 					variant="outlined"
 					onClick={() => {
@@ -41,7 +49,11 @@ export default function App() {
 			<LoginForm
 				isVisible={isLoginFormVisible}
 				setIsVisible={setLoginFormVisible}
+				setSignUpVisible={setSignUpVisible}
+				setErrorMsg={setErrorMsg}
 			/>
+			<SignUpForm isVisible={signUpVisible} setIsVisible={setSignUpVisible} />
+
 			{user.loggedIn && (
 				<>
 					<div className="btn-container">

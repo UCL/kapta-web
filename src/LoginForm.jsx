@@ -6,32 +6,40 @@ import "./styles/forms.css";
 import { initiateAuth } from "./utils/auth";
 import { useUserStore } from "./globals";
 import CloseButton from "./utils/CloseButton";
+import ConfirmModal from "./utils/ConfirmationModal";
 // import * as Yup from "yup";
 
-export default function LoginForm({ isVisible, setIsVisible }) {
+export default function LoginForm({
+	isVisible,
+	setIsVisible,
+	setSignUpVisible,
+	setErrorMsg,
+}) {
 	const [successModalVisible, setSuccessModalVisible] = useState(false);
 	const user = useUserStore();
 	useTheme();
+	const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+	const [email, setEmail] = useState(null);
 
 	if (!isVisible) return null;
 
 	// formik has built in props regarding submission so we don't need to define them ourselves
 	const handleSubmit = async (values) => {
-		console.log("Form data:", values);
 		const { email, password } = values;
 
-		user.forceLogin(); // temp until cognito set up
-		setSuccessModalVisible(true);
-		setIsVisible(false);
-
-		// TODO: get this to work
 		return initiateAuth(email, password).then(({ response }) => {
-			if (!response) {
-				alert("Incorrect email or password");
-				// TODO: show sign up
+			if (response === 4359) {
+				setIsVisible(false);
+				setSignUpVisible(true);
+				setErrorMsg("User details not found, please sign up");
+			} else if (response === 4399) {
+				setErrorMsg("Please confirm your account before logging in");
+				setEmail(email);
+				setConfirmModalVisible(true);
 			} else {
 				user.setUserDetails(response);
 				setSuccessModalVisible(true);
+				setIsVisible(false);
 			}
 		});
 	};
@@ -48,6 +56,16 @@ export default function LoginForm({ isVisible, setIsVisible }) {
 					isTask={false}
 				/>
 			)}
+
+			{confirmModalVisible && (
+				<ConfirmModal
+					setConfirmModalVisible={setConfirmModalVisible}
+					isVisible={confirmModalVisible}
+					recipient={email}
+					setSuccessModalVisible={setSuccessModalVisible}
+				/>
+			)}
+
 			<div className="login__form--container">
 				<CloseButton setIsVisible={setIsVisible} />
 				<Formik onSubmit={handleSubmit} initialValues={initialValues}>
@@ -59,7 +77,7 @@ export default function LoginForm({ isVisible, setIsVisible }) {
 								label="Email Address"
 								as={TextField}
 								inputProps={{
-									autoComplete: "current-password",
+									autoComplete: "current-email",
 								}}
 							/>
 							<ErrorMessage name="email" component="div" className="error" />
