@@ -1,6 +1,7 @@
 import { Button, ButtonGroup } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import LoginIcon from "@mui/icons-material/Login";
 import "./styles/App.css";
 import TaskForm from "./TaskForm";
 import { useState } from "react";
@@ -11,6 +12,8 @@ import { Map } from "./Mapbox";
 import SearchForm from "./SearchForm";
 import SignUpForm from "./SignUpForm";
 import ErrorModal from "./utils/ErrorModal";
+import ConfirmModal from "./utils/ConfirmationModal";
+import SuccessModal from "./SuccessModal";
 
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
@@ -18,12 +21,15 @@ export default function App() {
 	const [taskValues, setTaskValues] = useState(null);
 
 	const [isLoginFormVisible, setLoginFormVisible] = useState(false);
-	const [signUpVisible, setSignUpVisible] = useState(false);
+	const [signUpFormVisible, setSignUpFormVisible] = useState(false);
+	const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+	const [cmRecipient, setCMRecipient] = useState(null);
 
-	// const [errorModalVisible, setErrorModalVisible] = useState(false);
+	const [successModalVisible, setSuccessModalVisible] = useState(false);
+	const [successMsg, setSuccessMsg] = useState(null);
 	const [errorMsg, setErrorMsg] = useState("");
 
-	const [isSearchFormVisible, setSearchFormVisible] = useState(false);
+	const [isSearchFormVisible, setSearchFormVisible] = useState(true);
 
 	const user = useUserStore();
 
@@ -32,40 +38,76 @@ export default function App() {
 		setTaskValues(task);
 		setTaskFormVisible(true);
 	};
+
+	const showConfirmModal = (recipient) => {
+		setConfirmModalVisible(true);
+		setCMRecipient(recipient);
+	};
+	const showLoginSuccessModal = (message) => {
+		setSuccessModalVisible(true);
+		setSuccessMsg(message);
+	};
 	return (
 		<main>
 			{errorMsg && <ErrorModal message={errorMsg} />}
-			{!isLoginFormVisible && !user.loggedIn && !signUpVisible && (
-				<Button
-					variant="outlined"
-					onClick={() => {
-						setLoginFormVisible(true);
-					}}
-					className="btn--login"
-				>
-					Login
-				</Button>
+			{!isLoginFormVisible && !user.loggedIn && !signUpFormVisible && (
+				<div className="login-signup__wrapper">
+					<Button
+						variant="outlined"
+						onClick={() => {
+							setLoginFormVisible(true);
+						}}
+						startIcon={<LoginIcon />}
+						className="btn--login"
+					>
+						Login
+					</Button>
+					<Button
+						color="secondary"
+						variant="outlined"
+						onClick={() => {
+							setSignUpFormVisible(true);
+						}}
+						className="btn--signup"
+					>
+						Sign Up
+					</Button>
+				</div>
 			)}
 			<LoginForm
 				isVisible={isLoginFormVisible}
 				setIsVisible={setLoginFormVisible}
-				setSignUpVisible={setSignUpVisible}
+				setSignUpVisible={setSignUpFormVisible}
 				setErrorMsg={setErrorMsg}
+				showConfirmModal={showConfirmModal}
+				showLoginSuccessModal={showLoginSuccessModal}
 			/>
-			<SignUpForm isVisible={signUpVisible} setIsVisible={setSignUpVisible} />
+			<SignUpForm
+				isVisible={signUpFormVisible}
+				setIsVisible={setSignUpFormVisible}
+				setLoginVisible={setLoginFormVisible}
+				showConfirmModal={showConfirmModal}
+				showLoginSuccessModal={showLoginSuccessModal}
+			/>
+			{confirmModalVisible && (
+				<ConfirmModal
+					isVisible={confirmModalVisible}
+					setIsVisible={setConfirmModalVisible}
+					recipient={cmRecipient}
+					showLoginSuccessModal={showLoginSuccessModal}
+				/>
+			)}
+			{successModalVisible && (
+				<SuccessModal
+					taskTitle={successMsg}
+					setSuccessModalVisible={setSuccessModalVisible}
+					isTask={false}
+				/>
+			)}
 
 			{user.loggedIn && (
 				<>
 					<div className="btn-container">
-						<Button
-							color="info"
-							variant="outlined"
-							onClick={() => setSearchFormVisible(true)}
-							className="btn--search"
-							size="medium"
-						>
-							Search
-						</Button>
 						<div className="btn-container--tasks">
 							<ButtonGroup
 								disableElevation
