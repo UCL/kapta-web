@@ -19,8 +19,9 @@ export default function LoginForm({
 	if (!isVisible) return null;
 
 	const setUserDetailsAndShowModal = async (response) => {
-		await user.setUserDetails(response);
-		showLoginSuccessModal(`Welcome back, ${user.displayName}`);
+		// this doesn't work sometimes?
+		const details = await user.setUserDetails(response);
+		showLoginSuccessModal(`Welcome back, ${details.dName}`);
 		setIsVisible(false);
 	};
 	const handleSubmit = async (values) => {
@@ -35,7 +36,6 @@ export default function LoginForm({
 				setErrorMsg("Please confirm your account before logging in");
 				showConfirmModal(email);
 			} else {
-				console.log("response ok, going to set details");
 				setUserDetailsAndShowModal(response);
 			}
 		});

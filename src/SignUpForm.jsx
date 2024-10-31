@@ -3,13 +3,10 @@ import { Button, TextField, Typography, useTheme } from "@mui/material";
 import DangerousIcon from "@mui/icons-material/Dangerous";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useState } from "react";
-import SuccessModal from "./SuccessModal";
 import "./styles/forms.css";
 import { signUp } from "./utils/auth";
-import { useUserStore } from "./globals";
 import CloseButton from "./utils/CloseButton";
 import * as Yup from "yup";
-import ConfirmModal from "./utils/ConfirmationModal";
 
 function checkPasswordStrength(password) {
 	const checks = {
@@ -32,8 +29,6 @@ export default function SignUpForm({
 	const [password, setPassword] = useState("");
 	const [passwordStrength, setPasswordStrength] = useState({});
 
-	const [recipient, setRecipient] = useState("");
-
 	if (!isVisible) return null;
 
 	const initialValues = {
@@ -44,6 +39,7 @@ export default function SignUpForm({
 		preferredUsername: "",
 		phoneNumber: "",
 		confirmPassword: "",
+		organisation: "",
 	};
 
 	const validationSchema = Yup.object({
@@ -63,7 +59,7 @@ export default function SignUpForm({
 		confirmPassword: Yup.string()
 			.oneOf([Yup.ref("password"), null], "Passwords must match")
 			.required("Required"),
-		// confirm pw doesn't seem to work when not matching
+		// todo: confirm pw doesn't seem to work when not matching
 	});
 	const handleSubmit = async (values) => {
 		console.log("Form data:", values);
@@ -75,8 +71,6 @@ export default function SignUpForm({
 			values.phoneNumber = formattedPhoneNumber;
 		}
 
-		setRecipient(values.email);
-
 		return signUp(values).then(({ response }) => {
 			console.log(response);
 			if (!response) {
@@ -87,7 +81,7 @@ export default function SignUpForm({
 				// show login
 			} else {
 				console.log("response was fine");
-				showConfirmModal(recipient);
+				showConfirmModal(values.email);
 				setIsVisible(false);
 			}
 		});
@@ -111,7 +105,9 @@ export default function SignUpForm({
 				>
 					{({ isSubmitting, setFieldValue }) => (
 						<Form className="form signup__form" autoComplete="on">
-							<Typography variant="h4">Create Account</Typography>
+							<Typography variant="h4" color="orange">
+								Create Account
+							</Typography>
 							<div className="form__row">
 								<Field
 									type="text"

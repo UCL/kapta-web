@@ -1,14 +1,18 @@
-#success-dialog {
-	background-color: #2d5b39eb;
+.dialog {
 	backdrop-filter: blur(4px);
 	position: absolute;
+	border: none;
+	z-index: 3;
+	text-align: center;
+	border-radius: 8px;
+	padding-bottom: 3rem;
+}
+
+#success-dialog {
+	background-color: #2d5b39eb;
 	top: 20%;
 	width: 60vw;
-	border: none;
-	border-radius: 8px;
-	z-index: 3;
 	color: white;
-	text-align: center;
 
 	h3 {
 		font-family: "Krub", sans-serif;
@@ -38,29 +42,20 @@
 }
 
 #error-dialog {
-	background-color: #531919eb;
-	backdrop-filter: blur(4px);
-	position: absolute;
-	top: 8%;
-	width: 60vw;
-	border: none;
-	border-radius: 8px;
-	z-index: 3;
+	background-color: #531919d1;
+	top: 24%;
+	width: 50vw;
 	color: #f9e6e6;
-	text-align: center;
 }
 
 #confirm-dialog {
 	background-color: var(--dark-grey--translucent);
-	backdrop-filter: blur(4px);
-	position: absolute;
 	top: 20%;
 	width: 50vw;
-	border: none;
-	border-radius: 8px;
-	z-index: 2;
 	color: #f9e6e6;
-	text-align: center;
 	padding-inline: 3%;
-	padding-bottom: 3rem;
+
+	.new-code {
+		margin-top: 1.5rem;
+	}
 }

@@ -1,6 +1,6 @@
 import CloseButton from "./CloseButton";
 import { Button, TextField } from "@mui/material";
-import { confirmSignUp, initiateAuth } from "./auth";
+import { confirmSignUp } from "./auth";
 
 export default function ConfirmModal({
 	isVisible,
@@ -9,7 +9,6 @@ export default function ConfirmModal({
 	showLoginSuccessModal,
 }) {
 	if (!isVisible) return null;
-	console.log("confirm should be visible", recipient);
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		const formData = new FormData(e.target);
@@ -30,7 +29,7 @@ export default function ConfirmModal({
 	};
 	return (
 		<>
-			<dialog open id="confirm-dialog">
+			<dialog open id="confirm-dialog" className="dialog">
 				<CloseButton setIsVisible={setIsVisible} />
 				<h3>Confirm your account details</h3>
 				<p>
@@ -50,7 +49,12 @@ export default function ConfirmModal({
 						Submit
 					</Button>
 				</form>
-				<Button variant="text" size="small" onClick={handleNewCodeRequest}>
+				<Button
+					className="new-code"
+					variant="text"
+					size="small"
+					onClick={handleNewCodeRequest}
+				>
 					Request a new code
 				</Button>
 			</dialog>

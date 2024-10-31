@@ -41,12 +41,10 @@ export default function App() {
 	};
 
 	const showConfirmModal = (recipient) => {
-		console.log("CM recipient", recipient);
 		setCMRecipient(recipient);
 		setConfirmModalVisible(true);
 	};
 	const showLoginSuccessModal = (message) => {
-		console.log("success message", message);
 		setSuccessModalVisible(true);
 		setSuccessMsg(message);
 	};

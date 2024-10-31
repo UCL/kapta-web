@@ -16,7 +16,6 @@ export const UserProvider = ({ children }) => {
 	const [loggedIn, setLoggedIn] = useState(false);
 
 	const setUserDetails = useCallback((userDetails) => {
-		console.log("setUserDetails", userDetails);
 		// for some reason these differ from time to time
 		const idToken = userDetails.idToken || userDetails.IdToken;
 		const accessToken = userDetails.accessToken || userDetails.AccessToken;
@@ -24,17 +23,21 @@ export const UserProvider = ({ children }) => {
 
 		const base64Payload = idToken.split(".")[1];
 		const decodedIdTokenPayload = JSON.parse(atob(base64Payload));
-		setDisplayName(decodedIdTokenPayload["preferred_username"]);
+
+		const dName = decodedIdTokenPayload["preferred_username"];
+		setDisplayName(dName);
+		const sub = decodedIdTokenPayload["sub"];
 		setEmail(decodedIdTokenPayload["email"]);
-		setUserId(decodedIdTokenPayload["sub"]);
+		setUserId(sub);
 
 		setAccessToken(accessToken);
 		setIdToken(idToken);
 		setRefreshToken(refreshToken);
 		setLoggedIn(true);
 
-		setLocalStorage(idToken, accessToken, refreshToken); // the states won't have been updated in time, so use the original prop
-	});
+		setLocalStorage(idToken, accessToken, refreshToken); // the states won't have been updated in time, so use the original prop, same for the return (specific to the login flow)
+		return { dName, sub };
+	}, []);
 
 	function isTokenValid(token) {
 		const base64Payload = token.split(".")[1];

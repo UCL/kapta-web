@@ -26,10 +26,11 @@ export default function SuccessModal({
 		}
 	};
 
+	//close automatically after 3s
 	useAutoClose(true, setSuccessModalVisible, 3000, !isTask);
 
 	return (
-		<dialog open id="success-dialog">
+		<dialog open id="success-dialog" className="dialog">
 			<h3>{title}</h3>
 			{isTask && (
 				<>
