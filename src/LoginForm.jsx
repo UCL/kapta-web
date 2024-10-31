@@ -1,12 +1,9 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Button, TextField, useTheme } from "@mui/material";
-import { useState } from "react";
-import SuccessModal from "./SuccessModal";
+import { Button, TextField, Typography, useTheme } from "@mui/material";
 import "./styles/forms.css";
 import { initiateAuth } from "./utils/auth";
 import { useUserStore } from "./globals";
 import CloseButton from "./utils/CloseButton";
-import ConfirmModal from "./utils/ConfirmationModal";
 // import * as Yup from "yup";
 
 export default function LoginForm({
@@ -14,16 +11,18 @@ export default function LoginForm({
 	setIsVisible,
 	setSignUpVisible,
 	setErrorMsg,
+	showConfirmModal,
+	showLoginSuccessModal,
 }) {
-	const [successModalVisible, setSuccessModalVisible] = useState(false);
 	const user = useUserStore();
 	useTheme();
-	const [confirmModalVisible, setConfirmModalVisible] = useState(false);
-	const [email, setEmail] = useState(null);
-
 	if (!isVisible) return null;
 
-	// formik has built in props regarding submission so we don't need to define them ourselves
+	const setUserDetailsAndShowModal = async (response) => {
+		await user.setUserDetails(response);
+		showLoginSuccessModal(`Welcome back, ${user.displayName}`);
+		setIsVisible(false);
+	};
 	const handleSubmit = async (values) => {
 		const { email, password } = values;
 
@@ -34,12 +33,10 @@ export default function LoginForm({
 				setErrorMsg("User details not found, please sign up");
 			} else if (response === 4399) {
 				setErrorMsg("Please confirm your account before logging in");
-				setEmail(email);
-				setConfirmModalVisible(true);
+				showConfirmModal(email);
 			} else {
-				user.setUserDetails(response);
-				setSuccessModalVisible(true);
-				setIsVisible(false);
+				console.log("response ok, going to set details");
+				setUserDetailsAndShowModal(response);
 			}
 		});
 	};
@@ -49,28 +46,14 @@ export default function LoginForm({
 	};
 	return (
 		<>
-			{successModalVisible && (
-				<SuccessModal
-					taskTitle={`Welcome back, ${user.displayName}`}
-					setSuccessModalVisible={setSuccessModalVisible}
-					isTask={false}
-				/>
-			)}
-
-			{confirmModalVisible && (
-				<ConfirmModal
-					setConfirmModalVisible={setConfirmModalVisible}
-					isVisible={confirmModalVisible}
-					recipient={email}
-					setSuccessModalVisible={setSuccessModalVisible}
-				/>
-			)}
-
 			<div className="login__form--container">
 				<CloseButton setIsVisible={setIsVisible} />
 				<Formik onSubmit={handleSubmit} initialValues={initialValues}>
 					{({ isSubmitting }) => (
 						<Form className="form login__form">
+							<Typography variant="h4" color="orange">
+								Log in
+							</Typography>
 							<Field
 								type="email"
 								name="email"

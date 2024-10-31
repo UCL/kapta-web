@@ -2,6 +2,7 @@ import { Button, Divider, Snackbar } from "@mui/material";
 import "./styles/dialogs.css";
 import { useState } from "react";
 import { copyToClipboard } from "./utils/copyToClipboard";
+import { useAutoClose } from "./utils/autoCloseHook";
 
 export default function SuccessModal({
 	taskID = "",
@@ -24,6 +25,9 @@ export default function SuccessModal({
 			setSnackbarOpen(true);
 		}
 	};
+
+	useAutoClose(true, setSuccessModalVisible, 3000, !isTask);
+
 	return (
 		<dialog open id="success-dialog">
 			<h3>{title}</h3>

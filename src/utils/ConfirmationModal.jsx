@@ -1,27 +1,32 @@
-import { useState } from "react";
 import CloseButton from "./CloseButton";
 import { Button, TextField } from "@mui/material";
-import { confirmSignUp } from "./auth";
-import { useUserStore } from "../globals";
+import { confirmSignUp, initiateAuth } from "./auth";
 
 export default function ConfirmModal({
 	isVisible,
 	setIsVisible,
 	recipient,
-	setSuccessModalVisible,
+	showLoginSuccessModal,
 }) {
 	if (!isVisible) return null;
+	console.log("confirm should be visible", recipient);
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const { code, recipient } = Object.fromEntries(formData);
+		// this isn't getting the username through signup
 		return confirmSignUp(code, recipient).then((response) => {
-			if (response.statusCode === 200) {
-				//might be Metadata.httpstatuscode
+			if (response.$metadata.httpStatusCode === 200) {
 				setIsVisible(false);
-				setSuccessModalVisible(true);
+
+				showLoginSuccessModal(
+					"Thank you for confirming. You may proceed to log in."
+				);
 			}
 		});
+	};
+	const handleNewCodeRequest = () => {
+		console.log("requesting new code");
 	};
 	return (
 		<>
@@ -45,6 +50,9 @@ export default function ConfirmModal({
 						Submit
 					</Button>
 				</form>
+				<Button variant="text" size="small" onClick={handleNewCodeRequest}>
+					Request a new code
+				</Button>
 			</dialog>
 		</>
 	);

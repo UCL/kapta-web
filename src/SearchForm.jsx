@@ -13,13 +13,6 @@ export default function SearchForm({ isVisible, setIsVisible }) {
 
 	return (
 		<>
-			<IconButton
-				color="white"
-				aria-label="cancel"
-				onClick={() => setIsVisible(false)}
-			>
-				<HighlightOffIcon />
-			</IconButton>
 			<Formik onSubmit={handleSubmit}>
 				{({ isSubmitting }) => (
 					<Form className="form search__form">

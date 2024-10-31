@@ -32,7 +32,6 @@
 .login__form,
 .signup__form {
 	justify-self: center;
-	margin-block-start: 1rem;
 	width: clamp(20rem, 50%, 40rem);
 	text-align: center;
 	display: flex;
@@ -45,6 +44,14 @@
 	* {
 		flex: 1;
 	}
+}
+
+.search__form {
+	width: 60%;
+	display: flex;
+	justify-self: center;
+	align-self: end;
+	margin-bottom: 8vh;
 }
 
 .password-strength__container {

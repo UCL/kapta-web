@@ -1,6 +1,7 @@
 import { Button, ButtonGroup } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
 import "./styles/App.css";
 import TaskForm from "./TaskForm";
@@ -40,13 +41,20 @@ export default function App() {
 	};
 
 	const showConfirmModal = (recipient) => {
-		setConfirmModalVisible(true);
+		console.log("CM recipient", recipient);
 		setCMRecipient(recipient);
+		setConfirmModalVisible(true);
 	};
 	const showLoginSuccessModal = (message) => {
+		console.log("success message", message);
 		setSuccessModalVisible(true);
 		setSuccessMsg(message);
 	};
+
+	const handleLogout = () => {
+		user.logout();
+	};
+
 	return (
 		<main>
 			{errorMsg && <ErrorModal message={errorMsg} />}
@@ -108,6 +116,14 @@ export default function App() {
 			{user.loggedIn && (
 				<>
 					<div className="btn-container">
+						<Button
+							variant="outlined"
+							onClick={handleLogout}
+							startIcon={<LogoutIcon />}
+							className="btn--logout"
+						>
+							Logout
+						</Button>
 						<div className="btn-container--tasks">
 							<ButtonGroup
 								disableElevation

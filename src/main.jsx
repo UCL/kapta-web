@@ -4,15 +4,13 @@ import App from "./App.jsx";
 import { UserProvider } from "./utils/UserContext.jsx";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { pink, red, purple, orange } from "@mui/material/colors";
+import { pink, red, amber, orange, deepOrange } from "@mui/material/colors";
 
 const theme = createTheme({
 	palette: {
 		mode: "dark",
-		primary: orange,
-		secondary: {
-			main: purple[900],
-		},
+		primary: deepOrange,
+		secondary: amber,
 		info: pink,
 		error: red,
 		warning: {
@@ -25,6 +23,7 @@ const theme = createTheme({
 			main: "#f5f5f5",
 			contrastText: "#242105",
 		},
+		orange: { main: orange[800] },
 	},
 });
 

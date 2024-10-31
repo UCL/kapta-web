@@ -29,8 +29,14 @@ main {
 	height: 100vh;
 	/* z-index: -2; */
 
-	.btn--login {
+	.login-signup__wrapper {
 		justify-self: center;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		align-items: center;
+		justify-items: center;
+		justify-content: center;
 	}
 }
 
@@ -40,7 +46,7 @@ main {
 	z-index: 1;
 	top: 5%;
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	width: 80vw;
 
 	.btn-container--tasks::before {

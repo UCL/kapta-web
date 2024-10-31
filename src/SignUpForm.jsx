@@ -1,5 +1,5 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Button, TextField, useTheme } from "@mui/material";
+import { Button, TextField, Typography, useTheme } from "@mui/material";
 import DangerousIcon from "@mui/icons-material/Dangerous";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useState } from "react";
@@ -23,13 +23,15 @@ function checkPasswordStrength(password) {
 	return checks;
 }
 
-export default function SignUpForm({ isVisible, setIsVisible }) {
-	const [successModalVisible, setSuccessModalVisible] = useState(false);
-	const user = useUserStore();
+export default function SignUpForm({
+	isVisible,
+	setIsVisible,
+	showConfirmModal,
+}) {
 	useTheme();
 	const [password, setPassword] = useState("");
 	const [passwordStrength, setPasswordStrength] = useState({});
-	const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+
 	const [recipient, setRecipient] = useState("");
 
 	if (!isVisible) return null;
@@ -61,23 +63,32 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 		confirmPassword: Yup.string()
 			.oneOf([Yup.ref("password"), null], "Passwords must match")
 			.required("Required"),
+		// confirm pw doesn't seem to work when not matching
 	});
 	const handleSubmit = async (values) => {
 		console.log("Form data:", values);
 		if (values.phoneNumber) {
-			setRecipient(values.phoneNumber);
-		} else {
-			setRecipient(values.email);
+			// make sure the phone number has a +
+			const formattedPhoneNumber = values.phoneNumber.startsWith("+")
+				? values.phoneNumber
+				: `+${values.phoneNumber}`;
+			values.phoneNumber = formattedPhoneNumber;
 		}
+
+		setRecipient(values.email);
 
 		return signUp(values).then(({ response }) => {
 			console.log(response);
 			if (!response) {
 				console.log("Error signing up");
+			}
+			if (response === 4469) {
+				console.log("User already exists");
+				// show login
 			} else {
-				//TODO: show sms thing then the rest
-				user.setUserDetails(response);
-				setSuccessModalVisible(true);
+				console.log("response was fine");
+				showConfirmModal(recipient);
+				setIsVisible(false);
 			}
 		});
 	};
@@ -85,28 +96,12 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 	const handlePasswordChange = (e, setFieldValue) => {
 		const newPassword = e.target.value;
 		setFieldValue("password", newPassword);
-		console.log(newPassword);
 		setPassword(newPassword);
 		setPasswordStrength(checkPasswordStrength(newPassword));
 	};
 
 	return (
 		<>
-			{successModalVisible && (
-				<SuccessModal
-					taskTitle={`Welcome back, ${user.displayName}`}
-					setSuccessModalVisible={setSuccessModalVisible}
-					isTask={false}
-				/>
-			)}
-
-			{confirmModalVisible && (
-				<ConfirmModal
-					setIsVisible={setConfirmModalVisible}
-					recipient={recipient}
-				/>
-			)}
-
 			<div className="signup__form--container">
 				<CloseButton setIsVisible={setIsVisible} />
 				<Formik
@@ -116,6 +111,7 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 				>
 					{({ isSubmitting, setFieldValue }) => (
 						<Form className="form signup__form" autoComplete="on">
+							<Typography variant="h4">Create Account</Typography>
 							<div className="form__row">
 								<Field
 									type="text"
@@ -199,7 +195,7 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 									name="phoneNumber"
 									label="Phone Number (optional)"
 									as={TextField}
-									helpText="Please include your country code"
+									helperText="Please include your country code"
 								/>
 								<ErrorMessage
 									name="phoneNumber"
@@ -211,6 +207,7 @@ export default function SignUpForm({ isVisible, setIsVisible }) {
 									name="organisation"
 									label="Organisation (optional)"
 									as={TextField}
+									helperText=" "
 								/>
 								<ErrorMessage
 									name="organisation"

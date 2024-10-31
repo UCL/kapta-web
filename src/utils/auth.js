@@ -4,7 +4,6 @@ import {
 	InitiateAuthCommand,
 	GlobalSignOutCommand,
 	ConfirmSignUpCommand,
-	AdminGetUserCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 
 import { cognito } from "../globals";
@@ -45,19 +44,17 @@ const signUp = async (values) => {
 		].filter((attr) => attr.Value !== undefined && attr.Value !== null),
 	});
 	console.log("going to sign up");
-	// return client.send(command);
 	try {
 		const response = await client.send(command);
-		return response;
-		// return {
-		// 	email,
-		// 	phoneNumber,
-		// 	userSub: response.UserSub,
-		// 	codeDeliveryDetails: response.CodeDeliveryDetails
-		//   };
+		console.log("signup response", response);
+		if (response.$metadata.httpStatusCode === 200) {
+			return { response: true };
+		}
 	} catch (error) {
 		console.error("signup Error:", error, error.name);
-		throw error;
+		if (error.name === "UsernameExistsException") {
+			return { response: 4469 };
+		} else throw error;
 	}
 };
 

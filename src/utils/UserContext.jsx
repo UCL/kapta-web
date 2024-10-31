@@ -16,23 +16,25 @@ export const UserProvider = ({ children }) => {
 	const [loggedIn, setLoggedIn] = useState(false);
 
 	const setUserDetails = useCallback((userDetails) => {
-		const base64Payload = userDetails.IdToken.split(".")[1];
+		console.log("setUserDetails", userDetails);
+		// for some reason these differ from time to time
+		const idToken = userDetails.idToken || userDetails.IdToken;
+		const accessToken = userDetails.accessToken || userDetails.AccessToken;
+		const refreshToken = userDetails.refreshToken || userDetails.RefreshToken;
+
+		const base64Payload = idToken.split(".")[1];
 		const decodedIdTokenPayload = JSON.parse(atob(base64Payload));
 		setDisplayName(decodedIdTokenPayload["preferred_username"]);
 		setEmail(decodedIdTokenPayload["email"]);
 		setUserId(decodedIdTokenPayload["sub"]);
 
-		setAccessToken(userDetails.AccessToken);
-		setIdToken(userDetails.IdToken);
-		setRefreshToken(userDetails.RefreshToken);
+		setAccessToken(accessToken);
+		setIdToken(idToken);
+		setRefreshToken(refreshToken);
 		setLoggedIn(true);
 
-		setLocalStorage(
-			userDetails.IdToken,
-			userDetails.AccessToken,
-			userDetails.RefreshToken
-		); // the states won't have been updated in time, so use the original prop
-	}, []);
+		setLocalStorage(idToken, accessToken, refreshToken); // the states won't have been updated in time, so use the original prop
+	});
 
 	function isTokenValid(token) {
 		const base64Payload = token.split(".")[1];
@@ -54,6 +56,7 @@ export const UserProvider = ({ children }) => {
 	// Function to refresh tokens
 	const refresh = useCallback(
 		async (refreshToken) => {
+			// this might be getting called on app launch
 			if (refreshToken) {
 				const response = await initiateAuthRefresh(refreshToken);
 				const authResult = response.AuthenticationResult;
