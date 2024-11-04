@@ -32,9 +32,8 @@ export default function TaskForm({
 	const [title, setTitle] = useState("");
 	const [description, setDescription] = useState("");
 	var initialValues = {
-		// createdBy: user.userId, // hidden field populated dynamically
-		createdBy: "kapta-web-generic-12345",
-		organisation: "",
+		createdBy: user.userId,
+		organisation: user.organisation || "",
 		logo: null,
 		private: false,
 		visible: false,
@@ -42,6 +41,7 @@ export default function TaskForm({
 		description: "",
 	};
 	if (taskValues) {
+		// for editing
 		initialValues = {
 			createdBy: taskValues.created_by,
 			organisation: taskValues.organisation,
@@ -66,11 +66,14 @@ export default function TaskForm({
 
 		try {
 			console.log(`${REQUEST_URL}/requests`);
+
 			const response = await fetch(`${REQUEST_URL}/requests`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
+					Authorization: user.idToken,
 				},
+
 				body: JSON.stringify(values),
 			});
 
@@ -90,6 +93,7 @@ export default function TaskForm({
 
 	return (
 		<>
+			{/* todo: move successmodal so that we can close form when successful */}
 			{successModalVisible && (
 				<SuccessModal
 					taskTitle={title}

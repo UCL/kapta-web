@@ -14,6 +14,7 @@ export const UserProvider = ({ children }) => {
 	const [email, setEmail] = useState(null);
 	const [userId, setUserId] = useState(null);
 	const [loggedIn, setLoggedIn] = useState(false);
+	const [organisation, setOrganisation] = useState(null);
 
 	const setUserDetails = useCallback((userDetails) => {
 		// for some reason these differ from time to time
@@ -23,11 +24,17 @@ export const UserProvider = ({ children }) => {
 
 		const base64Payload = idToken.split(".")[1];
 		const decodedIdTokenPayload = JSON.parse(atob(base64Payload));
+		console.log(decodedIdTokenPayload);
 
 		const dName = decodedIdTokenPayload["preferred_username"];
 		setDisplayName(dName);
 		const sub = decodedIdTokenPayload["sub"];
 		setEmail(decodedIdTokenPayload["email"]);
+		const org = decodedIdTokenPayload["custom:organisation"];
+		if (org !== undefined || org !== null || org !== "null") {
+			setOrganisation(org);
+		}
+
 		setUserId(sub);
 
 		setAccessToken(accessToken);
@@ -146,6 +153,7 @@ export const UserProvider = ({ children }) => {
 				logout,
 				setUserDetails,
 				checkForDetails,
+				organisation,
 			}}
 		>
 			{children}

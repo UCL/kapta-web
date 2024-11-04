@@ -6,16 +6,21 @@ import {
 	CardContent,
 	CircularProgress,
 	Drawer,
+	IconButton,
 	Snackbar,
+	Switch,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { REQUEST_URL } from "./globals";
-import { useEffect, useState } from "react";
+import PinDropIcon from "@mui/icons-material/PinDrop";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import CloseButton from "./utils/CloseButton";
+import { useClickOutside } from "./utils/useClickOutside";
+import { fetchMyODTasks, fetchMyTasks, fetchODTasks } from "./utils/apiQueries";
 export default function TaskList({
 	isVisible,
 	setIsVisible,
@@ -29,52 +34,29 @@ export default function TaskList({
 	const [visibleCodes, setVisibleCodes] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [includeMyOD, setIncludeMyOD] = useState(false);
+	const [listIsOD, setListIsOD] = useState(false);
+	const taskListRef = useRef(null);
 
-	console.log(user);
+	// console.log(user);
 	useEffect(() => {
-		const getMetadata = async () => {
-			// TODO: get metadata from dynamodb for task id, maybe combine into other function
+		if (isVisible) {
+			async () => {
+				var fetchedTasks = await fetchMyTasks({ user, setTasks, setIsLoading });
 
-			try {
-				const response = await fetch(`${REQUEST_URL}/requests`);
-				const result = await response.json();
-				const metadata = JSON.parse(result);
-				console.log(metadata);
-				setMetadataStore(metadata);
-
-				return metadata;
-			} catch (error) {
-				console.error("Error fetching tasks:", error);
-			}
-		};
-		const fetchTasks = async () => {
-			// TODO: get tasks from dynamodb where created_by===userID
-
-			// TODO: get metadata from dynamodb for task id and set in state
-
-			try {
-				const response = await fetch(`${REQUEST_URL}/requests`);
-				const result = await response.json();
-				const fetchedTasks = JSON.parse(result);
-				console.log(fetchedTasks);
+				console.log("fetched tasks:", fetchedTasks);
 
 				// fetchedTasks.forEach((task) => {
 				// 	let metadata = getMetadata(task.taskID);
+				// setMetadataStore(metadata);
 				// 	metadataStore.append(metadata);
 				// });
 
 				setTasks(fetchedTasks);
-			} catch (error) {
-				console.error("Error fetching tasks:", error);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		if (isVisible) {
-			fetchTasks();
+				setListIsOD(false);
+			};
 		}
-	}, [isVisible, metadataStore]);
+	});
 
 	const toggleCodeVisibility = (taskId) => {
 		setVisibleCodes((prev) => ({
@@ -101,19 +83,119 @@ export default function TaskList({
 		setIsVisible(false);
 	};
 
-	if (!isVisible) return null;
+	const handleIncludeMyOD = async () => {
+		const newIncludeMyOD = !includeMyOD;
+		setIncludeMyOD(newIncludeMyOD);
 
+		if (newIncludeMyOD) {
+			setIsLoading(true);
+			try {
+				const fetchedODTasks = await fetchMyODTasks({ user });
+				// set the tasks to include opendata and the previous tasks, if they exist
+				setTasks((prevTasks) => {
+					if (Array.isArray(prevTasks) && prevTasks.length > 0) {
+						return [...prevTasks, ...fetchedODTasks];
+					} else {
+						return fetchedODTasks;
+					}
+				});
+			} catch (error) {
+				console.error("Error fetching open data tasks:", error);
+			} finally {
+				setIsLoading(false);
+			}
+		} else {
+			// remove open data tasks when toggle is turned off
+			setTasks((prevTasks) => {
+				if (Array.isArray(prevTasks) && prevTasks.length > 0) {
+					return prevTasks.filter(
+						(task) => !task.task_id.startsWith("opendata")
+					);
+				} else {
+					return []; // Return an empty array if prevTasks is not valid
+				}
+			});
+		}
+	};
+
+	const handleViewOpendata = async () => {
+		// TODO: fetch all opendata tasks, those for the user can have a tag
+		setIsLoading(true);
+		try {
+			const fetchedODTasks = await fetchODTasks({ user });
+			setTasks(fetchedODTasks);
+			setListIsOD(true);
+		} catch (error) {
+			console.error("Error fetching open data tasks:", error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const handleRefresh = async () => {
+		setIsLoading(true);
+		try {
+			// todo: get this to work
+			const fetchedTasks = await fetchMyTasks({ user, setIsLoading });
+			console.log("resulting tasks:", fetchedTasks);
+			setTasks(fetchedTasks);
+			// could make this snazzy and try and check for if the my OD is toggled
+		} catch (error) {
+			console.error("Error fetching tasks:", error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const handleShowOnMap = (task) => {
+		console.log(task);
+	};
+
+	useClickOutside(taskListRef, () => setIsVisible(false));
+
+	if (!isVisible) return null;
 	return (
 		<Drawer anchor="right" open={isVisible} className="task-list__drawer">
 			<CloseButton setIsVisible={setIsVisible} />
-			<div className="task-list__content">
+			<div className="task-list__content" ref={taskListRef}>
 				<div className="task-list__header">
-					<h2>My Tasks</h2>
-					{!isLoading && <span>Total: {tasks.length}</span>}
+					<div className="task-list__header__title">
+						<h2>My Tasks</h2>
+						<IconButton
+							onClick={handleRefresh}
+							color="secondary"
+							className="btn--refresh"
+						>
+							<RefreshIcon />
+						</IconButton>
+					</div>
+					<div className="task-list__header__od-options">
+						<div className="include-my-od">
+							<Switch
+								checked={includeMyOD}
+								onChange={handleIncludeMyOD}
+								color="info"
+							/>
+							<small>include my opendata tasks</small>
+						</div>
+						<Button
+							onClick={handleViewOpendata}
+							variant="text"
+							size="small"
+							color="info"
+						>
+							View All Opendata Tasks
+						</Button>
+					</div>
 				</div>
+				{!isLoading && (
+					<div className="task-list__total">Total: {tasks?.length || 0}</div>
+				)}
 				{isLoading ? (
-					<CircularProgress />
-				) : (
+					<div className="loader">
+						<CircularProgress />
+					</div>
+				) : tasks?.length > 0 ? (
 					tasks.map((task) => (
 						<Card key={task.task_id} className="task-card">
 							<CardContent>
@@ -158,6 +240,14 @@ export default function TaskList({
 								<ButtonGroup size="small" color="info">
 									<Button
 										variant="contained"
+										onClick={() => handleShowOnMap(task)}
+										startIcon={<PinDropIcon />}
+									>
+										Show on Map
+									</Button>
+									<Button
+										variant="contained"
+										color="secondary"
 										onClick={handleDownload}
 										startIcon={<DownloadIcon />}
 									>
@@ -176,6 +266,8 @@ export default function TaskList({
 							</CardActions>
 						</Card>
 					))
+				) : (
+					<p className="no-tasks">No tasks to display</p>
 				)}
 			</div>
 			<Snackbar
