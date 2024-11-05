@@ -28,6 +28,7 @@ export default function App() {
 
 	const [successModalVisible, setSuccessModalVisible] = useState(false);
 	const [successMsg, setSuccessMsg] = useState(null);
+	const [successIsTask, setSuccessIsTask] = useState(false);
 	const [errorMsg, setErrorMsg] = useState("");
 
 	const [isSearchFormVisible, setSearchFormVisible] = useState(true);
@@ -37,8 +38,12 @@ export default function App() {
 	const user = useUserStore();
 
 	const showTaskForm = (task) => {
-		console.log("task exists!", task);
 		setTaskValues(task);
+		setTaskFormVisible(true);
+	};
+
+	const showNewTaskForm = () => {
+		setTaskValues(null);
 		setTaskFormVisible(true);
 	};
 
@@ -49,6 +54,12 @@ export default function App() {
 	const showLoginSuccessModal = (message) => {
 		setSuccessModalVisible(true);
 		setSuccessMsg(message);
+		setSuccessIsTask(false);
+	};
+	const showTaskSuccessModal = (message) => {
+		setSuccessModalVisible(true);
+		setSuccessMsg(message);
+		setSuccessIsTask(true);
 	};
 
 	return (
@@ -101,17 +112,28 @@ export default function App() {
 					showLoginSuccessModal={showLoginSuccessModal}
 				/>
 			)}
-			{successModalVisible && (
+			{successModalVisible && !successIsTask && (
 				<SuccessModal
 					taskTitle={successMsg}
 					setSuccessModalVisible={setSuccessModalVisible}
-					isTask={false}
+					isTask={successIsTask}
+				/>
+			)}
+			{successModalVisible && successIsTask && (
+				<SuccessModal
+					taskTitle={successMsg.title}
+					taskDescription={successMsg.description}
+					taskID={successMsg.taskID}
+					campaignCode={successMsg.campaignCode}
+					setSuccessModalVisible={setSuccessModalVisible}
+					isTask={true}
 				/>
 			)}
 
 			{user.loggedIn && (
 				<>
 					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
+
 					<div className="btn-container">
 						<div className="btn-container--tasks">
 							<ButtonGroup
@@ -122,7 +144,7 @@ export default function App() {
 								color="info"
 							>
 								<Button
-									onClick={() => setTaskFormVisible(true)}
+									onClick={showNewTaskForm}
 									className="btn--new-task"
 									startIcon={<AddIcon />}
 								>
@@ -146,6 +168,7 @@ export default function App() {
 						setIsVisible={setTaskFormVisible}
 						user={user}
 						taskValues={taskValues}
+						showTaskSuccessModal={showTaskSuccessModal}
 					/>
 					<TaskList
 						isVisible={isTaskListVisible}

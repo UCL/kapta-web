@@ -1,12 +1,10 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Box, Button, Checkbox, TextField } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { REQUEST_URL } from "./globals";
 import { generateTaskId, generateCampaignCode } from "./utils/generators";
-import { useState } from "react";
-import SuccessModal from "./SuccessModal";
 import "./styles/forms.css";
 import CloseButton from "./utils/CloseButton";
+import { createTask, updateTask } from "./utils/apiQueries";
 // import * as Yup from "yup";
 
 // these will be dynamically taken from their login and generated
@@ -27,10 +25,8 @@ export default function TaskForm({
 	setIsVisible,
 	taskValues,
 	user,
+	showTaskSuccessModal,
 }) {
-	const [successModalVisible, setSuccessModalVisible] = useState(false);
-	const [title, setTitle] = useState("");
-	const [description, setDescription] = useState("");
 	var initialValues = {
 		createdBy: user.userId,
 		organisation: user.organisation || "",
@@ -50,11 +46,17 @@ export default function TaskForm({
 			visible: taskValues.visible,
 			title: taskValues.task_title,
 			description: taskValues.task_description,
+			campaignCode: taskValues.campaign_code,
+			taskID: taskValues.task_id,
 		};
 	}
 
 	if (!isVisible) return null;
 
+	const showSuccess = (msg) => {
+		showTaskSuccessModal(msg);
+		setIsVisible(false);
+	};
 	// formik has built in props regarding submission so we don't need to define them ourselves
 	const handleSubmit = async (values) => {
 		// will need to convert image to base 64
@@ -62,30 +64,34 @@ export default function TaskForm({
 		// const base64Image = imageBuffer.toString('base64');
 
 		values = { ...values, taskID: taskID, campaignCode: campaignCode };
-		console.log("Form data:", values);
-
 		try {
-			console.log(`${REQUEST_URL}/requests`);
-
-			const response = await fetch(`${REQUEST_URL}/requests`, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: user.idToken,
-				},
-
-				body: JSON.stringify(values),
-			});
-
-			if (!response.ok) {
-				throw new Error("Network response was not ok");
+			const response = await createTask({ user, values });
+			if (response) {
+				let msg = {
+					title: values.title,
+					description: values.description,
+					taskID: values.taskID,
+					campaignCode: values.campaignCode,
+				};
+				showSuccess(msg);
 			}
+		} catch (error) {
+			console.error("Error:", error);
+		}
+	};
 
-			const result = await response.json();
-			console.log("Success:", result);
-			setTitle(values.title);
-			setDescription(values.description);
-			setSuccessModalVisible(true);
+	const handleEdit = async (values) => {
+		try {
+			const response = await updateTask({ user, values });
+			if (response) {
+				let msg = {
+					title: values.title,
+					description: values.description,
+					taskID: values.taskID,
+					campaignCode: values.campaignCode,
+				};
+				showSuccess(msg);
+			}
 		} catch (error) {
 			console.error("Error:", error);
 		}
@@ -93,29 +99,17 @@ export default function TaskForm({
 
 	return (
 		<>
-			{/* todo: move successmodal so that we can close form when successful */}
-			{successModalVisible && (
-				<SuccessModal
-					taskTitle={title}
-					taskDescription={description}
-					taskID={taskID}
-					campaignCode={campaignCode}
-					setSuccessModalVisible={setSuccessModalVisible}
-					isTask={true}
-				/>
-			)}
-
 			<Formik
 				initialValues={initialValues}
 				// validation schema currently not valid
-				onSubmit={handleSubmit}
+				onSubmit={taskValues ? handleEdit : handleSubmit}
 			>
 				{({ isSubmitting, setFieldValue }) => (
 					<Form className="form task-request-form">
 						<CloseButton setIsVisible={setIsVisible} />
 						<h2 color="info">Tell us about your task</h2>
-						{/* Hidden field for Created By */}
 						<div className="form__body">
+							{/* Hidden field for Created By */}
 							<Field type="hidden" name="createdBy" />
 							<Box display="flex" alignItems="stretch" justifyContent="center">
 								{/* Organisation */}
@@ -192,6 +186,11 @@ export default function TaskForm({
 								className="error"
 							/>
 
+							{/* Campaign Code when editing */}
+							{taskValues && (
+								<p>Your campaign code: {initialValues.campaignCode}</p>
+							)}
+
 							{/* Submit Button */}
 							<Button
 								type="submit"
@@ -200,7 +199,7 @@ export default function TaskForm({
 								variant="contained"
 								className="btn--submit"
 							>
-								Submit Request
+								{taskValues ? "Edit Task" : "Submit Request"}
 							</Button>
 						</div>
 					</Form>

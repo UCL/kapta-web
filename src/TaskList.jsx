@@ -237,7 +237,7 @@ export default function TaskList({
 									<p>{metadataStore.info}</p>
 								)}
 							</CardContent>
-							<CardActions>
+							<CardActions className="task-list__card-actions">
 								<ButtonGroup size="small" color="info">
 									<Button
 										variant="contained"
@@ -247,7 +247,7 @@ export default function TaskList({
 										Show on Map
 									</Button>
 									<Button
-										variant="contained"
+										variant="outlined"
 										color="orange"
 										onClick={handleDownload}
 										startIcon={<DownloadIcon />}
@@ -257,15 +257,10 @@ export default function TaskList({
 									<Button
 										variant="outlined"
 										onClick={() => handleEdit(task)}
+										color="secondary"
 										endIcon={<EditIcon />}
 									>
 										Edit Task
-									</Button>
-									<Button
-										variant="outlined"
-										onClick={() => setShowMetadata(!showMetadata)}
-									>
-										View Metadata
 									</Button>
 								</ButtonGroup>
 							</CardActions>

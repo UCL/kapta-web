@@ -74,4 +74,7 @@
 			margin-right: 0.8rem;
 		}
 	}
+	.task-list__card-actions {
+		justify-content: center;
+	}
 }

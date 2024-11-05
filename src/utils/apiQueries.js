@@ -75,3 +75,49 @@ export const fetchODTasks = async ({ user, setIsLoading }) => {
 		setIsLoading(false);
 	}
 };
+
+export const createTask = async ({ user, values }) => {
+	try {
+		const response = await fetch(`${REQUEST_URL}/requests`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: user.idToken,
+			},
+
+			body: JSON.stringify(values),
+		});
+
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+
+		const result = await response.json();
+		return result;
+	} catch (error) {
+		console.error("Error:", error);
+	}
+};
+
+export const updateTask = async ({ user, values }) => {
+	try {
+		const response = await fetch(`${REQUEST_URL}/requests/${values.taskID}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: user.idToken,
+			},
+
+			body: JSON.stringify(values),
+		});
+
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+
+		const result = await response.json();
+		return result;
+	} catch (error) {
+		console.error("Error:", error);
+	}
+};
