@@ -48,8 +48,7 @@ export default function TaskList({
 
 				// fetchedTasks.forEach((task) => {
 				// 	let metadata = getMetadata(task.taskID);
-				// setMetadataStore(metadata);
-				// 	metadataStore.append(metadata);
+				// setMetadataStore(...prevstore,metadata);
 				// });
 
 				setTasks(fetchedTasks);
@@ -119,7 +118,7 @@ export default function TaskList({
 	};
 
 	const handleViewOpendata = async () => {
-		// TODO: fetch all opendata tasks, those for the user can have a tag
+		// TODO: distinguish OD data by user with a tag (based on isOD state)
 		setIsLoading(true);
 		try {
 			const fetchedODTasks = await fetchODTasks({ user });
@@ -135,9 +134,7 @@ export default function TaskList({
 	const handleRefresh = async () => {
 		setIsLoading(true);
 		try {
-			// todo: get this to work
 			const fetchedTasks = await fetchMyTasks({ user, setIsLoading });
-			console.log("resulting tasks:", fetchedTasks);
 			setTasks(fetchedTasks);
 			// could make this snazzy and try and check for if the my OD is toggled
 		} catch (error) {
