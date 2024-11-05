@@ -1,7 +1,6 @@
 import { Button, ButtonGroup } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
 import "./styles/App.css";
 import TaskForm from "./TaskForm";
@@ -15,6 +14,7 @@ import SignUpForm from "./SignUpForm";
 import ErrorModal from "./utils/ErrorModal";
 import ConfirmModal from "./utils/ConfirmationModal";
 import SuccessModal from "./SuccessModal";
+import BurgerMenu from "./BurgerMenu";
 
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
@@ -32,6 +32,8 @@ export default function App() {
 
 	const [isSearchFormVisible, setSearchFormVisible] = useState(true);
 
+	const [BMopen, setBMopen] = useState(false);
+
 	const user = useUserStore();
 
 	const showTaskForm = (task) => {
@@ -47,10 +49,6 @@ export default function App() {
 	const showLoginSuccessModal = (message) => {
 		setSuccessModalVisible(true);
 		setSuccessMsg(message);
-	};
-
-	const handleLogout = () => {
-		user.logout();
 	};
 
 	return (
@@ -113,15 +111,8 @@ export default function App() {
 
 			{user.loggedIn && (
 				<>
+					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
 					<div className="btn-container">
-						<Button
-							variant="outlined"
-							onClick={handleLogout}
-							startIcon={<LogoutIcon />}
-							className="btn--logout"
-						>
-							Logout
-						</Button>
 						<div className="btn-container--tasks">
 							<ButtonGroup
 								disableElevation

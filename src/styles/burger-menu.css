@@ -1,0 +1,39 @@
+.btn--burger-menu {
+	height: fit-content;
+	margin-left: 1rem !important;
+	margin-top: 1rem !important;
+	z-index: 1;
+	justify-self: flex-start;
+	align-self: flex-start;
+}
+.bm__drawer {
+	.bm__buttons {
+		display: flex;
+		justify-content: center;
+	}
+
+	.MuiPaper-root {
+		max-width: 40vw;
+	}
+
+	.bm__content__subtitle {
+		margin-inline: 4%;
+		font-weight: 600;
+	}
+
+	a {
+		color: tomato;
+		&:hover {
+			color: salmon;
+		}
+	}
+
+	.bm__people-list {
+		line-height: 1.5rem;
+	}
+
+	.bm__footer {
+		text-align: center;
+		margin-top: 2rem;
+	}
+}
