@@ -26,7 +26,6 @@ export const fetchMyTasks = async ({ user, setIsLoading }) => {
 			}
 		);
 		const result = await response.json();
-		console.log("result", result);
 		const fetchedTasks = JSON.parse(result);
 		return fetchedTasks;
 	} catch (error) {
@@ -57,7 +56,7 @@ export const fetchMyODTasks = async ({ user }) => {
 	}
 };
 
-export const fetchODTasks = async ({ user, setIsLoading }) => {
+export const fetchODTasks = async ({ user }) => {
 	try {
 		const response = await fetch(`${REQUEST_URL}/requests/opendata`, {
 			headers: {
@@ -66,13 +65,12 @@ export const fetchODTasks = async ({ user, setIsLoading }) => {
 			},
 		});
 		const result = await response.json();
-		console.log("result", result);
-		const fetchedTasks = JSON.parse(result);
-		return fetchedTasks;
+		if (result.length > 0) {
+			const fetchedTasks = JSON.parse(result);
+			return fetchedTasks;
+		}
 	} catch (error) {
 		console.error("Error fetching tasks:", error);
-	} finally {
-		setIsLoading(false);
 	}
 };
 

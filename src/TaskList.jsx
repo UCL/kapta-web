@@ -39,14 +39,10 @@ export default function TaskList({
 	const [listIsOD, setListIsOD] = useState(false);
 	const taskListRef = useRef(null);
 
-	// console.log(user);
 	useEffect(() => {
 		if (isVisible) {
 			const fetchTasks = async () => {
-				console.log("gonna fetch some tasks bro");
 				var fetchedTasks = await fetchMyTasks({ user, setTasks, setIsLoading });
-
-				console.log("fetched tasks:", fetchedTasks);
 
 				// fetchedTasks.forEach((task) => {
 				//  let metadata = getMetadata(task.taskID);
