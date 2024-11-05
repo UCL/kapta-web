@@ -8,6 +8,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import HelpIcon from "@mui/icons-material/Help";
 import NextPlanIcon from "@mui/icons-material/NextPlan";
 import LogoutIcon from "@mui/icons-material/Logout";
+import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import {
 	Drawer,
 	List,
@@ -26,7 +27,7 @@ import {
 import parse from "html-react-parser";
 import CloseButton from "./utils/CloseButton";
 import "./styles/burger-menu.css";
-import { useUserStore } from "./globals";
+import { useUserStore, WA_CHAT_URL } from "./globals";
 
 export default function BurgerMenu({ isOpen, setIsOpen }) {
 	const [expandedPanel, setExpandedPanel] = useState(false);
@@ -106,6 +107,13 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 			subtitle:
 				"Kapta:A (de)centralised crowdsourcing system to connect users and producers of ground information.",
 			content: "",
+		},
+		{
+			title: "Disclaimer",
+			icon: <CampaignOutlinedIcon />,
+			subtitle:
+				"The Kapta team has made every effort to develop an app that parse WhatsApp chats to create WhatsApp Maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur.",
+			content: ` Please always make your own judgement about the accuracy of the maps and validate the information using other sources. If you encounter any issues or have feedback, please reach out to us at <a href="mailto:geog.excites@ucl.ac.uk?subject=Kapta Mobile Feedback">geog.excites@ucl.ac.uk</a> or via WhatsApp at <a href=${WA_CHAT_URL}>+34 678380944.</a>`,
 		},
 	];
 	const handleAccordionChange = (panel) => (event, isExpanded) => {

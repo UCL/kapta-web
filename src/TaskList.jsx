@@ -15,6 +15,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
@@ -41,21 +42,24 @@ export default function TaskList({
 	// console.log(user);
 	useEffect(() => {
 		if (isVisible) {
-			async () => {
+			const fetchTasks = async () => {
+				console.log("gonna fetch some tasks bro");
 				var fetchedTasks = await fetchMyTasks({ user, setTasks, setIsLoading });
 
 				console.log("fetched tasks:", fetchedTasks);
 
 				// fetchedTasks.forEach((task) => {
-				// 	let metadata = getMetadata(task.taskID);
+				//  let metadata = getMetadata(task.taskID);
 				// setMetadataStore(...prevstore,metadata);
 				// });
 
 				setTasks(fetchedTasks);
 				setListIsOD(false);
 			};
+
+			fetchTasks();
 		}
-	});
+	}, [isVisible, user]);
 
 	const toggleCodeVisibility = (taskId) => {
 		setVisibleCodes((prev) => ({
@@ -244,13 +248,17 @@ export default function TaskList({
 									</Button>
 									<Button
 										variant="contained"
-										color="secondary"
+										color="orange"
 										onClick={handleDownload}
 										startIcon={<DownloadIcon />}
 									>
 										Download Data
 									</Button>
-									<Button variant="outlined" onClick={() => handleEdit(task)}>
+									<Button
+										variant="outlined"
+										onClick={() => handleEdit(task)}
+										endIcon={<EditIcon />}
+									>
 										Edit Task
 									</Button>
 									<Button
