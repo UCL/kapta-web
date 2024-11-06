@@ -19,7 +19,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
-import CloseButton from "./utils/CloseButton";
 import { useClickOutside } from "./utils/useClickOutside";
 import { fetchMyODTasks, fetchMyTasks, fetchODTasks } from "./utils/apiQueries";
 export default function TaskList({
@@ -82,52 +81,24 @@ export default function TaskList({
 		setIsVisible(false);
 	};
 
-	const handleIncludeMyOD = async () => {
-		const newIncludeMyOD = !includeMyOD;
-		setIncludeMyOD(newIncludeMyOD);
+	const handleViewOpendata = async () => {
+		const newListIsOD = !listIsOD;
+		setListIsOD(newListIsOD);
+		// TODO: distinguish OD data by user with a tag (based on isOD state)
+		setIsLoading(true);
 
-		if (newIncludeMyOD) {
-			setIsLoading(true);
+		if (newListIsOD) {
 			try {
-				const fetchedODTasks = await fetchMyODTasks({ user });
-				// set the tasks to include opendata and the previous tasks, if they exist
-				setTasks((prevTasks) => {
-					if (Array.isArray(prevTasks) && prevTasks.length > 0) {
-						return [...prevTasks, ...fetchedODTasks];
-					} else {
-						return fetchedODTasks;
-					}
-				});
+				const fetchedODTasks = await fetchODTasks({ user });
+				setTasks(fetchedODTasks);
+				setListIsOD(true);
 			} catch (error) {
 				console.error("Error fetching open data tasks:", error);
 			} finally {
 				setIsLoading(false);
 			}
 		} else {
-			// remove open data tasks when toggle is turned off
-			setTasks((prevTasks) => {
-				if (Array.isArray(prevTasks) && prevTasks.length > 0) {
-					return prevTasks.filter(
-						(task) => !task.task_id.startsWith("opendata")
-					);
-				} else {
-					return []; // Return an empty array if prevTasks is not valid
-				}
-			});
-		}
-	};
-
-	const handleViewOpendata = async () => {
-		// TODO: distinguish OD data by user with a tag (based on isOD state)
-		setIsLoading(true);
-		try {
-			const fetchedODTasks = await fetchODTasks({ user });
-			setTasks(fetchedODTasks);
-			setListIsOD(true);
-		} catch (error) {
-			console.error("Error fetching open data tasks:", error);
-		} finally {
-			setIsLoading(false);
+			handleRefresh();
 		}
 	};
 
@@ -148,6 +119,29 @@ export default function TaskList({
 		console.log(task);
 	};
 
+	const cardActionBtns = [
+		{
+			text: "Show on Map",
+			icon: <PinDropIcon />,
+			action: (task) => () => handleShowOnMap(task),
+			variant: "contained",
+		},
+		{
+			text: "Download Data",
+			icon: <DownloadIcon />,
+			action: (task) => () => handleDownload(task),
+			variant: "outlined",
+			color: "orange",
+		},
+		{
+			text: "Edit Task",
+			icon: <EditIcon />,
+			action: (task) => () => handleEdit(task),
+			variant: "outlined",
+			color: "secondary",
+		},
+	];
+
 	useClickOutside(taskListRef, () => setIsVisible(false));
 
 	if (!isVisible) return null;
@@ -166,22 +160,14 @@ export default function TaskList({
 						</IconButton>
 					</div>
 					<div className="task-list__header__od-options">
-						<div className="include-my-od">
+						<div className="include-od">
 							<Switch
-								checked={includeMyOD}
-								onChange={handleIncludeMyOD}
+								checked={listIsOD}
+								onChange={handleViewOpendata}
 								color="info"
 							/>
-							<small>include my opendata tasks</small>
+							<small>View Opendata Tasks</small>
 						</div>
-						<Button
-							onClick={handleViewOpendata}
-							variant="text"
-							size="small"
-							color="info"
-						>
-							View All Opendata Tasks
-						</Button>
 					</div>
 				</div>
 				{!isLoading && (
@@ -234,29 +220,17 @@ export default function TaskList({
 							</CardContent>
 							<CardActions className="task-list__card-actions">
 								<ButtonGroup size="small" color="info">
-									<Button
-										variant="contained"
-										onClick={() => handleShowOnMap(task)}
-										startIcon={<PinDropIcon />}
-									>
-										Show on Map
-									</Button>
-									<Button
-										variant="outlined"
-										color="orange"
-										onClick={handleDownload}
-										startIcon={<DownloadIcon />}
-									>
-										Download Data
-									</Button>
-									<Button
-										variant="outlined"
-										onClick={() => handleEdit(task)}
-										color="secondary"
-										endIcon={<EditIcon />}
-									>
-										Edit Task
-									</Button>
+									{cardActionBtns.map((btn, index) => (
+										<Button
+											key={index}
+											variant={btn.variant}
+											color={btn.color}
+											onClick={btn.action(task)}
+											startIcon={btn.icon}
+										>
+											{btn.text}
+										</Button>
+									))}
 								</ButtonGroup>
 							</CardActions>
 						</Card>

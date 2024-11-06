@@ -2,6 +2,7 @@
 	z-index: 3;
 
 	.MuiPaper-root {
+		width: 100%;
 		max-width: 40vw;
 	}
 }
@@ -25,18 +26,8 @@
 	.task-list__header__od-options {
 		display: flex;
 		width: 100%;
-		justify-content: space-between;
-
-		.include-my-od {
-			display: none;
-			/* display: flex; */
-			flex-direction: column;
-			width: max-content;
-			align-items: center;
-			small {
-				font-size: 0.65rem;
-			}
-		}
+		justify-content: flex-end;
+		align-items: center;
 	}
 }
 .task-list__content {
