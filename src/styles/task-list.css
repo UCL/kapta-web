@@ -1,5 +1,9 @@
 .task-list__drawer {
 	z-index: 3;
+
+	.MuiPaper-root {
+		max-width: 40vw;
+	}
 }
 .task-list__header {
 	margin-inline: 4%;

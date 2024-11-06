@@ -136,7 +136,6 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 				onClose={toggleDrawer(false)}
 				className="bm__drawer"
 			>
-				<CloseButton setIsVisible={setIsOpen} />
 				<ButtonGroup className="bm__buttons">
 					{navItems.map((item, index) => (
 						<Tooltip key={item.text} title={item.text} placement="top">

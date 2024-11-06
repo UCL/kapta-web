@@ -153,7 +153,6 @@ export default function TaskList({
 	if (!isVisible) return null;
 	return (
 		<Drawer anchor="right" open={isVisible} className="task-list__drawer">
-			<CloseButton setIsVisible={setIsVisible} />
 			<div className="task-list__content" ref={taskListRef}>
 				<div className="task-list__header">
 					<div className="task-list__header__title">
