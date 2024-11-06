@@ -182,39 +182,18 @@ export default function TaskList({
 						<Card key={task.task_id} className="task-card">
 							<CardContent>
 								<span className="task-card__title">
-									<strong>{task.task_title}</strong>{" "}
-									<small>{task.task_id}</small>
-								</span>
-								<div className="code-container">
-									{visibleCodes[task.task_id] && (
-										<span
-											onClick={() => handleCopy(task.campaign_code)}
-											className="campaign-code"
-										>
-											{task.campaign_code}
-										</span>
-									)}
-									<Button
-										className="show-hide-code-btn"
-										color="info"
-										variant="outlined"
-										onClick={() => toggleCodeVisibility(task.task_id)}
-										size="small"
-										startIcon={
-											visibleCodes[task.task_id] ? (
-												<VisibilityOffIcon />
-											) : (
-												<VisibilityIcon />
-											)
-										}
+									<strong>{task.task_title}</strong>
+									<span
+										onClick={() => handleCopy(task.campaign_code)}
+										className="campaign-code"
 									>
-										Code
-									</Button>
-								</div>
+										{task.campaign_code}
+									</span>
+								</span>
 								<p>{task.task_description}</p>
 
 								{showMetadata && metadataStore.task_id === task.task_id && (
-									// get metadata from metadataStore or fetch from dynamodb
+									// TODO: get metadata from metadataStore or fetch from dynamodb
 									<p>{metadataStore.info}</p>
 								)}
 							</CardContent>

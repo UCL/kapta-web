@@ -56,19 +56,10 @@
 			}
 		}
 	}
-	.code-container {
-		display: flex;
-		justify-content: flex-end;
-		align-items: center;
-
-		.show-hide-code-btn {
-			float: right;
-		}
-		.campaign-code {
-			color: var(--rose);
-			font-weight: 600;
-			margin-right: 0.8rem;
-		}
+	.campaign-code {
+		color: var(--rose);
+		font-weight: 600;
+		margin-left: 0.8rem;
 	}
 	.task-list__card-actions {
 		justify-content: center;
