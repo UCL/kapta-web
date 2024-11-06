@@ -155,29 +155,23 @@ export default function TaskList({
 		<Drawer anchor="right" open={isVisible} className="task-list__drawer">
 			<div className="task-list__content" ref={taskListRef}>
 				<div className="task-list__header">
-					<div className="task-list__header__title">
-						<h2>My Tasks</h2>
-						<IconButton
-							onClick={handleRefresh}
-							color="secondary"
-							className="btn--refresh"
-						>
-							<RefreshIcon />
-						</IconButton>
-					</div>
-					<div className="task-list__header__od-options">
-						<div className="include-od">
-							<ToggleButton
-								selected={listIsOD}
-								onChange={handleViewOpendata}
-								color="info"
-								size="small"
-								value="OD"
-							>
-								View Opendata Tasks
-							</ToggleButton>
-						</div>
-					</div>
+					<h2>My Tasks</h2>
+					<IconButton
+						onClick={handleRefresh}
+						color="secondary"
+						className="btn--refresh"
+					>
+						<RefreshIcon />
+					</IconButton>
+					<ToggleButton
+						selected={listIsOD}
+						onChange={handleViewOpendata}
+						color="orange"
+						size="small"
+						value="OD"
+					>
+						View Opendata Tasks
+					</ToggleButton>
 				</div>
 				{!isLoading && (
 					<div className="task-list__total">Total: {tasks?.length || 0}</div>
