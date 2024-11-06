@@ -25,6 +25,7 @@ const theme = createTheme({
 		},
 		orange: { main: orange[800] },
 	},
+	cssVariables: true,
 });
 
 createRoot(document.getElementById("root")).render(

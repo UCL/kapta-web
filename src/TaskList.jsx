@@ -1,26 +1,32 @@
 import {
+	Badge,
+	Box,
 	Button,
 	ButtonGroup,
 	Card,
 	CardActions,
 	CardContent,
+	Chip,
 	CircularProgress,
 	Drawer,
 	IconButton,
 	Snackbar,
 	Switch,
+	ToggleButton,
+	Tooltip,
+	Typography,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import PinDropIcon from "@mui/icons-material/PinDrop";
+import PlaceIcon from "@mui/icons-material/Place";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
-import { fetchMyODTasks, fetchMyTasks, fetchODTasks } from "./utils/apiQueries";
+import { fetchMyTasks, fetchODTasks } from "./utils/apiQueries";
 export default function TaskList({
 	isVisible,
 	setIsVisible,
@@ -161,12 +167,15 @@ export default function TaskList({
 					</div>
 					<div className="task-list__header__od-options">
 						<div className="include-od">
-							<Switch
-								checked={listIsOD}
+							<ToggleButton
+								selected={listIsOD}
 								onChange={handleViewOpendata}
 								color="info"
-							/>
-							<small>View Opendata Tasks</small>
+								size="small"
+								value="OD"
+							>
+								View Opendata Tasks
+							</ToggleButton>
 						</div>
 					</div>
 				</div>
@@ -180,38 +189,71 @@ export default function TaskList({
 				) : tasks?.length > 0 ? (
 					tasks.map((task) => (
 						<Card key={task.task_id} className="task-card">
-							<CardContent>
-								<span className="task-card__title">
-									<strong>{task.task_title}</strong>
-									<span
-										onClick={() => handleCopy(task.campaign_code)}
-										className="campaign-code"
-									>
-										{task.campaign_code}
-									</span>
-								</span>
-								<p>{task.task_description}</p>
+							<Box
+								className={`task-card__status-strip ${
+									task.status?.toLowerCase() || "active"
+								}`}
+							>
+								<span>{task.status || "Active"}</span>
+							</Box>
+							<Box className="task-list__card-content__wrapper">
+								<CardContent>
+									<span className="task-card__title">
+										<Typography variant="h5">{task.task_title}</Typography>
+										<span className="task-card__info">
+											<Tooltip title="Number of datasets">
+												<Chip
+													className="task__info-chip"
+													variant="outlined"
+													size="small"
+													label={task.num_datasets || 2}
+													icon={<FolderOpenIcon size="small" />}
+												></Chip>
+											</Tooltip>
+											<Tooltip title="Total number of observations">
+												<Chip
+													className="task__info-chip"
+													variant="outlined"
+													size="small"
+													label={task.sum_observations || 100}
+													max={999}
+													icon={<PlaceIcon size="small" />}
+												></Chip>
+											</Tooltip>
 
-								{showMetadata && metadataStore.task_id === task.task_id && (
-									// TODO: get metadata from metadataStore or fetch from dynamodb
-									<p>{metadataStore.info}</p>
-								)}
-							</CardContent>
-							<CardActions className="task-list__card-actions">
-								<ButtonGroup size="small" color="info">
-									{cardActionBtns.map((btn, index) => (
-										<Button
-											key={index}
-											variant={btn.variant}
-											color={btn.color}
-											onClick={btn.action(task)}
-											startIcon={btn.icon}
-										>
-											{btn.text}
-										</Button>
-									))}
-								</ButtonGroup>
-							</CardActions>
+											<span
+												onClick={() => handleCopy(task.campaign_code)}
+												className="campaign-code"
+											>
+												<Tooltip title="Campaign code">
+													<>{task.campaign_code}</>
+												</Tooltip>
+											</span>
+										</span>
+									</span>
+									<p>{task.task_description}</p>
+
+									{showMetadata && metadataStore.task_id === task.task_id && (
+										// TODO: get metadata from metadataStore or fetch from dynamodb
+										<p>{metadataStore.info}</p>
+									)}
+								</CardContent>
+								<CardActions className="task-list__card-actions">
+									<ButtonGroup size="small" color="info">
+										{cardActionBtns.map((btn, index) => (
+											<Button
+												key={index}
+												variant={btn.variant}
+												color={btn.color}
+												onClick={btn.action(task)}
+												startIcon={btn.icon}
+											>
+												{btn.text}
+											</Button>
+										))}
+									</ButtonGroup>
+								</CardActions>
+							</Box>
 						</Card>
 					))
 				) : (

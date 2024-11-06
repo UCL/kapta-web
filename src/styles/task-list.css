@@ -3,7 +3,7 @@
 
 	.MuiPaper-root {
 		width: 100%;
-		max-width: 40vw;
+		max-width: 48vw;
 	}
 }
 .task-list__header {
@@ -30,6 +30,7 @@
 		align-items: center;
 	}
 }
+
 .task-list__content {
 	margin-inline: 4%;
 	.no-tasks,
@@ -41,25 +42,61 @@
 		text-align: center;
 	}
 
+	.task-card__status-strip {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 1rem;
+		margin: 0;
+		padding: 0;
+		background-color: darkslategray;
+
+		&.active {
+			background-color: var(--mui-palette-success-dark);
+		}
+		&.closed {
+			background-color: var(--mui-palette-primary-600);
+		}
+
+		span {
+			transform: rotate(-90deg);
+			font-size: 0.6rem;
+		}
+	}
+	.task-list__card-content__wrapper {
+		width: 100%;
+	}
 	.task-card {
 		margin-bottom: 0.8rem;
+		display: flex;
 
 		.task-card__title {
 			display: flex;
 			justify-content: space-between;
-			strong {
-				font-size: larger;
+
+			h5 {
+				max-width: 60%;
 			}
-			small {
-				opacity: 0.8;
-				font-size: 0.6rem;
+		}
+		.task-card__info {
+			margin-left: 0.5rem;
+			display: flex;
+			justify-content: space-evenly;
+			.task__info-chip {
+				color: var(--rose);
+				border-color: var(--rose);
+				svg {
+					color: var(--mui-palette-secondary-600);
+					padding-left: 0.1rem;
+				}
 			}
 		}
 	}
 	.campaign-code {
 		color: var(--rose);
 		font-weight: 600;
-		margin-left: 0.8rem;
+		margin-left: 0.4rem;
 	}
 	.task-list__card-actions {
 		justify-content: center;
