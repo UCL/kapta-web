@@ -54,8 +54,8 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 	};
 	const navItems = [
 		{ text: "Logout", icon: <LogoutIcon />, function: handleLogout },
-		{ text: "Profile", icon: <PersonIcon />, function: viewProfile },
-		{ text: "Settings", icon: <SettingsIcon />, function: viewSettings },
+		// { text: "Profile", icon: <PersonIcon />, function: viewProfile },
+		// { text: "Settings", icon: <SettingsIcon />, function: viewSettings },
 	];
 
 	const urls = {
