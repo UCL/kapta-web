@@ -1,5 +1,4 @@
 import {
-	Badge,
 	Box,
 	Button,
 	ButtonGroup,
@@ -11,7 +10,6 @@ import {
 	Drawer,
 	IconButton,
 	Snackbar,
-	Switch,
 	ToggleButton,
 	Tooltip,
 	Typography,
@@ -37,10 +35,8 @@ export default function TaskList({
 	const [tasks, setTasks] = useState([]);
 	const [metadataStore, setMetadataStore] = useState([]);
 	const [showMetadata, setShowMetadata] = useState(false);
-	const [visibleCodes, setVisibleCodes] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
-	const [includeMyOD, setIncludeMyOD] = useState(false);
 	const [listIsOD, setListIsOD] = useState(false);
 	const taskListRef = useRef(null);
 
@@ -61,13 +57,6 @@ export default function TaskList({
 			fetchTasks();
 		}
 	}, [isVisible, user]);
-
-	const toggleCodeVisibility = (taskId) => {
-		setVisibleCodes((prev) => ({
-			...prev,
-			[taskId]: !prev[taskId],
-		}));
-	};
 
 	const handleCopy = async (text) => {
 		const success = await copyToClipboard(text);
