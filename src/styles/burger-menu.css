@@ -22,7 +22,7 @@
 	}
 
 	a {
-		color: tomato;
+		color: var(--tomato);
 		&:hover {
 			color: salmon;
 		}

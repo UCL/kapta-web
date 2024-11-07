@@ -70,10 +70,10 @@
 			display: flex;
 			justify-content: space-evenly;
 			.task__info-chip {
-				color: var(--rose);
-				border-color: var(--rose);
+				color: var(--mui-palette-tomato-main);
+				border-color: var(--mui-palette-tomato-main);
 				svg {
-					color: var(--mui-palette-secondary-600);
+					color: var(--mui-palette-secondary-700);
 					padding-left: 0.1rem;
 				}
 			}
