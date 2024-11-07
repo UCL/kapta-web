@@ -24,6 +24,9 @@ const theme = createTheme({
 			contrastText: "#242105",
 		},
 		orange: { main: orange[800] },
+		tomato: {
+			main: "#ff6347",
+		},
 	},
 	cssVariables: true,
 });
