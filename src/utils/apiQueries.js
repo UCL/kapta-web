@@ -1,19 +1,5 @@
 import { REQUEST_URL } from "../globals";
 
-export const getMetadata = async (id) => {
-	// TODO: get metadata from dynamodb for task id, maybe combine into other function
-
-	try {
-		const response = await fetch(`${REQUEST_URL}/requests/${id}`);
-		const result = await response.json();
-		const metadata = JSON.parse(result);
-		console.log(metadata);
-
-		return metadata;
-	} catch (error) {
-		console.error("Error fetching tasks:", error);
-	}
-};
 export const fetchMyTasks = async ({ user, setIsLoading }) => {
 	try {
 		const response = await fetch(

@@ -34,8 +34,6 @@ export default function TaskList({
 }) {
 	// TODO: if given user or get user here then get all tasks created by them
 	const [tasks, setTasks] = useState([]);
-	const [metadataStore, setMetadataStore] = useState([]);
-	const [showMetadata, setShowMetadata] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [listIsOD, setListIsOD] = useState(false);
@@ -45,12 +43,6 @@ export default function TaskList({
 		if (isVisible) {
 			const fetchTasks = async () => {
 				var fetchedTasks = await fetchMyTasks({ user, setTasks, setIsLoading });
-
-				// fetchedTasks.forEach((task) => {
-				//  let metadata = getMetadata(task.taskID);
-				// setMetadataStore(...prevstore,metadata);
-				// });
-
 				setTasks(fetchedTasks);
 				setListIsOD(false);
 			};
@@ -100,6 +92,7 @@ export default function TaskList({
 
 	const handleRefresh = async () => {
 		setIsLoading(true);
+		// todo: also refresh the metadata
 		try {
 			const fetchedTasks = await fetchMyTasks({ user, setIsLoading });
 			setTasks(fetchedTasks);
@@ -216,11 +209,6 @@ export default function TaskList({
 										</span>
 									</span>
 									<p>{task.task_description}</p>
-
-									{showMetadata && metadataStore.task_id === task.task_id && (
-										// TODO: get metadata from metadataStore or fetch from dynamodb
-										<p>{metadataStore.info}</p>
-									)}
 								</CardContent>
 								<CardActions className="task-list__card-actions">
 									<ButtonGroup size="small" color="info">
