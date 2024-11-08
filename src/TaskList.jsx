@@ -198,14 +198,15 @@ export default function TaskList({
 												></Chip>
 											</Tooltip>
 
-											<span
-												onClick={() => handleCopy(task.campaign_code)}
-												className="campaign-code"
-											>
-												<Tooltip title="Campaign code">
-													<>{task.campaign_code}</>
-												</Tooltip>
-											</span>
+											<Tooltip title="Campaign code">
+												<Chip
+													onClick={() => handleCopy(task.campaign_code)}
+													className="campaign-code"
+													variant="outlined"
+													label={task.campaign_code}
+													size="small"
+												></Chip>
+											</Tooltip>
 										</span>
 									</span>
 									<p>{task.task_description}</p>
