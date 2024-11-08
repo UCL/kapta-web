@@ -14,7 +14,7 @@ export const getMetadata = async (id) => {
 		console.error("Error fetching tasks:", error);
 	}
 };
-export const fetchMyTasks = async ({ user, setIsLoading }) => {
+export const fetchMyTasks = async ({ user }) => {
 	try {
 		const response = await fetch(
 			`${REQUEST_URL}/requests/createdby/${user.userId}`,
@@ -30,8 +30,6 @@ export const fetchMyTasks = async ({ user, setIsLoading }) => {
 		return fetchedTasks;
 	} catch (error) {
 		console.error("Error fetching tasks:", error);
-	} finally {
-		setIsLoading(false);
 	}
 };
 

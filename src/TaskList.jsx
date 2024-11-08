@@ -13,6 +13,7 @@ import {
 	Snackbar,
 	Switch,
 	ToggleButton,
+	ToggleButtonGroup,
 	Tooltip,
 	Typography,
 } from "@mui/material";
@@ -22,7 +23,7 @@ import PinDropIcon from "@mui/icons-material/PinDrop";
 import PlaceIcon from "@mui/icons-material/Place";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import EditIcon from "@mui/icons-material/Edit";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
@@ -42,6 +43,7 @@ export default function TaskList({
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [includeMyOD, setIncludeMyOD] = useState(false);
 	const [listIsOD, setListIsOD] = useState(false);
+	const [taskListName, setTaskListName] = useState("my-tasks");
 	const taskListRef = useRef(null);
 
 	useEffect(() => {
@@ -55,12 +57,30 @@ export default function TaskList({
 				// });
 
 				setTasks(fetchedTasks);
-				setListIsOD(false);
+				setTaskListName("my-tasks");
 			};
 
 			fetchTasks();
 		}
 	}, [isVisible, user]);
+
+	useEffect(() => {
+		setIsLoading(true);
+		if (taskListName === "opendata") {
+			const fetchTasks = async () => {
+				var fetchedTasks = await fetchODTasks({ user });
+				setTasks(fetchedTasks);
+			}
+			fetchTasks();
+		} else if (taskListName === "my-tasks") {
+			const fetchTasks = async () => {
+				var fetchedTasks = await fetchMyTasks({ user });
+				setTasks(fetchedTasks);
+			}
+			fetchTasks();
+		}
+		setIsLoading(false);
+	}, [taskListName]);
 
 	const toggleCodeVisibility = (taskId) => {
 		setVisibleCodes((prev) => ({
@@ -87,31 +107,22 @@ export default function TaskList({
 		setIsVisible(false);
 	};
 
-	const handleViewOpendata = async () => {
-		const newListIsOD = !listIsOD;
-		setListIsOD(newListIsOD);
-		// TODO: distinguish OD data by user with a tag (based on isOD state)
-		setIsLoading(true);
-
-		if (newListIsOD) {
-			try {
-				const fetchedODTasks = await fetchODTasks({ user });
-				setTasks(fetchedODTasks);
-				setListIsOD(true);
-			} catch (error) {
-				console.error("Error fetching open data tasks:", error);
-			} finally {
-				setIsLoading(false);
-			}
-		} else {
-			handleRefresh();
-		}
+	const handleChangeTaskList = async (
+		event,
+		newTaskListName,
+	) => {
+		setTaskListName(newTaskListName);
 	};
 
 	const handleRefresh = async () => {
 		setIsLoading(true);
 		try {
-			const fetchedTasks = await fetchMyTasks({ user, setIsLoading });
+			let fetchedTasks;
+			if (taskListName == "my-tasks") {
+				fetchedTasks = await fetchMyTasks({ user, setIsLoading });
+			} else if (taskListName == "opendata") {
+				fetchedTasks = await await fetchODTasks({ user });
+			}
 			setTasks(fetchedTasks);
 			// could make this snazzy and try and check for if the my OD is toggled
 		} catch (error) {
@@ -155,7 +166,23 @@ export default function TaskList({
 		<Drawer anchor="right" open={isVisible} className="task-list__drawer">
 			<div className="task-list__content" ref={taskListRef}>
 				<div className="task-list__header">
-					<h2>My Tasks</h2>
+					<ToggleButtonGroup
+						color="primary"
+						value={taskListName}
+						exclusive
+						onChange={handleChangeTaskList}
+					>
+						<ToggleButton
+							value="my-tasks"
+						>
+							My Tasks
+						</ToggleButton>
+						<ToggleButton
+							value="opendata"
+						>
+							Open Datasets
+						</ToggleButton>
+					</ToggleButtonGroup>
 					<IconButton
 						onClick={handleRefresh}
 						color="secondary"
@@ -163,15 +190,6 @@ export default function TaskList({
 					>
 						<RefreshIcon />
 					</IconButton>
-					<ToggleButton
-						selected={listIsOD}
-						onChange={handleViewOpendata}
-						color="orange"
-						size="small"
-						value="OD"
-					>
-						View Opendata Tasks
-					</ToggleButton>
 				</div>
 				{!isLoading && (
 					<div className="task-list__total">Total: {tasks?.length || 0}</div>
