@@ -20,6 +20,7 @@ import PinDropIcon from "@mui/icons-material/PinDrop";
 import PlaceIcon from "@mui/icons-material/Place";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import EditIcon from "@mui/icons-material/Edit";
+import PersonIcon from "@mui/icons-material/Person";
 import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
@@ -184,13 +185,13 @@ export default function TaskList({
 									<span className="task-card__title">
 										<Typography variant="h5">{task.task_title}</Typography>
 										<span className="task-card__info">
-											<Tooltip title="Number of datasets">
+											<Tooltip title="Number of uploaders">
 												<Chip
 													className="task__info-chip"
 													variant="outlined"
 													size="small"
-													label={task.num_datasets || 2}
-													icon={<FolderOpenIcon size="small" />}
+													label={task.num_uploaders || 0}
+													icon={<PersonIcon size="small" />}
 												></Chip>
 											</Tooltip>
 											<Tooltip title="Total number of observations">
@@ -198,7 +199,7 @@ export default function TaskList({
 													className="task__info-chip"
 													variant="outlined"
 													size="small"
-													label={task.sum_observations || 100}
+													label={task.sum_observations || 0}
 													max={999}
 													icon={<PlaceIcon size="small" />}
 												></Chip>
