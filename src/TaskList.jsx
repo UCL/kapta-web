@@ -105,7 +105,7 @@ export default function TaskList({
 	};
 
 	const handleShowOnMap = (task) => {
-		console.log(task);
+		console.log(task.geo_bounds);
 	};
 
 	const cardActionBtns = [

@@ -31,9 +31,10 @@ export default function App() {
 	const [successIsTask, setSuccessIsTask] = useState(false);
 	const [errorMsg, setErrorMsg] = useState("");
 
-	const [isSearchFormVisible, setSearchFormVisible] = useState(true);
-
 	const [BMopen, setBMopen] = useState(false);
+
+	const [boundsVisible, setBoundsVisible] = useState(false);
+	// todo: polygon store if we're showing multiple?
 
 	const user = useUserStore();
 
@@ -161,7 +162,7 @@ export default function App() {
 						</div>
 					</div>
 
-					<Map />
+					<Map boundsVisible={boundsVisible} />
 
 					<TaskForm
 						isVisible={isTaskFormVisible}
@@ -176,7 +177,7 @@ export default function App() {
 						user={user}
 						showTaskForm={showTaskForm}
 					/>
-					<SearchForm isVisible={isSearchFormVisible} />
+					<SearchForm />
 				</>
 			)}
 		</main>
