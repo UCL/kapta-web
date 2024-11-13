@@ -35,7 +35,6 @@ export default function App() {
 
 	const [boundsVisible, setBoundsVisible] = useState(false);
 	const [polygonStore, setPolygonStore] = useState(null);
-	// todo: polygon store if we're showing multiple?
 
 	const user = useUserStore();
 
@@ -67,6 +66,14 @@ export default function App() {
 	const showBounds = (bounds) => {
 		// this is for showing one at a time
 		setPolygonStore(bounds);
+		setBoundsVisible(true);
+	};
+
+	const showPolygons = (bounds) => {
+		// this is for showing multiple
+		if (polygonStore) {
+			setPolygonStore((prevPolygonStore) => [prevPolygonStore, bounds]);
+		} else setPolygonStore(bounds);
 		setBoundsVisible(true);
 	};
 
