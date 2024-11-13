@@ -155,6 +155,7 @@ export default function TaskList({
 					>
 						View Opendata Tasks
 					</ToggleButton>
+					{/* todo: add a search bar */}
 				</div>
 				{!isLoading && (
 					<div className="task-list__total">Total: {tasks?.length || 0}</div>

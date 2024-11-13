@@ -30,13 +30,14 @@ export default function SearchForm({ isVisible, showSearchResults }) {
 
 	const handleSubmit = async (values) => {
 		// for the given set of tasks (currently all where visible===true), check in title and then description for the query
-		const q = values.query;
+		const q = values.query.toLowerCase();
 		var results = [];
+		console.log(tasks.length);
 
 		tasks.forEach((task) => {
 			if (
-				task.task_title.toLowerCase().includes(q.toLowerCase()) ||
-				task.task_description.toLowerCase().includes(q.toLowerCase())
+				task.task_title.toLowerCase().includes(q) ||
+				task.task_description.toLowerCase().includes(q)
 			) {
 				results.push(task);
 			}
@@ -83,3 +84,5 @@ export default function SearchForm({ isVisible, showSearchResults }) {
 		</>
 	);
 }
+
+export function MainSearchForm({ isVisible, showSearchResults }) {}
