@@ -34,8 +34,13 @@ export function Map({ boundsVisible, polygonStore }) {
 			"poly source:",
 			polygonStore,
 			typeof polygonStore,
-			polygonStore.length
+			polygonStore.length,
+			Array.isArray(polygonStore)
 		);
+
+		if (polygonStore.length > 1) {
+			console.log("multiple polygons");
+		}
 
 		if (!map.current.getSource("polygon-source")) {
 			map.current.addSource("polygon-source", {
@@ -49,16 +54,37 @@ export function Map({ boundsVisible, polygonStore }) {
 				},
 			});
 		} else {
+			// currently will add to existing data, do we want to clear if it's from task list?
 			const source = map.current.getSource("polygon-source");
-			polygonStore.map((polygon) => {
-				source.setData({
-					type: "Feature",
-					geometry: {
-						type: "Polygon",
-						coordinates: [polygon.coordinates],
-					},
-				});
-			});
+			let existingData = source._data;
+
+			if (!existingData || existingData.type !== "FeatureCollection") {
+				existingData = {
+					type: "FeatureCollection",
+					features: [],
+				};
+			}
+
+			// Ensure polygonStore is an array so we can use .map() even if it's one item
+			const polygons = Array.isArray(polygonStore)
+				? polygonStore
+				: [polygonStore];
+
+			// Set structure like this, particular attention to the [] around coordinates, otherwise polygon will not show
+			const newFeatures = polygons.map((polygon) => ({
+				type: "Feature",
+				geometry: {
+					type: "Polygon",
+					coordinates: [polygon.coordinates],
+				},
+			}));
+
+			const newData = {
+				type: "FeatureCollection",
+				features: [...existingData.features, ...newFeatures],
+			};
+
+			source.setData(newData);
 		}
 
 		if (boundsVisible) {
@@ -114,6 +140,7 @@ export function Map({ boundsVisible, polygonStore }) {
 
 		map.current.fitBounds(bounds, {
 			padding: 20,
+			maxZoom: 13,
 		});
 	}, [polygonStore, boundsVisible]);
 
