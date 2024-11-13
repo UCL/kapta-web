@@ -1,6 +1,6 @@
 import { REQUEST_URL } from "../globals";
 
-export const fetchMyTasks = async ({ user, setIsLoading }) => {
+export const fetchMyTasks = async ({ user }) => {
 	try {
 		const response = await fetch(
 			`${REQUEST_URL}/requests/createdby/${user.userId}`,
@@ -16,8 +16,6 @@ export const fetchMyTasks = async ({ user, setIsLoading }) => {
 		return fetchedTasks;
 	} catch (error) {
 		console.error("Error fetching tasks:", error);
-	} finally {
-		setIsLoading(false);
 	}
 };
 
@@ -45,6 +43,23 @@ export const fetchMyODTasks = async ({ user }) => {
 export const fetchODTasks = async ({ user }) => {
 	try {
 		const response = await fetch(`${REQUEST_URL}/requests/opendata`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: user.idToken,
+			},
+		});
+		const result = await response.json();
+		if (result.length > 0) {
+			const fetchedTasks = JSON.parse(result);
+			return fetchedTasks;
+		}
+	} catch (error) {
+		console.error("Error fetching tasks:", error);
+	}
+};
+export const fetchAllTasks = async ({ user }) => {
+	try {
+		const response = await fetch(`${REQUEST_URL}/requests/`, {
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: user.idToken,

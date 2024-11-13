@@ -44,8 +44,9 @@ export default function TaskList({
 				var fetchedTasks = await fetchMyTasks({ user, setTasks, setIsLoading });
 				setTasks(fetchedTasks);
 				setListIsOD(false);
+				setIsLoading(false);
 			};
-
+			setIsLoading(true);
 			fetchTasks();
 		}
 	}, [isVisible, user]);
