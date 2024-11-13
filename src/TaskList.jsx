@@ -31,8 +31,8 @@ export default function TaskList({
 	setIsVisible,
 	user,
 	showTaskForm,
+	showBounds,
 }) {
-	// TODO: if given user or get user here then get all tasks created by them
 	const [tasks, setTasks] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -59,12 +59,11 @@ export default function TaskList({
 	};
 
 	const handleDownload = () => {
-		// TODO: get data from s3
+		// TODO: get data from s3 or db
 		console.log("handle download");
 	};
 
 	const handleEdit = (task) => {
-		console.log(task);
 		showTaskForm(task);
 		setIsVisible(false);
 	};
@@ -106,6 +105,7 @@ export default function TaskList({
 
 	const handleShowOnMap = (task) => {
 		console.log(task.geo_bounds);
+		showBounds(task.geo_bounds);
 	};
 
 	const cardActionBtns = [

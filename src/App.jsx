@@ -34,6 +34,7 @@ export default function App() {
 	const [BMopen, setBMopen] = useState(false);
 
 	const [boundsVisible, setBoundsVisible] = useState(false);
+	const [polygonStore, setPolygonStore] = useState(null);
 	// todo: polygon store if we're showing multiple?
 
 	const user = useUserStore();
@@ -61,6 +62,12 @@ export default function App() {
 		setSuccessModalVisible(true);
 		setSuccessMsg(message);
 		setSuccessIsTask(true);
+	};
+
+	const showBounds = (bounds) => {
+		// this is for showing one at a time
+		setPolygonStore(bounds);
+		setBoundsVisible(true);
 	};
 
 	return (
@@ -162,7 +169,7 @@ export default function App() {
 						</div>
 					</div>
 
-					<Map boundsVisible={boundsVisible} />
+					<Map boundsVisible={boundsVisible} polygonStore={polygonStore} />
 
 					<TaskForm
 						isVisible={isTaskFormVisible}
@@ -176,6 +183,7 @@ export default function App() {
 						setIsVisible={setTaskListVisible}
 						user={user}
 						showTaskForm={showTaskForm}
+						showBounds={showBounds}
 					/>
 					<SearchForm />
 				</>
