@@ -15,6 +15,7 @@ import ErrorModal from "./utils/ErrorModal";
 import ConfirmModal from "./utils/ConfirmationModal";
 import SuccessModal from "./SuccessModal";
 import BurgerMenu from "./BurgerMenu";
+import SearchResults from "./SearchResultsList";
 
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
@@ -32,6 +33,8 @@ export default function App() {
 	const [errorMsg, setErrorMsg] = useState("");
 
 	const [isSearchFormVisible, setSearchFormVisible] = useState(true);
+	const [searchResultsVisible, setSearchResultsVisible] = useState(false);
+	const [searchResults, setSearchResults] = useState([]);
 
 	const [BMopen, setBMopen] = useState(false);
 
@@ -60,6 +63,11 @@ export default function App() {
 		setSuccessModalVisible(true);
 		setSuccessMsg(message);
 		setSuccessIsTask(true);
+	};
+
+	const showSearchResults = (results) => {
+		setSearchResults(results);
+		setSearchResultsVisible(true);
 	};
 
 	return (
@@ -176,7 +184,15 @@ export default function App() {
 						user={user}
 						showTaskForm={showTaskForm}
 					/>
-					<SearchForm isVisible={isSearchFormVisible} />
+					<SearchResults
+						isVisible={searchResultsVisible}
+						setIsVisible={setSearchResultsVisible}
+						results={searchResults}
+					/>
+					<SearchForm
+						isVisible={isSearchFormVisible}
+						showSearchResults={showSearchResults}
+					/>
 				</>
 			)}
 		</main>

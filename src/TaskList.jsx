@@ -15,7 +15,6 @@ import {
 	Typography,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import PlaceIcon from "@mui/icons-material/Place";
 import RefreshIcon from "@mui/icons-material/Refresh";
