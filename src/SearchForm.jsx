@@ -1,31 +1,44 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Button, Snackbar, TextField } from "@mui/material";
-import { fetchODTasks } from "./utils/apiQueries";
+import { fetchAllTasks, fetchODTasks } from "./utils/apiQueries";
 import { useUserStore } from "./globals";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./styles/search.css";
 
 export default function SearchForm({ isVisible, showSearchResults }) {
 	const user = useUserStore();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [tasks, setTasks] = useState([]);
+	const [listIsOD, setListIsOD] = useState(true);
+
+	useEffect(() => {
+		if (isVisible) {
+			const fetchTasks = async () => {
+				var fetchedTasks = await fetchAllTasks({ user });
+				return fetchedTasks;
+			};
+
+			fetchTasks().then((tasks) => {
+				const visibleTasks = tasks.filter((task) => task.visible === true);
+				setTasks(visibleTasks);
+			});
+		}
+	}, [isVisible, user]);
 
 	if (!isVisible) return null;
 
 	const handleSubmit = async (values) => {
-		// for the given set of tasks (currently all od), check in title and then description for the query
+		// for the given set of tasks (currently all where visible===true), check in title and then description for the query
 		const q = values.query;
 		var results = [];
 
-		const fetchedODTasks = await fetchODTasks({ user });
-
-		fetchedODTasks.forEach((task) => {
+		tasks.forEach((task) => {
 			if (
 				task.task_title.toLowerCase().includes(q.toLowerCase()) ||
 				task.task_description.toLowerCase().includes(q.toLowerCase())
 			) {
 				results.push(task);
-				// todo: show a task list with the results?
 			}
 		});
 		if (results.length === 0) {
@@ -36,7 +49,7 @@ export default function SearchForm({ isVisible, showSearchResults }) {
 	return (
 		<>
 			<Snackbar
-				anchorOrigin={{ vertical: "middle", horizontal: "center" }}
+				anchorOrigin={{ vertical: "top", horizontal: "center" }}
 				className="no-tasks"
 				open={snackbarOpen}
 				autoHideDuration={4000}
