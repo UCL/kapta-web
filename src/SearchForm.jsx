@@ -1,6 +1,5 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Button, IconButton, TextField } from "@mui/material";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 // import * as Yup from "yup";
 
 export default function SearchForm({ isVisible, setIsVisible }) {

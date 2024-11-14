@@ -15,7 +15,7 @@ import {
 	Typography,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import PushPinIcon from "@mui/icons-material/PushPin";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import PlaceIcon from "@mui/icons-material/Place";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -26,6 +26,7 @@ import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
 import { fetchMyTasks, fetchODTasks } from "./utils/apiQueries";
+import CloseButton from "./utils/CloseButton";
 export default function TaskList({
 	isVisible,
 	setIsVisible,
@@ -38,6 +39,7 @@ export default function TaskList({
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [listIsOD, setListIsOD] = useState(false);
 	const taskListRef = useRef(null);
+	const [isPinned, setIsPinned] = useState(false);
 
 	useEffect(() => {
 		if (isVisible) {
@@ -135,10 +137,23 @@ export default function TaskList({
 
 	if (!isVisible) return null;
 	return (
-		<Drawer anchor="right" open={isVisible} className="task-list__drawer">
+		<Drawer
+			anchor="right"
+			open={isVisible}
+			className="task-list__drawer"
+			variant={isPinned ? "persistent" : "temporary"}
+		>
 			<div className="task-list__content" ref={taskListRef}>
+				{isPinned && <CloseButton setIsVisible={setIsVisible} />}
 				<div className="task-list__header">
-					<h2>My Tasks</h2>
+					<Chip
+						onClick={() => setIsPinned(!isPinned)}
+						size="small"
+						variant={isPinned ? "filled" : "outlined"}
+						icon={<PushPinIcon />}
+						label={isPinned ? "Unpin" : "Pin"}
+					></Chip>
+					<h3>My Tasks</h3>
 					<IconButton
 						onClick={handleRefresh}
 						color="secondary"

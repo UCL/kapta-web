@@ -144,11 +144,16 @@ export default function App() {
 					isTask={true}
 				/>
 			)}
-
+			<TaskForm
+				isVisible={isTaskFormVisible}
+				setIsVisible={setTaskFormVisible}
+				user={user}
+				taskValues={taskValues}
+				showTaskSuccessModal={showTaskSuccessModal}
+			/>
 			{user.loggedIn && (
 				<>
 					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
-
 					<div className="btn-container">
 						<div className="btn-container--tasks">
 							<ButtonGroup
@@ -175,24 +180,18 @@ export default function App() {
 							</ButtonGroup>
 						</div>
 					</div>
+					<div className="task-map-wrapper">
+						<Map boundsVisible={boundsVisible} polygonStore={polygonStore} />
+						<TaskList
+							isVisible={isTaskListVisible}
+							setIsVisible={setTaskListVisible}
+							user={user}
+							showTaskForm={showTaskForm}
+							showBounds={showBounds}
+						/>
 
-					<Map boundsVisible={boundsVisible} polygonStore={polygonStore} />
-
-					<TaskForm
-						isVisible={isTaskFormVisible}
-						setIsVisible={setTaskFormVisible}
-						user={user}
-						taskValues={taskValues}
-						showTaskSuccessModal={showTaskSuccessModal}
-					/>
-					<TaskList
-						isVisible={isTaskListVisible}
-						setIsVisible={setTaskListVisible}
-						user={user}
-						showTaskForm={showTaskForm}
-						showBounds={showBounds}
-					/>
-					<SearchForm />
+						<SearchForm />
+					</div>
 				</>
 			)}
 		</main>
