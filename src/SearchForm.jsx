@@ -1,5 +1,5 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Button, Snackbar, TextField } from "@mui/material";
+import { Button, Chip, Snackbar, TextField } from "@mui/material";
 import { fetchAllTasks, fetchODTasks } from "./utils/apiQueries";
 import { useUserStore } from "./globals";
 import { useEffect, useState } from "react";
@@ -34,7 +34,8 @@ export default function SearchForm({
 
 	const handleSubmit = async (values) => {
 		// for the given set of tasks (currently all where visible===true), check in title and then description for the query
-		const q = values.query.toLowerCase();
+		// todo: how do we want to handle plurals? eg elf and elves mentioned
+		const q = values.query?.toLowerCase() || values;
 		var results = [];
 		console.log(tasks.length);
 
@@ -51,6 +52,24 @@ export default function SearchForm({
 		} else showSearchResults(results);
 	};
 
+	const chipSuggestions = [
+		{
+			label: "Show me all the sanity tasks",
+			icon: <></>,
+			action: () => handleSubmit("sanity"),
+		},
+		{
+			label: "Display all tasks points",
+			icon: <></>,
+			action: () => handleSubmit("points"),
+		},
+		{
+			label: "Where are the elves?",
+			icon: <></>,
+			action: () => handleSubmit("elf"),
+		},
+	];
+
 	return (
 		<>
 			<Snackbar
@@ -66,24 +85,38 @@ export default function SearchForm({
 					<Form
 						className={`form search__form ${taskListOpen ? "splitscreen" : ""}`}
 					>
-						<Field
-							type="text"
-							name="query"
-							label="Search"
-							as={TextField}
-							fullWidth
-						/>
-						<ErrorMessage name="query" component="div" className="error" />
-
-						{/* Submit Button */}
-						<Button
-							type="submit"
-							disabled={isSubmitting}
-							color="info"
-							variant="contained"
-						>
-							Search
-						</Button>
+						<div className="search__suggestions">
+							{chipSuggestions.map((key, index) => (
+								<Chip
+									key={index}
+									label={key.label}
+									icon={key.icon}
+									onClick={key.action}
+									variant="outlined"
+									color="muted"
+									size="small"
+								/>
+							))}
+						</div>
+						<div className="search__input">
+							<Field
+								type="text"
+								name="query"
+								label="Search"
+								as={TextField}
+								fullWidth
+							/>
+							<ErrorMessage name="query" component="div" className="error" />
+							{/* Submit Button */}
+							<Button
+								type="submit"
+								disabled={isSubmitting}
+								color="info"
+								variant="contained"
+							>
+								Search
+							</Button>
+						</div>
 					</Form>
 				)}
 			</Formik>

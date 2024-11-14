@@ -50,6 +50,7 @@ export default function App() {
 
 	const showNewTaskForm = () => {
 		setTaskValues(null);
+		setTaskListVisible(false);
 		setTaskFormVisible(true);
 	};
 

@@ -4,7 +4,14 @@ import App from "./App.jsx";
 import { UserProvider } from "./utils/UserContext.jsx";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { pink, red, amber, orange, deepOrange } from "@mui/material/colors";
+import {
+	pink,
+	red,
+	amber,
+	orange,
+	deepOrange,
+	grey,
+} from "@mui/material/colors";
 
 const theme = createTheme({
 	palette: {
@@ -27,6 +34,7 @@ const theme = createTheme({
 		tomato: {
 			main: "#ff6347",
 		},
+		muted: { main: grey[500] },
 	},
 	cssVariables: true,
 });
