@@ -7,3 +7,17 @@
 .no-tasks {
 	bottom: 8rem;
 }
+
+.search__form {
+	width: 60%;
+	display: flex;
+	justify-self: center;
+	align-self: end;
+	margin-bottom: 8vh;
+	transition: transform 0.3s;
+
+	&.splitscreen {
+		width: 40%;
+		transform: translateX(-60%);
+	}
+}

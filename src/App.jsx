@@ -164,7 +164,9 @@ export default function App() {
 			{user.loggedIn && (
 				<>
 					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
-					<div className="btn-container">
+					<div
+						className={`btn-container ${isTaskListVisible && "splitscreen"}`}
+					>
 						<div className="btn-container--tasks">
 							<ButtonGroup
 								disableElevation
@@ -213,6 +215,7 @@ export default function App() {
 					<SearchForm
 						isVisible={isSearchFormVisible}
 						showSearchResults={showSearchResults}
+						taskListOpen={isTaskListVisible}
 					/>
 				</>
 			)}

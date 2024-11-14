@@ -6,7 +6,11 @@ import { useEffect, useState } from "react";
 
 import "./styles/search.css";
 
-export default function SearchForm({ isVisible, showSearchResults }) {
+export default function SearchForm({
+	isVisible,
+	showSearchResults,
+	taskListOpen,
+}) {
 	const user = useUserStore();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [tasks, setTasks] = useState([]);
@@ -59,7 +63,9 @@ export default function SearchForm({ isVisible, showSearchResults }) {
 			/>
 			<Formik onSubmit={handleSubmit} initialValues={{ query: "" }}>
 				{({ isSubmitting }) => (
-					<Form className="form search__form">
+					<Form
+						className={`form search__form ${taskListOpen && "splitscreen"}`}
+					>
 						<Field
 							type="text"
 							name="query"

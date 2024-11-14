@@ -55,6 +55,10 @@ main {
 	justify-content: center;
 	width: 80vw;
 
+	&.splitscreen {
+		transform: translateX(-29%);
+	}
+
 	.btn-container--tasks::before {
 		content: "TASKS";
 		position: absolute;

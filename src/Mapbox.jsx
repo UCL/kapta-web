@@ -144,5 +144,5 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 		});
 	}, [polygonStore, boundsVisible]);
 
-	return <div id="map" className={taskListOpen ? "splitscreen" : ""}></div>;
+	return <div id="map" className={taskListOpen && "splitscreen"}></div>;
 }

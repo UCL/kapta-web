@@ -46,14 +46,6 @@
 	}
 }
 
-.search__form {
-	width: 60%;
-	display: flex;
-	justify-self: center;
-	align-self: end;
-	margin-bottom: 8vh;
-}
-
 .password-strength__container {
 	color: var(--off-white);
 	background-color: var(--dark-grey--translucent);
