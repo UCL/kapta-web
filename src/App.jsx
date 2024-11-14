@@ -38,6 +38,9 @@ export default function App() {
 
 	const [BMopen, setBMopen] = useState(false);
 
+	const [boundsVisible, setBoundsVisible] = useState(false);
+	const [polygonStore, setPolygonStore] = useState(null);
+
 	const user = useUserStore();
 
 	const showTaskForm = (task) => {
@@ -63,6 +66,20 @@ export default function App() {
 		setSuccessModalVisible(true);
 		setSuccessMsg(message);
 		setSuccessIsTask(true);
+	};
+
+	const showBounds = (bounds) => {
+		// this is for showing one at a time
+		setPolygonStore(bounds);
+		setBoundsVisible(true);
+	};
+
+	const showPolygons = (bounds) => {
+		// this is for showing multiple
+		if (polygonStore) {
+			setPolygonStore((prevPolygonStore) => [prevPolygonStore, bounds]);
+		} else setPolygonStore(bounds);
+		setBoundsVisible(true);
 	};
 
 	const showSearchResults = (results) => {
@@ -137,11 +154,16 @@ export default function App() {
 					isTask={true}
 				/>
 			)}
-
+			<TaskForm
+				isVisible={isTaskFormVisible}
+				setIsVisible={setTaskFormVisible}
+				user={user}
+				taskValues={taskValues}
+				showTaskSuccessModal={showTaskSuccessModal}
+			/>
 			{user.loggedIn && (
 				<>
 					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
-
 					<div className="btn-container">
 						<div className="btn-container--tasks">
 							<ButtonGroup
@@ -168,22 +190,21 @@ export default function App() {
 							</ButtonGroup>
 						</div>
 					</div>
+					<div className="task-map-wrapper">
+						<Map
+							boundsVisible={boundsVisible}
+							polygonStore={polygonStore}
+							taskListOpen={isTaskListVisible}
+						/>
+						<TaskList
+							isVisible={isTaskListVisible}
+							setIsVisible={setTaskListVisible}
+							user={user}
+							showTaskForm={showTaskForm}
+							showBounds={showBounds}
+						/>
+					</div>
 
-					<Map />
-
-					<TaskForm
-						isVisible={isTaskFormVisible}
-						setIsVisible={setTaskFormVisible}
-						user={user}
-						taskValues={taskValues}
-						showTaskSuccessModal={showTaskSuccessModal}
-					/>
-					<TaskList
-						isVisible={isTaskListVisible}
-						setIsVisible={setTaskListVisible}
-						user={user}
-						showTaskForm={showTaskForm}
-					/>
 					<SearchResults
 						isVisible={searchResultsVisible}
 						setIsVisible={setSearchResultsVisible}

@@ -4,5 +4,11 @@
 	bottom: 0;
 	width: 100%;
 	height: 100%;
-	/* z-index: -1; */
+}
+#map {
+	transition: transform 0.3s;
+	height: 100%;
+	&.splitscreen {
+		transform: translateX(-23%);
+	}
 }
