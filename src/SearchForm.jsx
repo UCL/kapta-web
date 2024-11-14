@@ -64,7 +64,7 @@ export default function SearchForm({
 			<Formik onSubmit={handleSubmit} initialValues={{ query: "" }}>
 				{({ isSubmitting }) => (
 					<Form
-						className={`form search__form ${taskListOpen && "splitscreen"}`}
+						className={`form search__form ${taskListOpen ? "splitscreen" : ""}`}
 					>
 						<Field
 							type="text"

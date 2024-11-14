@@ -205,18 +205,18 @@ export default function App() {
 							showTaskForm={showTaskForm}
 							showBounds={showBounds}
 						/>
-					</div>
 
-					<SearchResults
-						isVisible={searchResultsVisible}
-						setIsVisible={setSearchResultsVisible}
-						results={searchResults}
-					/>
-					<SearchForm
-						isVisible={isSearchFormVisible}
-						showSearchResults={showSearchResults}
-						taskListOpen={isTaskListVisible}
-					/>
+						<SearchResults
+							isVisible={searchResultsVisible}
+							setIsVisible={setSearchResultsVisible}
+							results={searchResults}
+						/>
+						<SearchForm
+							isVisible={isSearchFormVisible}
+							showSearchResults={showSearchResults}
+							taskListOpen={isTaskListVisible}
+						/>
+					</div>
 				</>
 			)}
 		</main>

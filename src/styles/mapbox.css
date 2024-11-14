@@ -6,9 +6,13 @@
 	height: 100%;
 }
 #map {
-	transition: transform 0.3s;
 	height: 100%;
+	grid-column: span 2;
 	&.splitscreen {
-		transform: translateX(-23%);
+		grid-column: span 1;
+		canvas {
+			transition: transform 0.3s;
+			transform: translateX(-18%);
+		}
 	}
 }

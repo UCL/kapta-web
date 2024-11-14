@@ -39,8 +39,8 @@ main {
 }
 
 .task-map-wrapper {
-	/* display: grid;
-	grid-template-columns: 1fr 1fr; */
+	display: grid;
+	grid-template-columns: 1fr 1fr;
 	height: 100%;
 	width: 100%;
 	position: absolute;
@@ -54,10 +54,6 @@ main {
 	display: flex;
 	justify-content: center;
 	width: 80vw;
-
-	&.splitscreen {
-		transform: translateX(-29%);
-	}
 
 	.btn-container--tasks::before {
 		content: "TASKS";

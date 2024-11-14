@@ -14,10 +14,12 @@
 	justify-self: center;
 	align-self: end;
 	margin-bottom: 8vh;
-	transition: transform 0.3s;
+	transition: transform 1.5s;
+	grid-column: span 2;
 
 	&.splitscreen {
-		width: 40%;
-		transform: translateX(-60%);
+		grid-column: 1;
+		width: 80%;
+		transform: translateX(15%);
 	}
 }
