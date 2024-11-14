@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { MAPBOX_TOKEN } from "./globals";
 import "./styles/mapbox.css";
 
-export function Map({ boundsVisible, polygonStore }) {
+export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 	const map = useRef(null);
 	// base map
 	useEffect(() => {
@@ -12,7 +12,7 @@ export function Map({ boundsVisible, polygonStore }) {
 		map.current = new mapboxgl.Map({
 			container: "map",
 			style: "mapbox://styles/mapbox/dark-v11",
-			zoom: 1.5,
+			zoom: 1.2,
 			center: [30, 50],
 			projection: "globe",
 		});
@@ -144,5 +144,5 @@ export function Map({ boundsVisible, polygonStore }) {
 		});
 	}, [polygonStore, boundsVisible]);
 
-	return <div id="map"></div>;
+	return <div id="map" className={taskListOpen ? "splitscreen" : ""}></div>;
 }

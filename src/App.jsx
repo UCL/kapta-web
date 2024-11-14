@@ -181,7 +181,11 @@ export default function App() {
 						</div>
 					</div>
 					<div className="task-map-wrapper">
-						<Map boundsVisible={boundsVisible} polygonStore={polygonStore} />
+						<Map
+							boundsVisible={boundsVisible}
+							polygonStore={polygonStore}
+							taskListOpen={isTaskListVisible}
+						/>
 						<TaskList
 							isVisible={isTaskListVisible}
 							setIsVisible={setTaskListVisible}

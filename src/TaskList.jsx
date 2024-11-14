@@ -143,7 +143,7 @@ export default function TaskList({
 			className="task-list__drawer"
 			variant={isPinned ? "persistent" : "temporary"}
 		>
-			<div className="task-list__content" ref={taskListRef}>
+			<div className="task-list__content" ref={!isPinned ? taskListRef : null}>
 				{isPinned && <CloseButton setIsVisible={setIsVisible} />}
 				<div className="task-list__header">
 					<Chip
