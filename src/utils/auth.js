@@ -4,6 +4,7 @@ import {
 	InitiateAuthCommand,
 	GlobalSignOutCommand,
 	ConfirmSignUpCommand,
+	ResendConfirmationCodeCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 
 import { cognito } from "../globals";
@@ -77,7 +78,6 @@ const confirmSignUp = async (code, recipient) => {
 };
 
 const initiateAuth = async (email, password) => {
-	console.log("initiating log in");
 	const client = new CognitoIdentityProviderClient(cognito);
 	const command = new InitiateAuthCommand({
 		AuthFlow: "USER_PASSWORD_AUTH",
@@ -123,4 +123,26 @@ const signOut = (access_token) => {
 	return client.send(command);
 };
 
-export { signUp, confirmSignUp, initiateAuth, initiateAuthRefresh, signOut };
+const resendVerificationCode = async (email) => {
+	const client = new CognitoIdentityProviderClient(cognito);
+
+	try {
+		const command = new ResendConfirmationCodeCommand({
+			ClientId: cognito.userPoolClientId,
+			Username: email,
+		});
+		const response = await client.send(command);
+		console.log("Verification code resent successfully:", response);
+	} catch (error) {
+		console.error("Error resending verification code:", error);
+	}
+};
+
+export {
+	signUp,
+	confirmSignUp,
+	initiateAuth,
+	initiateAuthRefresh,
+	signOut,
+	resendVerificationCode,
+};

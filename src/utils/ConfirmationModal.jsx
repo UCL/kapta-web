@@ -1,6 +1,6 @@
 import CloseButton from "./CloseButton";
 import { Button, TextField } from "@mui/material";
-import { confirmSignUp } from "./auth";
+import { confirmSignUp, resendVerificationCode } from "./auth";
 
 export default function ConfirmModal({
 	isVisible,
@@ -25,17 +25,14 @@ export default function ConfirmModal({
 		});
 	};
 	const handleNewCodeRequest = () => {
-		console.log("requesting new code");
+		resendVerificationCode(recipient);
 	};
 	return (
 		<>
 			<dialog open id="confirm-dialog" className="dialog">
 				<CloseButton setIsVisible={setIsVisible} />
 				<h3>Confirm your account details</h3>
-				<p>
-					If you provided a phone number, you will receive a SMS with a code.
-					Otherwise, you should receive an email with a code
-				</p>
+				<p>Check your email for a verification code. It may be in spam.</p>
 				<form onSubmit={handleSubmit}>
 					<TextField
 						size="small"
