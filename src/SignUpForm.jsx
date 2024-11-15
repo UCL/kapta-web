@@ -24,9 +24,9 @@ export default function SignUpForm({
 	isVisible,
 	setIsVisible,
 	showConfirmModal,
+	showFilledLoginForm,
 }) {
 	useTheme();
-	const [password, setPassword] = useState("");
 	const [passwordStrength, setPasswordStrength] = useState({});
 
 	if (!isVisible) return null;
@@ -62,7 +62,6 @@ export default function SignUpForm({
 		// todo: confirm pw doesn't seem to work when not matching
 	});
 	const handleSubmit = async (values) => {
-		console.log("Form data:", values);
 		if (values.phoneNumber) {
 			// make sure the phone number has a +
 			const formattedPhoneNumber = values.phoneNumber.startsWith("+")
@@ -72,15 +71,12 @@ export default function SignUpForm({
 		}
 
 		return signUp(values).then(({ response }) => {
-			console.log(response);
 			if (!response) {
-				console.log("Error signing up");
+				console.error("Error signing up");
 			}
 			if (response === 4469) {
-				console.log("User already exists");
-				// show login
+				showFilledLoginForm(values.email);
 			} else {
-				console.log("response was fine");
 				showConfirmModal(values.email);
 				setIsVisible(false);
 			}
@@ -90,7 +86,6 @@ export default function SignUpForm({
 	const handlePasswordChange = (e, setFieldValue) => {
 		const newPassword = e.target.value;
 		setFieldValue("password", newPassword);
-		setPassword(newPassword);
 		setPasswordStrength(checkPasswordStrength(newPassword));
 	};
 

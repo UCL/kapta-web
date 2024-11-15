@@ -23,6 +23,7 @@ export default function App() {
 
 	const [isLoginFormVisible, setLoginFormVisible] = useState(false);
 	const [signUpFormVisible, setSignUpFormVisible] = useState(false);
+	const [email, setEmail] = useState("");
 	const [confirmModalVisible, setConfirmModalVisible] = useState(false);
 	const [cmRecipient, setCMRecipient] = useState(null);
 
@@ -55,6 +56,13 @@ export default function App() {
 		setSuccessModalVisible(true);
 		setSuccessMsg(message);
 		setSuccessIsTask(false);
+		setEmail("");
+	};
+
+	const showFilledLoginForm = (email) => {
+		setSignUpFormVisible(false);
+		setEmail(email);
+		setLoginFormVisible(true);
 	};
 	const showTaskSuccessModal = (message) => {
 		setSuccessModalVisible(true);
@@ -96,13 +104,13 @@ export default function App() {
 				setErrorMsg={setErrorMsg}
 				showConfirmModal={showConfirmModal}
 				showLoginSuccessModal={showLoginSuccessModal}
+				prefilledEmail={email}
 			/>
 			<SignUpForm
 				isVisible={signUpFormVisible}
 				setIsVisible={setSignUpFormVisible}
-				setLoginVisible={setLoginFormVisible}
 				showConfirmModal={showConfirmModal}
-				showLoginSuccessModal={showLoginSuccessModal}
+				showFilledLoginForm={showFilledLoginForm}
 			/>
 			{confirmModalVisible && (
 				<ConfirmModal

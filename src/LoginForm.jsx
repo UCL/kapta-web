@@ -13,9 +13,10 @@ export default function LoginForm({
 	setErrorMsg,
 	showConfirmModal,
 	showLoginSuccessModal,
+	prefilledEmail,
 }) {
 	const user = useUserStore();
-	useTheme();
+	// useTheme();
 	if (!isVisible) return null;
 
 	const setUserDetailsAndShowModal = async (response) => {
@@ -41,7 +42,7 @@ export default function LoginForm({
 		});
 	};
 	const initialValues = {
-		email: "",
+		email: prefilledEmail || "",
 		password: "",
 	};
 	return (
