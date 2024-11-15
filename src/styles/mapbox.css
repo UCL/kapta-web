@@ -6,3 +6,11 @@
 	height: 100%;
 	/* z-index: -1; */
 }
+
+.mapboxgl-ctrl-attrib {
+	background-color: transparent !important;
+
+	.mapboxgl-ctrl-attrib-inner > a {
+		color: grey;
+	}
+}
