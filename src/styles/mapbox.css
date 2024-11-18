@@ -16,3 +16,11 @@
 		}
 	}
 }
+
+.mapboxgl-ctrl-attrib {
+	background-color: transparent !important;
+
+	.mapboxgl-ctrl-attrib-inner > a {
+		color: grey;
+	}
+}

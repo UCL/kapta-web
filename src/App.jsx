@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from "@mui/material";
+import { Button, ButtonGroup, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import LoginIcon from "@mui/icons-material/Login";
@@ -24,6 +24,7 @@ export default function App() {
 
 	const [isLoginFormVisible, setLoginFormVisible] = useState(false);
 	const [signUpFormVisible, setSignUpFormVisible] = useState(false);
+	const [email, setEmail] = useState("");
 	const [confirmModalVisible, setConfirmModalVisible] = useState(false);
 	const [cmRecipient, setCMRecipient] = useState(null);
 
@@ -52,6 +53,7 @@ export default function App() {
 		setTaskValues(null);
 		setTaskListVisible(false);
 		setTaskFormVisible(true);
+		setTaskListVisible(false);
 	};
 
 	const showConfirmModal = (recipient) => {
@@ -62,6 +64,13 @@ export default function App() {
 		setSuccessModalVisible(true);
 		setSuccessMsg(message);
 		setSuccessIsTask(false);
+		setEmail("");
+	};
+
+	const showFilledLoginForm = (email) => {
+		setSignUpFormVisible(false);
+		setEmail(email);
+		setLoginFormVisible(true);
 	};
 	const showTaskSuccessModal = (message) => {
 		setSuccessModalVisible(true);
@@ -122,13 +131,13 @@ export default function App() {
 				setErrorMsg={setErrorMsg}
 				showConfirmModal={showConfirmModal}
 				showLoginSuccessModal={showLoginSuccessModal}
+				prefilledEmail={email}
 			/>
 			<SignUpForm
 				isVisible={signUpFormVisible}
 				setIsVisible={setSignUpFormVisible}
-				setLoginVisible={setLoginFormVisible}
 				showConfirmModal={showConfirmModal}
-				showLoginSuccessModal={showLoginSuccessModal}
+				showFilledLoginForm={showFilledLoginForm}
 			/>
 			{confirmModalVisible && (
 				<ConfirmModal
@@ -165,33 +174,33 @@ export default function App() {
 			{user.loggedIn && (
 				<>
 					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
-					<div
-						className={`btn-container ${isTaskListVisible && "splitscreen"}`}
-					>
-						<div className="btn-container--tasks">
-							<ButtonGroup
-								disableElevation
-								variant="outlined"
-								aria-label="task button group"
-								size="medium"
-								color="info"
+					<div className="btn-container--tasks">
+						<ButtonGroup
+							disableElevation
+							variant="outlined"
+							aria-label="task button group"
+							size="medium"
+							color="info"
+						>
+							<Button
+								onClick={showNewTaskForm}
+								className="btn--new-task"
+								startIcon={<AddIcon />}
 							>
-								<Button
-									onClick={showNewTaskForm}
-									className="btn--new-task"
-									startIcon={<AddIcon />}
-								>
-									New
-								</Button>
-								<Button
-									onClick={() => setTaskListVisible(true)}
-									className="btn--view-tasks"
-									startIcon={<VisibilityIcon />}
-								>
-									View
-								</Button>
-							</ButtonGroup>
-						</div>
+								New
+							</Button>
+							<Button
+								onClick={() => setTaskListVisible(true)}
+								className="btn--view-tasks"
+								startIcon={<VisibilityIcon />}
+							>
+								View
+							</Button>
+						</ButtonGroup>
+					</div>
+
+					<div className="response-container">
+						{/* this is where the bot responses will go */}
 					</div>
 					<div className="task-map-wrapper">
 						<Map
@@ -204,6 +213,7 @@ export default function App() {
 							setIsVisible={setTaskListVisible}
 							user={user}
 							showTaskForm={showTaskForm}
+							showNewTaskForm={showNewTaskForm}
 							showBounds={showBounds}
 						/>
 
@@ -218,6 +228,22 @@ export default function App() {
 							taskListOpen={isTaskListVisible}
 						/>
 					</div>
+					<TaskForm
+						isVisible={isTaskFormVisible}
+						setIsVisible={setTaskFormVisible}
+						user={user}
+						taskValues={taskValues}
+						showTaskSuccessModal={showTaskSuccessModal}
+					/>
+					<Fab
+						size="medium"
+						variant="extended"
+						color="tomato"
+						onClick={() => setTaskListVisible(true)}
+						className="btn--view-tasks"
+					>
+						TASKS
+					</Fab>
 				</>
 			)}
 		</main>

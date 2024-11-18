@@ -46,22 +46,9 @@ main {
 	position: absolute;
 }
 
-.btn-container {
-	justify-self: center;
-	position: absolute;
-	z-index: 1;
-	top: 5%;
-	display: flex;
-	justify-content: center;
-	width: 80vw;
-
-	.btn-container--tasks::before {
-		content: "TASKS";
-		position: absolute;
-		top: -2rem;
-		margin-left: 2.85rem;
-		font-size: 1.5rem;
-		font-weight: bold;
-		color: var(--tomato);
-	}
+.btn--view-tasks {
+	position: absolute !important;
+	width: fit-content !important;
+	right: 4%;
+	bottom: 9%;
 }

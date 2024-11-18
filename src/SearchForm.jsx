@@ -1,8 +1,10 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Button, Chip, Snackbar, TextField } from "@mui/material";
+import { Button, Chip, Snackbar } from "@mui/material";
 import { fetchAllTasks, fetchODTasks } from "./utils/apiQueries";
 import { useUserStore } from "./globals";
 import { useEffect, useState } from "react";
+import { Fab, TextField } from "@mui/material";
+import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 
 import "./styles/search.css";
 
@@ -29,6 +31,8 @@ export default function SearchForm({
 			});
 		}
 	}, [isVisible, user]);
+
+	// import * as Yup from "yup";
 
 	if (!isVisible) return null;
 
@@ -102,20 +106,22 @@ export default function SearchForm({
 							<Field
 								type="text"
 								name="query"
-								label="Search"
+								label="Search WhatsApp maps ground data"
 								as={TextField}
+								className="search__form__input"
 								fullWidth
 							/>
 							<ErrorMessage name="query" component="div" className="error" />
 							{/* Submit Button */}
-							<Button
+							<Fab
 								type="submit"
 								disabled={isSubmitting}
 								color="info"
 								variant="contained"
+								className="search__submit__btn"
 							>
-								Search
-							</Button>
+								<ArrowUpwardRoundedIcon />
+							</Fab>
 						</div>
 					</Form>
 				)}

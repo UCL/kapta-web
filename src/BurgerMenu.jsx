@@ -43,8 +43,8 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 	};
 	const user = useUserStore();
 	const handleLogout = () => {
-		console.log("logging out");
 		user.logout();
+		toggleDrawer(false);
 	};
 	const viewProfile = () => {
 		console.log("todo: view profile");
@@ -136,45 +136,44 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 				onClose={toggleDrawer(false)}
 				className="bm__drawer"
 			>
-				<ButtonGroup className="bm__buttons">
-					{navItems.map((item, index) => (
-						<Tooltip key={item.text} title={item.text} placement="top">
-							<IconButton
-								onClick={() => {
-									item.function();
-									toggleDrawer(false);
-								}}
+				<CloseButton setIsVisible={setIsOpen} />
+				<div className="bm__content">
+					<List>
+						{menuSections.map((section, index) => (
+							<Accordion
+								key={section.title}
+								expanded={expandedPanel === `panel${index}`}
+								onChange={handleAccordionChange(`panel${index}`)}
 							>
-								{item.icon}
-							</IconButton>
-						</Tooltip>
-					))}
-				</ButtonGroup>
-				<List>
-					{menuSections.map((section, index) => (
-						<Accordion
-							key={section.title}
-							expanded={expandedPanel === `panel${index}`}
-							onChange={handleAccordionChange(`panel${index}`)}
-						>
-							<AccordionSummary
-								expandIcon={<ExpandMoreIcon />}
-								aria-controls={`panel${index}a-content`}
-								id={`panel${index}a-header`}
-							>
-								<ListItemIcon>{section.icon}</ListItemIcon>
-								<Typography variant="h6">{section.title}</Typography>
-							</AccordionSummary>
-							<Typography variant="subtitle1" className="bm__content__subtitle">
-								{section.subtitle}
-							</Typography>
-							<AccordionDetails>{parse(section.content)}</AccordionDetails>
-						</Accordion>
-					))}
-				</List>
-				<div className="bm__footer">
-					<Typography>Have feedback or want to get in touch?</Typography>
-					<Button>Contact Us</Button>
+								<AccordionSummary
+									expandIcon={<ExpandMoreIcon />}
+									aria-controls={`panel${index}a-content`}
+									id={`panel${index}a-header`}
+								>
+									<ListItemIcon>{section.icon}</ListItemIcon>
+									<Typography variant="h6">{section.title}</Typography>
+								</AccordionSummary>
+								<Typography
+									variant="subtitle1"
+									className="bm__content__subtitle"
+								>
+									{section.subtitle}
+								</Typography>
+								<AccordionDetails>{parse(section.content)}</AccordionDetails>
+							</Accordion>
+						))}
+					</List>
+					<div className="bm__footer">
+						<Typography>Have feedback or want to get in touch?</Typography>
+						<Button>Contact Us</Button>
+					</div>
+					<Button
+						onClick={handleLogout}
+						endIcon={<LogoutIcon />}
+						className="btn--logout"
+					>
+						Logout
+					</Button>
 				</div>
 			</Drawer>
 		</>

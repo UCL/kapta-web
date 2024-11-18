@@ -7,15 +7,21 @@
 	}
 }
 .task-list__header {
-	margin-inline: 4%;
+	margin-block: 1.5rem;
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-between;
 	align-items: center;
 	font-family: "Lato", sans-serif;
 
 	.btn--refresh {
 		height: fit-content;
 	}
+}
+
+#task-list__new-form-btn {
+	position: fixed;
+	right: 1%;
+	bottom: 4%;
 }
 
 .task-list__content {
