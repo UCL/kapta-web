@@ -8,6 +8,7 @@ import {
 	Chip,
 	CircularProgress,
 	Drawer,
+	Fab,
 	IconButton,
 	Snackbar,
 	ToggleButton,
@@ -15,7 +16,7 @@ import {
 	Typography,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import AddIcon from "@mui/icons-material/Add";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import PlaceIcon from "@mui/icons-material/Place";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -31,6 +32,7 @@ export default function TaskList({
 	setIsVisible,
 	user,
 	showTaskForm,
+	showNewTaskForm,
 }) {
 	// TODO: if given user or get user here then get all tasks created by them
 	const [tasks, setTasks] = useState([]);
@@ -156,6 +158,17 @@ export default function TaskList({
 						View Opendata Tasks
 					</ToggleButton>
 				</div>
+				<Tooltip title="Create New Task">
+					<Fab
+						color="primary"
+						aria-label="create new task"
+						id="task-list__new-form-btn"
+						onClick={showNewTaskForm}
+					>
+						<AddIcon />
+					</Fab>
+				</Tooltip>
+
 				{!isLoading && (
 					<div className="task-list__total">Total: {tasks?.length || 0}</div>
 				)}
@@ -233,6 +246,7 @@ export default function TaskList({
 					<p className="no-tasks">No tasks to display</p>
 				)}
 			</div>
+
 			<Snackbar
 				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
 				open={snackbarOpen}

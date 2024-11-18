@@ -40,22 +40,10 @@ main {
 	}
 }
 
-.btn-container {
-	justify-self: center;
-	position: absolute;
-	z-index: 1;
-	top: 5%;
+.user-action__wrapper {
 	display: flex;
-	justify-content: center;
-	width: 80vw;
-
-	.btn-container--tasks::before {
-		content: "TASKS";
-		position: absolute;
-		top: -2rem;
-		margin-left: 2.85rem;
-		font-size: 1.5rem;
-		font-weight: bold;
-		color: var(--tomato);
-	}
+	justify-content: space-around;
+	margin-inline: 4%;
+	margin-bottom: 8vh;
+	align-self: flex-end;
 }

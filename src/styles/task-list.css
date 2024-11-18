@@ -18,6 +18,12 @@
 	}
 }
 
+#task-list__new-form-btn {
+	position: fixed;
+	right: 2%;
+	bottom: 4%;
+}
+
 .task-list__content {
 	margin-inline: 4%;
 	.no-tasks,

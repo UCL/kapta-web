@@ -47,11 +47,9 @@
 }
 
 .search__form {
-	width: 60%;
+	width: 70%;
 	display: flex;
-	justify-self: center;
 	align-self: end;
-	margin-bottom: 8vh;
 }
 
 .password-strength__container {
