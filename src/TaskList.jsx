@@ -41,17 +41,18 @@ export default function TaskList({
 	const [tasks, setTasks] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
-	const [listIsOD, setListIsOD] = useState(false);
-	const [taskListName, setTaskListName] = useState("my-tasks");
+	const [taskListName, setTaskListName] = useState("mine");
 	const taskListRef = useRef(null);
 	const [isPinned, setIsPinned] = useState(false);
 
 	useEffect(() => {
 		if (isVisible) {
+			setIsLoading(true);
 			const fetchTasks = async () => {
-				var fetchedTasks = await fetchMyTasks({ user, setTasks, setIsLoading });
+				var fetchedTasks = await fetchMyTasks({ user, setTasks });
 				setTasks(fetchedTasks);
-				setTaskListName("my-tasks");
+				setTaskListName("mine");
+				setIsLoading(false);
 			};
 
 			fetchTasks();
@@ -59,14 +60,16 @@ export default function TaskList({
 	}, [isVisible, user]);
 
 	useEffect(() => {
-		setIsLoading(true);
+		// setIsLoading(true);
 		if (taskListName === "opendata") {
+			setIsLoading(true);
 			const fetchTasks = async () => {
 				var fetchedTasks = await fetchODTasks({ user });
 				setTasks(fetchedTasks);
 			};
 			fetchTasks();
-		} else if (taskListName === "my-tasks") {
+		} else if (taskListName === "mine") {
+			setIsLoading(true);
 			const fetchTasks = async () => {
 				var fetchedTasks = await fetchMyTasks({ user });
 				setTasks(fetchedTasks);
@@ -95,6 +98,7 @@ export default function TaskList({
 
 	const handleChangeTaskList = async (event, newTaskListName) => {
 		setTaskListName(newTaskListName);
+		setIsLoading(true);
 	};
 
 	const handleRefresh = async () => {
@@ -102,13 +106,12 @@ export default function TaskList({
 		// todo: also refresh the metadata
 		try {
 			let fetchedTasks;
-			if (taskListName == "my-tasks") {
-				fetchedTasks = await fetchMyTasks({ user, setIsLoading });
+			if (taskListName == "mine") {
+				fetchedTasks = await fetchMyTasks({ user });
 			} else if (taskListName == "opendata") {
 				fetchedTasks = await await fetchODTasks({ user });
 			}
 			setTasks(fetchedTasks);
-			// could make this snazzy and try and check for if the my OD is toggled
 		} catch (error) {
 			console.error("Error fetching tasks:", error);
 		} finally {
@@ -158,12 +161,13 @@ export default function TaskList({
 						label={isPinned ? "Unpin" : "Pin"}
 					></Chip>
 					<ToggleButtonGroup
-						color="primary"
+						color="tomato"
 						value={taskListName}
 						exclusive
+						size="small"
 						onChange={handleChangeTaskList}
 					>
-						<ToggleButton value="my-tasks">My Tasks</ToggleButton>
+						<ToggleButton value="mine">My Tasks</ToggleButton>
 						<ToggleButton value="opendata">Open Datasets</ToggleButton>
 					</ToggleButtonGroup>
 					<IconButton
@@ -174,14 +178,17 @@ export default function TaskList({
 						<RefreshIcon />
 					</IconButton>
 				</div>
+				{/* New task button: actually at the bottom */}
 				<Tooltip title="Create New Task">
 					<Fab
 						color="primary"
+						variant="extended"
 						aria-label="create new task"
 						id="task-list__new-form-btn"
 						onClick={showNewTaskForm}
 					>
 						<AddIcon />
+						Create New Task
 					</Fab>
 				</Tooltip>
 
