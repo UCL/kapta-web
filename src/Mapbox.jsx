@@ -140,7 +140,7 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 
 		map.current.fitBounds(bounds, {
 			padding: 20,
-			maxZoom: 13,
+			maxZoom: 12,
 		});
 	}, [polygonStore, boundsVisible]);
 
