@@ -136,7 +136,7 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 				onClose={toggleDrawer(false)}
 				className="bm__drawer"
 			>
-				<CloseButton setIsVisible={toggleDrawer} />
+				<CloseButton setIsVisible={setIsOpen} />
 				<div className="bm__content">
 					<List>
 						{menuSections.map((section, index) => (
