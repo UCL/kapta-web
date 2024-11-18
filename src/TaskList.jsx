@@ -122,6 +122,7 @@ export default function TaskList({
 	const handleShowOnMap = (task) => {
 		console.log(task.geo_bounds);
 		showBounds(task.geo_bounds);
+		if (!isPinned) setIsVisible(false);
 	};
 
 	const cardActionBtns = [
