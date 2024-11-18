@@ -46,10 +46,9 @@ main {
 	position: absolute;
 }
 
-.user-action__wrapper {
-	display: flex;
-	justify-content: space-around;
-	margin-inline: 4%;
-	margin-bottom: 8vh;
-	align-self: flex-end;
+.btn--view-tasks {
+	position: absolute !important;
+	width: fit-content !important;
+	right: 4%;
+	bottom: 9%;
 }

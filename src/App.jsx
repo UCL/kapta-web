@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from "@mui/material";
+import { Button, ButtonGroup, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import LoginIcon from "@mui/icons-material/Login";
@@ -15,6 +15,7 @@ import ErrorModal from "./utils/ErrorModal";
 import ConfirmModal from "./utils/ConfirmationModal";
 import SuccessModal from "./SuccessModal";
 import BurgerMenu from "./BurgerMenu";
+import { useTheme } from "@emotion/react";
 
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
@@ -85,6 +86,8 @@ export default function App() {
 		} else setPolygonStore(bounds);
 		setBoundsVisible(true);
 	};
+
+	const theme = useTheme();
 
 	return (
 		<main>
@@ -181,9 +184,8 @@ export default function App() {
 							showNewTaskForm={showNewTaskForm}
 							showBounds={showBounds}
 						/>
-
-						<SearchForm />
 					</div>
+					<SearchForm isVisible={true} />
 					<TaskForm
 						isVisible={isTaskFormVisible}
 						setIsVisible={setTaskFormVisible}
@@ -191,17 +193,15 @@ export default function App() {
 						taskValues={taskValues}
 						showTaskSuccessModal={showTaskSuccessModal}
 					/>
-					<div className="user-action__wrapper">
-						<Button
-							size="medium"
-							variant="outlined"
-							color="tomato"
-							onClick={() => setTaskListVisible(true)}
-							className="btn--view-tasks"
-						>
-							TASKS
-						</Button>
-					</div>
+					<Fab
+						size="medium"
+						variant="extended"
+						color="tomato"
+						onClick={() => setTaskListVisible(true)}
+						className="btn--view-tasks"
+					>
+						TASKS
+					</Fab>
 				</>
 			)}
 		</main>
