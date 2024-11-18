@@ -1,11 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Krub:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+
 :root {
 	font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+	--intrinsic-grey: #16161d;
+	--intrinsic-grey--translucent: #16161dd5;
+	--off-white: #eae1e1;
+	--rose: var(--mui-palette-info-200);
+	--dark-grey--translucent: #2a282888;
+	--tomato: var(--mui-palette-tomato-main);
+}
+html,
+body {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+#root {
+	background-color: var(--intrinsic-grey);
+	z-index: -2;
 }
 
 main {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
+	display: grid;
+	/* flex-direction: column; */
 	align-items: center;
-	/* height: 100vh; */
+	height: 100vh;
+	/* z-index: -2; */
+
+	.login-signup__wrapper {
+		justify-self: center;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		align-items: center;
+		justify-items: center;
+		justify-content: center;
+	}
+}
+
+.user-action__wrapper {
+	display: flex;
+	justify-content: space-around;
+	margin-inline: 4%;
+	margin-bottom: 8vh;
+	align-self: flex-end;
 }

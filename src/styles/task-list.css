@@ -1,0 +1,103 @@
+.task-list__drawer {
+	z-index: 3;
+
+	.MuiPaper-root {
+		width: 100%;
+		max-width: 48vw;
+	}
+}
+.task-list__header {
+	margin-inline: 4%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	font-family: "Lato", sans-serif;
+
+	.btn--refresh {
+		height: fit-content;
+	}
+}
+
+#task-list__new-form-btn {
+	position: fixed;
+	right: 2%;
+	bottom: 4%;
+}
+
+.task-list__content {
+	margin-inline: 4%;
+	.no-tasks,
+	.task-list__total {
+		text-align: center;
+		margin-bottom: 1rem;
+		font-family: "Lato", sans-serif;
+	}
+	.loader {
+		text-align: center;
+	}
+
+	.task-card__status-strip {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 1rem;
+		margin: 0;
+		padding: 0;
+		background-color: darkslategray;
+
+		&.active {
+			background-color: var(--mui-palette-success-dark);
+		}
+		&.closed {
+			background-color: var(--mui-palette-primary-600);
+		}
+
+		span {
+			transform: rotate(-90deg);
+			font-size: 0.6rem;
+		}
+	}
+	.task-list__card-content__wrapper {
+		width: 100%;
+	}
+	.task-card {
+		margin-bottom: 0.8rem;
+		display: flex;
+
+		.task-card__title {
+			display: flex;
+			justify-content: space-between;
+
+			h5 {
+				max-width: 60%;
+				font-family: "Krub";
+			}
+		}
+		.task-card__info {
+			margin-left: 0.5rem;
+			display: flex;
+			justify-content: space-evenly;
+			.task__info-chip {
+				color: var(--mui-palette-tomato-main);
+				border-color: var(--mui-palette-tomato-main);
+				margin-left: 0.2rem;
+				svg {
+					color: var(--mui-palette-secondary-700);
+					padding-left: 0.1rem;
+				}
+			}
+		}
+	}
+	.campaign-code {
+		color: var(--rose);
+		border-color: var(--rose);
+		font-weight: 600;
+		margin-left: 0.4rem;
+		font-size: 1rem;
+		font-family: "Nunito", sans-serif;
+	}
+	.task-list__card-actions {
+		justify-content: center;
+	}
+}

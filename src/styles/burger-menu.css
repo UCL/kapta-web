@@ -1,0 +1,45 @@
+.btn--burger-menu {
+	height: fit-content;
+	margin-left: 1rem !important;
+	margin-top: 1rem !important;
+	z-index: 1;
+	justify-self: flex-start;
+	align-self: flex-start;
+}
+.bm__drawer {
+	.btn--logout {
+		margin-bottom: 4%;
+	}
+
+	.MuiPaper-root {
+		max-width: 40vw;
+	}
+
+	.bm__content {
+		display: flex;
+		height: 100%;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	.bm__content__subtitle {
+		margin-inline: 4%;
+		font-weight: 600;
+	}
+
+	a {
+		color: var(--tomato);
+		&:hover {
+			color: salmon;
+		}
+	}
+
+	.bm__people-list {
+		line-height: 1.5rem;
+	}
+
+	.bm__footer {
+		text-align: center;
+		margin-top: 2rem;
+	}
+}

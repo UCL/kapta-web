@@ -1,0 +1,5 @@
+.close-btn__container {
+	display: grid;
+	place-content: center;
+	width: 100%;
+}

@@ -1,0 +1,81 @@
+.task-request-form {
+	width: 75%;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	justify-self: center;
+	align-self: center;
+	background-color: var(--intrinsic-grey--translucent);
+	z-index: 1;
+	padding-bottom: 3rem;
+	margin-top: 5rem;
+	color: var(--off-white);
+	border: 1px solid var(--tomato);
+	border-radius: 8px;
+
+	.form__body {
+		margin-inline: 3rem;
+	}
+
+	.btn--submit {
+		margin-top: 1rem;
+	}
+}
+
+.login__form--container,
+.signup__form--container {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	align-items: center;
+}
+.login__form,
+.signup__form {
+	justify-self: center;
+	width: clamp(20rem, 50%, 40rem);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	gap: 0.8rem;
+}
+
+.form__row {
+	display: flex;
+	* {
+		flex: 1;
+	}
+}
+
+.search__form {
+	width: 70%;
+	display: flex;
+	align-self: end;
+
+	.MuiInputBase-formControl {
+		border-radius: 1.5rem;
+	}
+
+	.search__submit__btn {
+		transform: translateX(25%);
+	}
+}
+
+.password-strength__container {
+	color: var(--off-white);
+	background-color: var(--dark-grey--translucent);
+	padding: 1rem;
+	border-radius: 10px;
+	width: 40%;
+	text-align: center;
+
+	ul {
+		list-style: none;
+		padding: 0;
+		line-height: 1.5rem;
+		li {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+	}
+}

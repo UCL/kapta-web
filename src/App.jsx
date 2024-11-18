@@ -1,24 +1,183 @@
-import { Button } from "@mui/material";
+import { Button, ButtonGroup } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import LoginIcon from "@mui/icons-material/Login";
 import "./styles/App.css";
 import TaskForm from "./TaskForm";
 import { useState } from "react";
-
-export const REQUEST_URL =
-	"https://5fpm1iy0s4.execute-api.eu-west-2.amazonaws.com";
-
-export const METADATA_URL =
-	"https://poeddd3g4f.execute-api.eu-west-2.amazonaws.com";
+import LoginForm from "./LoginForm";
+import { useUserStore } from "./globals";
+import TaskList from "./TaskList";
+import { Map } from "./Mapbox";
+import SearchForm from "./SearchForm";
+import SignUpForm from "./SignUpForm";
+import ErrorModal from "./utils/ErrorModal";
+import ConfirmModal from "./utils/ConfirmationModal";
+import SuccessModal from "./SuccessModal";
+import BurgerMenu from "./BurgerMenu";
 
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
+	const [isTaskListVisible, setTaskListVisible] = useState(false);
+	const [taskValues, setTaskValues] = useState(null);
 
-	const showTaskForm = () => {
+	const [isLoginFormVisible, setLoginFormVisible] = useState(false);
+	const [signUpFormVisible, setSignUpFormVisible] = useState(false);
+	const [email, setEmail] = useState("");
+	const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+	const [cmRecipient, setCMRecipient] = useState(null);
+
+	const [successModalVisible, setSuccessModalVisible] = useState(false);
+	const [successMsg, setSuccessMsg] = useState(null);
+	const [successIsTask, setSuccessIsTask] = useState(false);
+	const [errorMsg, setErrorMsg] = useState("");
+
+	const [isSearchFormVisible, setSearchFormVisible] = useState(true);
+
+	const [BMopen, setBMopen] = useState(false);
+
+	const user = useUserStore();
+
+	const showTaskForm = (task) => {
+		setTaskValues(task);
 		setTaskFormVisible(true);
 	};
-	return(
+
+	const showNewTaskForm = () => {
+		setTaskValues(null);
+		setTaskFormVisible(true);
+		setTaskListVisible(false);
+	};
+
+	const showConfirmModal = (recipient) => {
+		setCMRecipient(recipient);
+		setConfirmModalVisible(true);
+	};
+	const showLoginSuccessModal = (message) => {
+		setSuccessModalVisible(true);
+		setSuccessMsg(message);
+		setSuccessIsTask(false);
+		setEmail("");
+	};
+
+	const showFilledLoginForm = (email) => {
+		setSignUpFormVisible(false);
+		setEmail(email);
+		setLoginFormVisible(true);
+	};
+	const showTaskSuccessModal = (message) => {
+		setSuccessModalVisible(true);
+		setSuccessMsg(message);
+		setSuccessIsTask(true);
+	};
+
+	return (
 		<main>
-		<Button variant="outlined" onClick={showTaskForm} color="primary">New Task Request</Button>
-		
-		<TaskForm isVisible={isTaskFormVisible}	/>
-		</main>);
+			{errorMsg && <ErrorModal message={errorMsg} />}
+			{!isLoginFormVisible && !user.loggedIn && !signUpFormVisible && (
+				<div className="login-signup__wrapper">
+					<Button
+						variant="outlined"
+						onClick={() => {
+							setLoginFormVisible(true);
+						}}
+						startIcon={<LoginIcon />}
+						className="btn--login"
+					>
+						Login
+					</Button>
+					<Button
+						color="secondary"
+						variant="outlined"
+						onClick={() => {
+							setSignUpFormVisible(true);
+						}}
+						className="btn--signup"
+					>
+						Sign Up
+					</Button>
+				</div>
+			)}
+			<LoginForm
+				isVisible={isLoginFormVisible}
+				setIsVisible={setLoginFormVisible}
+				setSignUpVisible={setSignUpFormVisible}
+				setErrorMsg={setErrorMsg}
+				showConfirmModal={showConfirmModal}
+				showLoginSuccessModal={showLoginSuccessModal}
+				prefilledEmail={email}
+			/>
+			<SignUpForm
+				isVisible={signUpFormVisible}
+				setIsVisible={setSignUpFormVisible}
+				showConfirmModal={showConfirmModal}
+				showFilledLoginForm={showFilledLoginForm}
+			/>
+			{confirmModalVisible && (
+				<ConfirmModal
+					isVisible={confirmModalVisible}
+					setIsVisible={setConfirmModalVisible}
+					recipient={cmRecipient}
+					showLoginSuccessModal={showLoginSuccessModal}
+				/>
+			)}
+			{successModalVisible && !successIsTask && (
+				<SuccessModal
+					taskTitle={successMsg}
+					setSuccessModalVisible={setSuccessModalVisible}
+					isTask={successIsTask}
+				/>
+			)}
+			{successModalVisible && successIsTask && (
+				<SuccessModal
+					taskTitle={successMsg.title}
+					taskDescription={successMsg.description}
+					taskID={successMsg.taskID}
+					campaignCode={successMsg.campaignCode}
+					setSuccessModalVisible={setSuccessModalVisible}
+					isTask={true}
+				/>
+			)}
+
+			{user.loggedIn && (
+				<>
+					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
+
+					<div className="response-container">
+						{/* this is where the bot responses will go */}
+					</div>
+
+					<Map />
+
+					<TaskForm
+						isVisible={isTaskFormVisible}
+						setIsVisible={setTaskFormVisible}
+						user={user}
+						taskValues={taskValues}
+						showTaskSuccessModal={showTaskSuccessModal}
+					/>
+					<TaskList
+						isVisible={isTaskListVisible}
+						setIsVisible={setTaskListVisible}
+						user={user}
+						showTaskForm={showTaskForm}
+						showNewTaskForm={showNewTaskForm}
+					/>
+					<div className="user-action__wrapper">
+						<SearchForm isVisible={isSearchFormVisible} />
+
+						<Button
+							size="medium"
+							variant="outlined"
+							color="tomato"
+							onClick={() => setTaskListVisible(true)}
+							className="btn--view-tasks"
+						>
+							TASKS
+						</Button>
+					</div>
+				</>
+			)}
+		</main>
+	);
 }
