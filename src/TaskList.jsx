@@ -12,6 +12,7 @@ import {
 	IconButton,
 	Snackbar,
 	ToggleButton,
+	ToggleButtonGroup,
 	Tooltip,
 	Typography,
 } from "@mui/material";
@@ -39,6 +40,7 @@ export default function TaskList({
 	const [isLoading, setIsLoading] = useState(true);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [listIsOD, setListIsOD] = useState(false);
+	const [taskListName, setTaskListName] = useState("my-tasks");
 	const taskListRef = useRef(null);
 
 	useEffect(() => {
@@ -46,12 +48,37 @@ export default function TaskList({
 			const fetchTasks = async () => {
 				var fetchedTasks = await fetchMyTasks({ user, setTasks, setIsLoading });
 				setTasks(fetchedTasks);
-				setListIsOD(false);
+				setTaskListName("my-tasks");
 			};
 
 			fetchTasks();
 		}
 	}, [isVisible, user]);
+
+	useEffect(() => {
+		setIsLoading(true);
+		if (taskListName === "opendata") {
+			const fetchTasks = async () => {
+				var fetchedTasks = await fetchODTasks({ user });
+				setTasks(fetchedTasks);
+			}
+			fetchTasks();
+		} else if (taskListName === "my-tasks") {
+			const fetchTasks = async () => {
+				var fetchedTasks = await fetchMyTasks({ user });
+				setTasks(fetchedTasks);
+			}
+			fetchTasks();
+		}
+		setIsLoading(false);
+	}, [taskListName]);
+
+	const toggleCodeVisibility = (taskId) => {
+		setVisibleCodes((prev) => ({
+			...prev,
+			[taskId]: !prev[taskId],
+		}));
+	};
 
 	const handleCopy = async (text) => {
 		const success = await copyToClipboard(text);
@@ -71,32 +98,23 @@ export default function TaskList({
 		setIsVisible(false);
 	};
 
-	const handleViewOpendata = async () => {
-		const newListIsOD = !listIsOD;
-		setListIsOD(newListIsOD);
-		// TODO: distinguish OD data by user with a tag (based on isOD state)
-		setIsLoading(true);
-
-		if (newListIsOD) {
-			try {
-				const fetchedODTasks = await fetchODTasks({ user });
-				setTasks(fetchedODTasks);
-				setListIsOD(true);
-			} catch (error) {
-				console.error("Error fetching open data tasks:", error);
-			} finally {
-				setIsLoading(false);
-			}
-		} else {
-			handleRefresh();
-		}
+	const handleChangeTaskList = async (
+		event,
+		newTaskListName,
+	) => {
+		setTaskListName(newTaskListName);
 	};
 
 	const handleRefresh = async () => {
 		setIsLoading(true);
 		// todo: also refresh the metadata
 		try {
-			const fetchedTasks = await fetchMyTasks({ user, setIsLoading });
+			let fetchedTasks;
+			if (taskListName == "my-tasks") {
+				fetchedTasks = await fetchMyTasks({ user, setIsLoading });
+			} else if (taskListName == "opendata") {
+				fetchedTasks = await await fetchODTasks({ user });
+			}
 			setTasks(fetchedTasks);
 			// could make this snazzy and try and check for if the my OD is toggled
 		} catch (error) {
@@ -133,7 +151,23 @@ export default function TaskList({
 		<Drawer anchor="right" open={isVisible} className="task-list__drawer">
 			<div className="task-list__content" ref={taskListRef}>
 				<div className="task-list__header">
-					<h2>My Tasks</h2>
+					<ToggleButtonGroup
+						color="primary"
+						value={taskListName}
+						exclusive
+						onChange={handleChangeTaskList}
+					>
+						<ToggleButton
+							value="my-tasks"
+						>
+							My Tasks
+						</ToggleButton>
+						<ToggleButton
+							value="opendata"
+						>
+							Open Datasets
+						</ToggleButton>
+					</ToggleButtonGroup>
 					<IconButton
 						onClick={handleRefresh}
 						color="secondary"
@@ -141,15 +175,6 @@ export default function TaskList({
 					>
 						<RefreshIcon />
 					</IconButton>
-					<ToggleButton
-						selected={listIsOD}
-						onChange={handleViewOpendata}
-						color="orange"
-						size="small"
-						value="OD"
-					>
-						View Opendata Tasks
-					</ToggleButton>
 				</div>
 				<Tooltip title="Create New Task">
 					<Fab
