@@ -124,13 +124,6 @@ export default function TaskList({
 			variant: "outlined",
 			color: "orange",
 		},
-		{
-			text: "Edit Task",
-			icon: <EditIcon />,
-			action: (task) => () => handleEdit(task),
-			variant: "outlined",
-			color: "secondary",
-		},
 	];
 
 	useClickOutside(taskListRef, () => setIsVisible(false));
@@ -237,6 +230,17 @@ export default function TaskList({
 												{btn.text}
 											</Button>
 										))}
+
+										{task.created_by === user.userId && (
+											<Button
+												variant="outlined"
+												color="secondary"
+												onClick={() => handleEdit(task)}
+												startIcon={<EditIcon />}
+											>
+												Edit Task
+											</Button>
+										)}
 									</ButtonGroup>
 								</CardActions>
 							</Box>
