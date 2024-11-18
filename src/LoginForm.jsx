@@ -1,5 +1,5 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Button, TextField, Typography, useTheme } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 import "./styles/forms.css";
 import { initiateAuth } from "./utils/auth";
 import { useUserStore } from "./globals";
@@ -13,9 +13,9 @@ export default function LoginForm({
 	setErrorMsg,
 	showConfirmModal,
 	showLoginSuccessModal,
+	prefilledEmail,
 }) {
 	const user = useUserStore();
-	useTheme();
 	if (!isVisible) return null;
 
 	const setUserDetailsAndShowModal = async (response) => {
@@ -41,7 +41,7 @@ export default function LoginForm({
 		});
 	};
 	const initialValues = {
-		email: "",
+		email: prefilledEmail || "",
 		password: "",
 	};
 	return (

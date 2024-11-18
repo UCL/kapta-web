@@ -1,5 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Button, IconButton, TextField } from "@mui/material";
+import { Fab, TextField } from "@mui/material";
+import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 // import * as Yup from "yup";
 
 export default function SearchForm({ isVisible, setIsVisible }) {
@@ -18,21 +19,23 @@ export default function SearchForm({ isVisible, setIsVisible }) {
 						<Field
 							type="text"
 							name="query"
-							label="Search"
+							label="Search WhatsApp maps ground data"
 							as={TextField}
 							fullWidth
+							className="search__form__input"
 						/>
 						<ErrorMessage name="query" component="div" className="error" />
 
 						{/* Submit Button */}
-						<Button
+						<Fab
 							type="submit"
 							disabled={isSubmitting}
 							color="info"
 							variant="contained"
+							className="search__submit__btn"
 						>
-							Search
-						</Button>
+							<ArrowUpwardRoundedIcon />
+						</Fab>
 					</Form>
 				)}
 			</Formik>

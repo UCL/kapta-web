@@ -7,13 +7,19 @@
 	align-self: flex-start;
 }
 .bm__drawer {
-	.bm__buttons {
-		display: flex;
-		justify-content: center;
+	.btn--logout {
+		margin-bottom: 4%;
 	}
 
 	.MuiPaper-root {
 		max-width: 40vw;
+	}
+
+	.bm__content {
+		display: flex;
+		height: 100%;
+		flex-direction: column;
+		justify-content: space-between;
 	}
 
 	.bm__content__subtitle {
