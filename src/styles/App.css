@@ -51,4 +51,5 @@ main {
 	width: fit-content !important;
 	right: 4%;
 	bottom: 9%;
+	z-index: 2;
 }

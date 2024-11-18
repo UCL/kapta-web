@@ -102,14 +102,14 @@ export default function SearchForm({
 								/>
 							))}
 						</div>
-						<div className="search__input">
+						<div className="search__input__wrapper">
 							<Field
 								type="text"
 								name="query"
 								label="Search WhatsApp maps ground data"
 								as={TextField}
-								className="search__form__input"
-								fullWidth
+								className="search__input"
+								// fullWidth
 							/>
 							<ErrorMessage name="query" component="div" className="error" />
 							{/* Submit Button */}

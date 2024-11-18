@@ -174,30 +174,6 @@ export default function App() {
 			{user.loggedIn && (
 				<>
 					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
-					<div className="btn-container--tasks">
-						<ButtonGroup
-							disableElevation
-							variant="outlined"
-							aria-label="task button group"
-							size="medium"
-							color="info"
-						>
-							<Button
-								onClick={showNewTaskForm}
-								className="btn--new-task"
-								startIcon={<AddIcon />}
-							>
-								New
-							</Button>
-							<Button
-								onClick={() => setTaskListVisible(true)}
-								className="btn--view-tasks"
-								startIcon={<VisibilityIcon />}
-							>
-								View
-							</Button>
-						</ButtonGroup>
-					</div>
 
 					<div className="response-container">
 						{/* this is where the bot responses will go */}

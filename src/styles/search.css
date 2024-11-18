@@ -9,7 +9,7 @@
 }
 
 .search__form {
-	width: 60%;
+	width: 70%;
 	display: flex;
 	justify-self: center;
 	align-self: end;
@@ -17,6 +17,14 @@
 	margin-bottom: 8vh;
 	transition: transform 1.5s;
 	grid-column: span 2;
+
+	.MuiInputBase-formControl {
+		border-radius: 1.5rem;
+		padding-right: -1rem;
+	}
+	.search__input {
+		width: 90%;
+	}
 
 	&.splitscreen {
 		grid-column: 1;
@@ -28,9 +36,11 @@
 		margin-bottom: 0.4rem;
 		gap: 0.4rem;
 		display: flex;
+		justify-content: center;
 	}
 
-	.search__input {
+	.search__input__wrapper {
 		display: flex;
+		gap: 0.8rem;
 	}
 }
