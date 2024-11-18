@@ -1,5 +1,4 @@
 import {
-	Badge,
 	Box,
 	Button,
 	ButtonGroup,
@@ -9,21 +8,22 @@ import {
 	Chip,
 	CircularProgress,
 	Drawer,
+	Fab,
 	IconButton,
 	Snackbar,
-	Switch,
 	ToggleButton,
 	ToggleButtonGroup,
 	Tooltip,
 	Typography,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
-import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import AddIcon from "@mui/icons-material/Add";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import PlaceIcon from "@mui/icons-material/Place";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import EditIcon from "@mui/icons-material/Edit";
-import React, { useEffect, useRef, useState } from "react";
+import PersonIcon from "@mui/icons-material/Person";
+import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
@@ -33,15 +33,12 @@ export default function TaskList({
 	setIsVisible,
 	user,
 	showTaskForm,
+	showNewTaskForm,
 }) {
 	// TODO: if given user or get user here then get all tasks created by them
 	const [tasks, setTasks] = useState([]);
-	const [metadataStore, setMetadataStore] = useState([]);
-	const [showMetadata, setShowMetadata] = useState(false);
-	const [visibleCodes, setVisibleCodes] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
-	const [includeMyOD, setIncludeMyOD] = useState(false);
 	const [listIsOD, setListIsOD] = useState(false);
 	const [taskListName, setTaskListName] = useState("my-tasks");
 	const taskListRef = useRef(null);
@@ -50,12 +47,6 @@ export default function TaskList({
 		if (isVisible) {
 			const fetchTasks = async () => {
 				var fetchedTasks = await fetchMyTasks({ user, setTasks, setIsLoading });
-
-				// fetchedTasks.forEach((task) => {
-				//  let metadata = getMetadata(task.taskID);
-				// setMetadataStore(...prevstore,metadata);
-				// });
-
 				setTasks(fetchedTasks);
 				setTaskListName("my-tasks");
 			};
@@ -116,6 +107,7 @@ export default function TaskList({
 
 	const handleRefresh = async () => {
 		setIsLoading(true);
+		// todo: also refresh the metadata
 		try {
 			let fetchedTasks;
 			if (taskListName == "my-tasks") {
@@ -191,6 +183,17 @@ export default function TaskList({
 						<RefreshIcon />
 					</IconButton>
 				</div>
+				<Tooltip title="Create New Task">
+					<Fab
+						color="primary"
+						aria-label="create new task"
+						id="task-list__new-form-btn"
+						onClick={showNewTaskForm}
+					>
+						<AddIcon />
+					</Fab>
+				</Tooltip>
+
 				{!isLoading && (
 					<div className="task-list__total">Total: {tasks?.length || 0}</div>
 				)}
@@ -213,13 +216,13 @@ export default function TaskList({
 									<span className="task-card__title">
 										<Typography variant="h5">{task.task_title}</Typography>
 										<span className="task-card__info">
-											<Tooltip title="Number of datasets">
+											<Tooltip title="Number of uploaders">
 												<Chip
 													className="task__info-chip"
 													variant="outlined"
 													size="small"
-													label={task.num_datasets || 2}
-													icon={<FolderOpenIcon size="small" />}
+													label={task.num_uploaders || 0}
+													icon={<PersonIcon size="small" />}
 												></Chip>
 											</Tooltip>
 											<Tooltip title="Total number of observations">
@@ -227,28 +230,24 @@ export default function TaskList({
 													className="task__info-chip"
 													variant="outlined"
 													size="small"
-													label={task.sum_observations || 100}
+													label={task.sum_observations || 0}
 													max={999}
 													icon={<PlaceIcon size="small" />}
 												></Chip>
 											</Tooltip>
 
-											<span
-												onClick={() => handleCopy(task.campaign_code)}
-												className="campaign-code"
-											>
-												<Tooltip title="Campaign code">
-													<>{task.campaign_code}</>
-												</Tooltip>
-											</span>
+											<Tooltip title="Campaign code">
+												<Chip
+													onClick={() => handleCopy(task.campaign_code)}
+													className="campaign-code"
+													variant="outlined"
+													label={task.campaign_code}
+													size="small"
+												></Chip>
+											</Tooltip>
 										</span>
 									</span>
 									<p>{task.task_description}</p>
-
-									{showMetadata && metadataStore.task_id === task.task_id && (
-										// TODO: get metadata from metadataStore or fetch from dynamodb
-										<p>{metadataStore.info}</p>
-									)}
 								</CardContent>
 								<CardActions className="task-list__card-actions">
 									<ButtonGroup size="small" color="info">
@@ -272,6 +271,7 @@ export default function TaskList({
 					<p className="no-tasks">No tasks to display</p>
 				)}
 			</div>
+
 			<Snackbar
 				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
 				open={snackbarOpen}

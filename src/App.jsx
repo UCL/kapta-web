@@ -23,6 +23,7 @@ export default function App() {
 
 	const [isLoginFormVisible, setLoginFormVisible] = useState(false);
 	const [signUpFormVisible, setSignUpFormVisible] = useState(false);
+	const [email, setEmail] = useState("");
 	const [confirmModalVisible, setConfirmModalVisible] = useState(false);
 	const [cmRecipient, setCMRecipient] = useState(null);
 
@@ -45,6 +46,7 @@ export default function App() {
 	const showNewTaskForm = () => {
 		setTaskValues(null);
 		setTaskFormVisible(true);
+		setTaskListVisible(false);
 	};
 
 	const showConfirmModal = (recipient) => {
@@ -55,6 +57,13 @@ export default function App() {
 		setSuccessModalVisible(true);
 		setSuccessMsg(message);
 		setSuccessIsTask(false);
+		setEmail("");
+	};
+
+	const showFilledLoginForm = (email) => {
+		setSignUpFormVisible(false);
+		setEmail(email);
+		setLoginFormVisible(true);
 	};
 	const showTaskSuccessModal = (message) => {
 		setSuccessModalVisible(true);
@@ -96,13 +105,13 @@ export default function App() {
 				setErrorMsg={setErrorMsg}
 				showConfirmModal={showConfirmModal}
 				showLoginSuccessModal={showLoginSuccessModal}
+				prefilledEmail={email}
 			/>
 			<SignUpForm
 				isVisible={signUpFormVisible}
 				setIsVisible={setSignUpFormVisible}
-				setLoginVisible={setLoginFormVisible}
 				showConfirmModal={showConfirmModal}
-				showLoginSuccessModal={showLoginSuccessModal}
+				showFilledLoginForm={showFilledLoginForm}
 			/>
 			{confirmModalVisible && (
 				<ConfirmModal
@@ -134,31 +143,8 @@ export default function App() {
 				<>
 					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
 
-					<div className="btn-container">
-						<div className="btn-container--tasks">
-							<ButtonGroup
-								disableElevation
-								variant="outlined"
-								aria-label="task button group"
-								size="medium"
-								color="info"
-							>
-								<Button
-									onClick={showNewTaskForm}
-									className="btn--new-task"
-									startIcon={<AddIcon />}
-								>
-									New
-								</Button>
-								<Button
-									onClick={() => setTaskListVisible(true)}
-									className="btn--view-tasks"
-									startIcon={<VisibilityIcon />}
-								>
-									View
-								</Button>
-							</ButtonGroup>
-						</div>
+					<div className="response-container">
+						{/* this is where the bot responses will go */}
 					</div>
 
 					<Map />
@@ -175,8 +161,21 @@ export default function App() {
 						setIsVisible={setTaskListVisible}
 						user={user}
 						showTaskForm={showTaskForm}
+						showNewTaskForm={showNewTaskForm}
 					/>
-					<SearchForm isVisible={isSearchFormVisible} />
+					<div className="user-action__wrapper">
+						<SearchForm isVisible={isSearchFormVisible} />
+
+						<Button
+							size="medium"
+							variant="outlined"
+							color="tomato"
+							onClick={() => setTaskListVisible(true)}
+							className="btn--view-tasks"
+						>
+							TASKS
+						</Button>
+					</div>
 				</>
 			)}
 		</main>
