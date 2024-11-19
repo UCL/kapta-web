@@ -16,7 +16,6 @@ export default function SearchForm({
 	const user = useUserStore();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [tasks, setTasks] = useState([]);
-	const [listIsOD, setListIsOD] = useState(true);
 
 	useEffect(() => {
 		if (isVisible) {
@@ -41,7 +40,6 @@ export default function SearchForm({
 		// todo: how do we want to handle plurals? eg elf and elves mentioned
 		const q = values.query?.toLowerCase() || values;
 		var results = [];
-		console.log(tasks.length);
 
 		tasks.forEach((task) => {
 			if (
@@ -63,7 +61,7 @@ export default function SearchForm({
 			action: () => handleSubmit("sanity"),
 		},
 		{
-			label: "Display all tasks points",
+			label: "Display all tasks mentioning 'points'",
 			icon: <></>,
 			action: () => handleSubmit("points"),
 		},

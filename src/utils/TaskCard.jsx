@@ -55,7 +55,9 @@ export default function TaskCard({
 
 							<Tooltip title="Campaign code">
 								<Chip
-									onClick={() => handleCopy(task.campaign_code)}
+									onClick={() => {
+										handleCopy(task.campaign_code);
+									}}
 									className="campaign-code"
 									variant="outlined"
 									label={task.campaign_code}
