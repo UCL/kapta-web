@@ -26,6 +26,8 @@ export default function TaskCard({
 		codeVisible = true;
 	}
 
+	// todo: if task list is od use a tag to show if it belogs to the user, if org===opendata? may want to do this on the parent level
+
 	return (
 		<Card className="task-card">
 			<Box

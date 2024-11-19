@@ -1,6 +1,4 @@
-import { Button, ButtonGroup, Fab } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import { Button, Fab } from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
 import "./styles/App.css";
 import TaskForm from "./TaskForm";
@@ -33,7 +31,6 @@ export default function App() {
 	const [successIsTask, setSuccessIsTask] = useState(false);
 	const [errorMsg, setErrorMsg] = useState("");
 
-	const [isSearchFormVisible, setSearchFormVisible] = useState(true);
 	const [searchResultsVisible, setSearchResultsVisible] = useState(false);
 	const [searchResults, setSearchResults] = useState([]);
 
@@ -213,7 +210,6 @@ export default function App() {
 							setFocusTask={setFocusTask}
 						/>
 						<SearchForm
-							isVisible={isSearchFormVisible}
 							showSearchResults={showSearchResults}
 							taskListOpen={isTaskListVisible || searchResultsVisible}
 						/>

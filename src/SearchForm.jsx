@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { Button, Chip, Snackbar } from "@mui/material";
-import { fetchAllTasks, fetchODTasks } from "./utils/apiQueries";
+import { Chip, Snackbar } from "@mui/material";
+import { fetchAllTasks } from "./utils/apiQueries";
 import { useUserStore } from "./globals";
 import { useEffect, useState } from "react";
 import { Fab, TextField } from "@mui/material";
@@ -8,32 +8,22 @@ import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 
 import "./styles/search.css";
 
-export default function SearchForm({
-	isVisible,
-	showSearchResults,
-	taskListOpen,
-}) {
+export default function SearchForm({ showSearchResults, taskListOpen }) {
 	const user = useUserStore();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [tasks, setTasks] = useState([]);
 
 	useEffect(() => {
-		if (isVisible) {
-			const fetchTasks = async () => {
-				var fetchedTasks = await fetchAllTasks({ user });
-				return fetchedTasks;
-			};
+		const fetchTasks = async () => {
+			var fetchedTasks = await fetchAllTasks({ user });
+			return fetchedTasks;
+		};
 
-			fetchTasks().then((tasks) => {
-				const visibleTasks = tasks.filter((task) => task.visible === true);
-				setTasks(visibleTasks);
-			});
-		}
-	}, [isVisible, user]);
-
-	// import * as Yup from "yup";
-
-	if (!isVisible) return null;
+		fetchTasks().then((tasks) => {
+			const visibleTasks = tasks.filter((task) => task.visible === true);
+			setTasks(visibleTasks);
+		});
+	}, [user]);
 
 	const handleSubmit = async (values) => {
 		// for the given set of tasks (currently all where visible===true), check in title and then description for the query
