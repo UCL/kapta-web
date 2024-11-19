@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { MAPBOX_TOKEN } from "./globals";
 import "./styles/mapbox.css";
 
-export function Map({ boundsVisible, polygonStore, taskListOpen }) {
+export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 	const map = useRef(null);
 
 	// base map
@@ -32,20 +32,40 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 	useEffect(() => {
 		if (!map.current || !map.current.isStyleLoaded() || !polygonStore) return;
 
+		// source does not exist
 		if (!map.current.getSource("polygon-source")) {
-			map.current.addSource("polygon-source", {
-				type: "geojson",
-				data: {
-					type: "Feature",
-					geometry: {
-						type: "Polygon",
-						coordinates: [polygonStore.coordinates],
+			// not an array of polygons
+			if (!Array.isArray(polygonStore)) {
+				map.current.addSource("polygon-source", {
+					type: "geojson",
+					data: {
+						type: "Feature",
+						geometry: {
+							type: "Polygon",
+							coordinates: [polygonStore.coordinates],
+						},
 					},
-				},
-			});
+				});
+			} else {
+				const newData = {
+					type: "FeatureCollection",
+					features: polygonStore.map((polygon) => ({
+						type: "Feature",
+						geometry: {
+							type: "Polygon",
+							coordinates: [polygon.coordinates],
+						},
+					})),
+				};
+
+				map.current.addSource("polygon-source", {
+					type: "geojson",
+					data: newData,
+				});
+			}
 		} else {
-			// currently will add to existing data, do we want to clear if it's from task list?
-			const source = map.current.getSource("polygon-source");
+			// source already exists, used when viewing task list and clicking between tasks
+			let source = map.current.getSource("polygon-source");
 			let existingData = source._data;
 
 			if (!existingData || existingData.type !== "FeatureCollection") {
@@ -55,7 +75,7 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 				};
 			}
 
-			// Ensure polygonStore is an array so we can use .map() even if it's one item
+			// Ensure polygonStore is an array so we can use .map() even if it's one item (the initial one)
 			const polygons = Array.isArray(polygonStore)
 				? polygonStore
 				: [polygonStore];
@@ -116,11 +136,23 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 		// fit to polygon and center it
 		const bounds = getBounds(polygonStore);
 
-		map.current.fitBounds(bounds, {
-			padding: 30,
-			maxZoom: 8,
-		});
+		if (bounds) {
+			map.current.fitBounds(bounds, {
+				padding: 30,
+				maxZoom: 8,
+			});
+		}
 	}, [polygonStore, boundsVisible]);
+
+	useEffect(() => {
+		if (focusTask && focusTask.geo_bounds) {
+			map.current.flyTo({
+				center: focusTask.geo_bounds.coordinates[0],
+				zoom: 12,
+				essential: true, // not user-interruptible
+			});
+		}
+	}, [focusTask]);
 
 	const getBounds = (polygonStore) => {
 		var bounds = new mapboxgl.LngLatBounds();

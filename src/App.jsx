@@ -41,6 +41,7 @@ export default function App() {
 
 	const [boundsVisible, setBoundsVisible] = useState(false);
 	const [polygonStore, setPolygonStore] = useState(null);
+	const [focusTask, setFocusTask] = useState(null);
 
 	const user = useUserStore();
 
@@ -87,6 +88,7 @@ export default function App() {
 		let polygons = [];
 		results.forEach((task) => {
 			if (task.geo_bounds) {
+				console.log(task.geo_bounds);
 				polygons.push(task.geo_bounds);
 			}
 		});
@@ -95,8 +97,8 @@ export default function App() {
 
 	const showSearchResults = (results) => {
 		if (results !== searchResults) {
-			setSearchResults(results);
 			setPolygonStore(null); // reset polygon store for each new search
+			setSearchResults(results);
 		}
 		if (!searchResultsVisible) {
 			setSearchResultsVisible(true);
@@ -193,6 +195,7 @@ export default function App() {
 							boundsVisible={boundsVisible}
 							polygonStore={polygonStore}
 							taskListOpen={isTaskListVisible || searchResultsVisible}
+							focusTask={focusTask}
 						/>
 						<TaskList
 							isVisible={isTaskListVisible}
@@ -207,6 +210,7 @@ export default function App() {
 							isVisible={searchResultsVisible}
 							setIsVisible={setSearchResultsVisible}
 							results={searchResults}
+							setFocusTask={setFocusTask}
 						/>
 						<SearchForm
 							isVisible={isSearchFormVisible}
