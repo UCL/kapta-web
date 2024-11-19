@@ -107,7 +107,7 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 					source: "polygon-source",
 					paint: {
 						"line-color": "#0d335a",
-						"line-width": 5,
+						"line-width": 4,
 					},
 				});
 				map.current.moveLayer("polygon-outline");
@@ -139,8 +139,8 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 		}
 
 		map.current.fitBounds(bounds, {
-			padding: 20,
-			maxZoom: 12,
+			padding: 30,
+			maxZoom: 8,
 		});
 	}, [polygonStore, boundsVisible]);
 
