@@ -5,6 +5,7 @@ import "./styles/mapbox.css";
 
 export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 	const map = useRef(null);
+
 	// base map
 	useEffect(() => {
 		mapboxgl.accessToken = MAPBOX_TOKEN;
@@ -30,17 +31,6 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 	// adding polygon source data
 	useEffect(() => {
 		if (!map.current || !map.current.isStyleLoaded() || !polygonStore) return;
-		console.log(
-			"poly source:",
-			polygonStore,
-			typeof polygonStore,
-			polygonStore.length,
-			Array.isArray(polygonStore)
-		);
-
-		if (polygonStore.length > 1) {
-			console.log("multiple polygons");
-		}
 
 		if (!map.current.getSource("polygon-source")) {
 			map.current.addSource("polygon-source", {
@@ -69,7 +59,6 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 			const polygons = Array.isArray(polygonStore)
 				? polygonStore
 				: [polygonStore];
-
 			// Set structure like this, particular attention to the [] around coordinates, otherwise polygon will not show
 			const newFeatures = polygons.map((polygon) => ({
 				type: "Feature",
@@ -87,6 +76,7 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 			source.setData(newData);
 		}
 
+		//draw the polygons and their outlines
 		if (boundsVisible) {
 			if (!map.current.getLayer("polygon-fill")) {
 				map.current.addLayer({
@@ -95,7 +85,7 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 					source: "polygon-source",
 					layout: {},
 					paint: {
-						"fill-color": "#0080ff",
+						"fill-color": "#ff6347",
 						"fill-opacity": 0.6,
 					},
 				});
@@ -106,7 +96,7 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 					type: "line",
 					source: "polygon-source",
 					paint: {
-						"line-color": "#0d335a",
+						"line-color": "#e63621",
 						"line-width": 4,
 					},
 				});
@@ -124,25 +114,42 @@ export function Map({ boundsVisible, polygonStore, taskListOpen }) {
 		}
 
 		// fit to polygon and center it
-		var bounds = new mapboxgl.LngLatBounds();
-		if (polygonStore.length > 1) {
-			polygonStore.forEach((polygon) => {
-				polygon.coordinates.forEach((coord) => {
-					bounds.extend(coord);
-				});
-			});
-		} else {
-			const coordinates = polygonStore.coordinates;
-			bounds = coordinates.reduce((bounds, coord) => {
-				return bounds.extend(coord);
-			}, new mapboxgl.LngLatBounds());
-		}
+		const bounds = getBounds(polygonStore);
 
 		map.current.fitBounds(bounds, {
 			padding: 30,
 			maxZoom: 8,
 		});
 	}, [polygonStore, boundsVisible]);
+
+	const getBounds = (polygonStore) => {
+		var bounds = new mapboxgl.LngLatBounds();
+		if (Array.isArray(polygonStore)) {
+			// only an array if multiple, unclear why there are slightly different structures
+
+			polygonStore.forEach((array) => {
+				if (array.type === "Polygon") {
+					array.coordinates.forEach((coord) => {
+						bounds.extend(coord);
+					});
+				} else {
+					array.forEach((item) => {
+						if (item.type === "Polygon") {
+							item.coordinates.forEach((coord) => {
+								bounds.extend(coord);
+							});
+						}
+					});
+				}
+			});
+		} else {
+			const coordinates = polygonStore.coordinates;
+			coordinates.forEach((coord) => {
+				bounds.extend(coord);
+			});
+		}
+		return bounds;
+	};
 
 	return <div id="map" className={taskListOpen ? "splitscreen" : ""}></div>;
 }

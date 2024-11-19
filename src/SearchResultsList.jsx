@@ -6,7 +6,7 @@ import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
 import TaskCard from "./utils/TaskCard";
-import { PinButton } from "./utils/Buttons";
+import { CloseButton, PinButton } from "./utils/Buttons";
 export default function SearchResults({
 	isVisible,
 	setIsVisible,
@@ -53,20 +53,6 @@ export default function SearchResults({
 	];
 
 	useClickOutside(SearchResultsRef, () => setIsVisible(false));
-	//todo: add pin option
-
-	useEffect(() => {
-		//todo: get this to work showing multiple
-		let polygons = [];
-		results.forEach((task) => {
-			if (task.geo_bounds) {
-				polygons.push(task.geo_bounds);
-			}
-		});
-		if (polygons.length > 0) {
-			showPolygons(polygons);
-		}
-	}, [results]);
 
 	const taskCardProps = {
 		cardActionBtns: cardActionBtns,
@@ -77,7 +63,6 @@ export default function SearchResults({
 
 	if (!isVisible) return null;
 
-	console.log("search results list received:", results);
 	return (
 		<Drawer
 			anchor="right"
@@ -85,10 +70,14 @@ export default function SearchResults({
 			className="task-list__drawer"
 			variant={isPinned ? "persistent" : "temporary"}
 		>
-			<div className="task-list__content" ref={SearchResultsRef}>
+			<div
+				className="task-list__content"
+				ref={!isPinned ? SearchResultsRef : null}
+			>
+				{isPinned && <CloseButton setIsVisible={setIsVisible} />}
 				<div className="task-list__header">
 					<PinButton isPinned={isPinned} setIsPinned={setIsPinned} />
-					<h2>Search Results</h2>
+					Search Results
 				</div>
 				<div className="task-list__total">Total: {results.length || 0}</div>
 				{results.map((task) => (

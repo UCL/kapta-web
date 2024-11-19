@@ -79,22 +79,32 @@ export default function App() {
 	};
 
 	const showBounds = (bounds) => {
-		// this is for showing one at a time
 		setPolygonStore(bounds);
 		setBoundsVisible(true);
 	};
 
-	const showPolygons = (bounds) => {
-		// this is for showing multiple
-		if (polygonStore) {
-			setPolygonStore((prevPolygonStore) => [prevPolygonStore, bounds]);
-		} else setPolygonStore(bounds);
-		setBoundsVisible(true);
+	const getPolygons = (results) => {
+		let polygons = [];
+		results.forEach((task) => {
+			if (task.geo_bounds) {
+				polygons.push(task.geo_bounds);
+			}
+		});
+		return polygons;
 	};
 
 	const showSearchResults = (results) => {
-		setSearchResults(results);
-		setSearchResultsVisible(true);
+		if (results !== searchResults) {
+			setSearchResults(results);
+			setPolygonStore(null); // reset polygon store for each new search
+		}
+		if (!searchResultsVisible) {
+			setSearchResultsVisible(true);
+		}
+		const polygons = getPolygons(results);
+		if (polygons.length > 0) {
+			return showBounds(polygons);
+		}
 	};
 
 	return (
@@ -182,7 +192,7 @@ export default function App() {
 						<Map
 							boundsVisible={boundsVisible}
 							polygonStore={polygonStore}
-							taskListOpen={isTaskListVisible}
+							taskListOpen={isTaskListVisible || searchResultsVisible}
 						/>
 						<TaskList
 							isVisible={isTaskListVisible}
@@ -201,7 +211,7 @@ export default function App() {
 						<SearchForm
 							isVisible={isSearchFormVisible}
 							showSearchResults={showSearchResults}
-							taskListOpen={isTaskListVisible}
+							taskListOpen={isTaskListVisible || searchResultsVisible}
 						/>
 					</div>
 					<TaskForm

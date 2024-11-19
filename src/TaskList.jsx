@@ -109,7 +109,6 @@ export default function TaskList({
 	};
 
 	const handleShowOnMap = (task) => {
-		console.log(task.geo_bounds);
 		showBounds(task.geo_bounds);
 		if (!isPinned) setIsVisible(false);
 	};
@@ -151,6 +150,7 @@ export default function TaskList({
 				{isPinned && <CloseButton setIsVisible={setIsVisible} />}
 				<div className="task-list__header">
 					<PinButton isPinned={isPinned} setIsPinned={setIsPinned} />
+
 					<ToggleButtonGroup
 						color="tomato"
 						value={taskListName}

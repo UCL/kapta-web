@@ -127,5 +127,3 @@ export default function SearchForm({
 		</>
 	);
 }
-
-export function MainSearchForm({ isVisible, showSearchResults }) {}
