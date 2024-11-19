@@ -30,6 +30,8 @@ export default function TaskList({
 	const [tasks, setTasks] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [snackbarMsg, setSnackbarMsg] = useState("Code copied to clipboard!");
+
 	const [taskListName, setTaskListName] = useState("mine");
 	const taskListRef = useRef(null);
 	const [isPinned, setIsPinned] = useState(false);
@@ -49,7 +51,6 @@ export default function TaskList({
 	}, [isVisible, user]);
 
 	useEffect(() => {
-		// setIsLoading(true);
 		if (taskListName === "opendata") {
 			setIsLoading(true);
 			const fetchTasks = async () => {
@@ -68,10 +69,15 @@ export default function TaskList({
 		setIsLoading(false);
 	}, [taskListName, user]);
 
+	const openSnackbar = (msg) => {
+		setSnackbarOpen(true);
+		setSnackbarMsg(msg);
+	};
+
 	const handleCopy = async (text) => {
 		const success = await copyToClipboard(text);
 		if (success) {
-			setSnackbarOpen(true);
+			openSnackbar("Code copied to clipboard!");
 		}
 	};
 
@@ -109,8 +115,12 @@ export default function TaskList({
 	};
 
 	const handleShowOnMap = (task) => {
-		showBounds(task.geo_bounds);
-		if (!isPinned) setIsVisible(false);
+		if (task.geo_bounds) {
+			showBounds(task.geo_bounds);
+			if (!isPinned) setIsVisible(false);
+		} else {
+			openSnackbar("No location data available for this task");
+		}
 	};
 
 	const cardActionBtns = [
@@ -204,7 +214,7 @@ export default function TaskList({
 				open={snackbarOpen}
 				autoHideDuration={2000}
 				onClose={() => setSnackbarOpen(false)}
-				message="Code copied to clipboard!"
+				message={snackbarMsg}
 			/>
 		</Drawer>
 	);

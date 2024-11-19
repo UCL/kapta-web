@@ -1,7 +1,7 @@
 import { Drawer, Snackbar } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import PinDropIcon from "@mui/icons-material/PinDrop";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
@@ -11,9 +11,10 @@ export default function SearchResults({
 	isVisible,
 	setIsVisible,
 	results,
-	showPolygons,
+	setFocusTask,
 }) {
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [snackbarMsg, setSnackbarMsg] = useState("Code copied to clipboard!");
 	const [listIsOD, setListIsOD] = useState(true); // list should be OD by default, use a tag to show if it belogs to the user
 	const [isPinned, setIsPinned] = useState(false);
 	const SearchResultsRef = useRef(null);
@@ -21,19 +22,27 @@ export default function SearchResults({
 	const handleCopy = async (text) => {
 		const success = await copyToClipboard(text);
 		if (success) {
-			setSnackbarOpen(true);
+			openSnackbar("Code copied to clipboard!");
 		}
 	};
 
 	const handleDownload = () => {
-		// TODO: get data from s3
+		// TODO: get data from rds
 		console.log("handle download");
 	};
 
+	const openSnackbar = (msg) => {
+		setSnackbarOpen(true);
+		setSnackbarMsg(msg);
+	};
+
 	const handleShowOnMap = (task) => {
-		console.log(task);
-		// we will probably show them all on the map so this will be about flying to the right one
-		if (!isPinned) setIsVisible(false);
+		if (task.geo_bounds) {
+			setFocusTask(task);
+			if (!isPinned) setIsVisible(false);
+		} else {
+			openSnackbar("No location data available for this task");
+		}
 	};
 
 	const cardActionBtns = [
@@ -89,7 +98,7 @@ export default function SearchResults({
 				open={snackbarOpen}
 				autoHideDuration={2000}
 				onClose={() => setSnackbarOpen(false)}
-				message="Code copied to clipboard!"
+				message={snackbarMsg}
 			/>
 		</Drawer>
 	);
