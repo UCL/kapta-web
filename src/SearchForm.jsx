@@ -34,7 +34,7 @@ export default function SearchForm({ isVisible, setIsVisible }) {
 							variant="contained"
 							className="search__submit__btn"
 						>
-							<ArrowUpwardRoundedIcon />
+							<ArrowUpwardRoundedIcon fontSize="large" />
 						</Fab>
 					</Form>
 				)}
