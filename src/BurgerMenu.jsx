@@ -12,20 +12,16 @@ import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import {
 	Drawer,
 	List,
-	ListItem,
 	ListItemIcon,
-	ListItemText,
 	IconButton,
 	Accordion,
 	AccordionSummary,
 	AccordionDetails,
 	Typography,
-	ButtonGroup,
-	Tooltip,
 	Button,
 } from "@mui/material";
 import parse from "html-react-parser";
-import CloseButton from "./utils/CloseButton";
+import { CloseButton } from "./utils/Buttons";
 import "./styles/burger-menu.css";
 import { useUserStore, WA_CHAT_URL } from "./globals";
 

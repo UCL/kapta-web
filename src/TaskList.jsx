@@ -1,5 +1,4 @@
 import {
-	Chip,
 	CircularProgress,
 	Drawer,
 	Fab,
@@ -10,7 +9,6 @@ import {
 	Tooltip,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
-import PushPinIcon from "@mui/icons-material/PushPin";
 import AddIcon from "@mui/icons-material/Add";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -19,7 +17,7 @@ import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
 import { fetchMyTasks, fetchODTasks } from "./utils/apiQueries";
-import CloseButton from "./utils/CloseButton";
+import { CloseButton, PinButton } from "./utils/Buttons";
 import TaskCard from "./utils/TaskCard";
 export default function TaskList({
 	isVisible,
@@ -152,13 +150,7 @@ export default function TaskList({
 			<div className="task-list__content" ref={!isPinned ? taskListRef : null}>
 				{isPinned && <CloseButton setIsVisible={setIsVisible} />}
 				<div className="task-list__header">
-					<Chip
-						onClick={() => setIsPinned(!isPinned)}
-						size="small"
-						variant={isPinned ? "filled" : "outlined"}
-						icon={<PushPinIcon />}
-						label={isPinned ? "Unpin" : "Pin"}
-					></Chip>
+					<PinButton isPinned={isPinned} setIsPinned={setIsPinned} />
 					<ToggleButtonGroup
 						color="tomato"
 						value={taskListName}

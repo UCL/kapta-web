@@ -6,6 +6,7 @@ import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
 import TaskCard from "./utils/TaskCard";
+import { PinButton } from "./utils/Buttons";
 export default function SearchResults({
 	isVisible,
 	setIsVisible,
@@ -55,6 +56,7 @@ export default function SearchResults({
 	//todo: add pin option
 
 	useEffect(() => {
+		//todo: get this to work showing multiple
 		let polygons = [];
 		results.forEach((task) => {
 			if (task.geo_bounds) {
@@ -85,6 +87,7 @@ export default function SearchResults({
 		>
 			<div className="task-list__content" ref={SearchResultsRef}>
 				<div className="task-list__header">
+					<PinButton isPinned={isPinned} setIsPinned={setIsPinned} />
 					<h2>Search Results</h2>
 				</div>
 				<div className="task-list__total">Total: {results.length || 0}</div>

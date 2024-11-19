@@ -3,7 +3,7 @@ import { Button, TextField, Typography } from "@mui/material";
 import "./styles/forms.css";
 import { initiateAuth } from "./utils/auth";
 import { useUserStore } from "./globals";
-import CloseButton from "./utils/CloseButton";
+import { CloseButton } from "./utils/Buttons";
 // import * as Yup from "yup";
 
 export default function LoginForm({

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CloseButton from "./CloseButton";
+import { CloseButton } from "./Buttons";
 import { useAutoClose } from "./autoCloseHook";
 
 export default function ErrorModal({ message }) {
