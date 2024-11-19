@@ -19,6 +19,13 @@ export default function TaskCard({
 	handleEdit,
 	userID,
 }) {
+	let codeVisible = false;
+	if (task.created_by === userID) {
+		codeVisible = true;
+	} else if (!task.private) {
+		codeVisible = true;
+	}
+
 	return (
 		<Card className="task-card">
 			<Box
@@ -52,18 +59,19 @@ export default function TaskCard({
 									icon={<PlaceIcon size="small" />}
 								></Chip>
 							</Tooltip>
-
-							<Tooltip title="Campaign code">
-								<Chip
-									onClick={() => {
-										handleCopy(task.campaign_code);
-									}}
-									className="campaign-code"
-									variant="outlined"
-									label={task.campaign_code}
-									size="small"
-								></Chip>
-							</Tooltip>
+							{codeVisible && (
+								<Tooltip title="Campaign code">
+									<Chip
+										onClick={() => {
+											handleCopy(task.campaign_code);
+										}}
+										className="campaign-code"
+										variant="outlined"
+										label={task.campaign_code}
+										size="small"
+									></Chip>
+								</Tooltip>
+							)}
 						</span>
 					</span>
 					<p>{task.task_description}</p>
