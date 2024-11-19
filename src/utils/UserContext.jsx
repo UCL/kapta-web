@@ -24,7 +24,6 @@ export const UserProvider = ({ children }) => {
 
 		const base64Payload = idToken.split(".")[1];
 		const decodedIdTokenPayload = JSON.parse(atob(base64Payload));
-		console.log(decodedIdTokenPayload);
 
 		const dName = decodedIdTokenPayload["preferred_username"];
 		setDisplayName(dName);
