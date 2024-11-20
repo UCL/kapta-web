@@ -26,6 +26,8 @@
 
 .task-list__content {
 	margin-inline: 4%;
+	margin-bottom: 12%;
+
 	.no-tasks,
 	.task-list__total {
 		text-align: center;
