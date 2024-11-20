@@ -45,13 +45,13 @@ export default function App() {
 	const showTaskForm = (task) => {
 		setTaskValues(task);
 		setTaskFormVisible(true);
+		setTaskListVisible(false);
 	};
 
 	const showNewTaskForm = () => {
 		setTaskValues(null);
 		setTaskListVisible(false);
 		setTaskFormVisible(true);
-		setTaskListVisible(false);
 	};
 
 	const showConfirmModal = (recipient) => {
@@ -173,20 +173,13 @@ export default function App() {
 					isTask={true}
 				/>
 			)}
-			<TaskForm
-				isVisible={isTaskFormVisible}
-				setIsVisible={setTaskFormVisible}
-				user={user}
-				taskValues={taskValues}
-				showTaskSuccessModal={showTaskSuccessModal}
-			/>
 			{user.loggedIn && (
 				<>
 					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
 
-					<div className="response-container">
-						{/* this is where the bot responses will go */}
-					</div>
+					{/* <div className="response-container"> */}
+					{/* this is where the bot responses will go */}
+					{/* </div> */}
 					<div className="task-map-wrapper">
 						<Map
 							boundsVisible={boundsVisible}

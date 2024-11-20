@@ -15,7 +15,6 @@ export default function SearchResults({
 }) {
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMsg, setSnackbarMsg] = useState("Code copied to clipboard!");
-	const [listIsOD, setListIsOD] = useState(true); // list should be OD by default, use a tag to show if it belogs to the user
 	const [isPinned, setIsPinned] = useState(false);
 	const SearchResultsRef = useRef(null);
 

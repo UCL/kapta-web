@@ -4,11 +4,11 @@
 	display: flex;
 	flex-direction: column;
 	justify-self: center;
-	align-self: center;
+	align-self: start;
 	background-color: var(--intrinsic-grey--translucent);
 	z-index: 1;
 	padding-bottom: 3rem;
-	margin-top: 5rem;
+	margin-top: -5rem;
 	color: var(--off-white);
 	border: 1px solid var(--tomato);
 	border-radius: 8px;
