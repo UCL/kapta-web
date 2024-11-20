@@ -156,13 +156,6 @@ export default function App() {
 					isTask={true}
 				/>
 			)}
-			<TaskForm
-				isVisible={isTaskFormVisible}
-				setIsVisible={setTaskFormVisible}
-				user={user}
-				taskValues={taskValues}
-				showTaskSuccessModal={showTaskSuccessModal}
-			/>
 			{user.loggedIn && (
 				<>
 					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
