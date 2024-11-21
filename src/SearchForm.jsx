@@ -48,24 +48,33 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 		{
 			label: "Show me all the sanity tasks",
 			icon: <></>,
-			action: () => handleSubmit("sanity"),
+			action: (setFieldValue) => {
+				setFieldValue("query", "sanity");
+				handleSubmit("sanity");
+			},
 		},
 		{
 			label: "Display all tasks mentioning 'points'",
 			icon: <></>,
-			action: () => handleSubmit("points"),
+			action: (setFieldValue) => {
+				setFieldValue("query", "points");
+				handleSubmit("points");
+			},
 		},
 		{
 			label: "Where are the elves?",
 			icon: <></>,
-			action: () => handleSubmit("elf"),
+			action: (setFieldValue) => {
+				setFieldValue("query", "elf");
+				handleSubmit("elf");
+			},
 		},
 	];
 
 	return (
 		<>
 			<Formik onSubmit={handleSubmit} initialValues={{ query: "" }}>
-				{({ isSubmitting }) => (
+				{({ isSubmitting, setFieldValue }) => (
 					<Form
 						className={`form search__form ${taskListOpen ? "splitscreen" : ""}`}
 					>
@@ -83,7 +92,7 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 									key={index}
 									label={key.label}
 									icon={key.icon}
-									onClick={key.action}
+									onClick={() => key.action(setFieldValue)}
 									variant="outlined"
 									color="muted"
 									size="small"
