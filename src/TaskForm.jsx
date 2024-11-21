@@ -32,7 +32,7 @@ export default function TaskForm({
 		organisation: user.organisation || "",
 		logo: null,
 		private: false,
-		visible: false,
+		visible: true,
 		title: "",
 		description: "",
 	};
@@ -147,13 +147,13 @@ export default function TaskForm({
 							</Box>
 
 							{/* Private to Org */}
-							<div>
+							{/* <div>
 								<label>
 									<Field type="checkbox" name="private" as={Checkbox} />
 									Is the data private? (Only members of the organisation can
 									access)
 								</label>
-							</div>
+							</div> */}
 
 							{/* Visible on Kapta Web */}
 							<div>
