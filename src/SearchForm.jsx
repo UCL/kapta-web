@@ -64,19 +64,19 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 
 	return (
 		<>
-			<Snackbar
-				anchorOrigin={{ vertical: "top", horizontal: "center" }}
-				className="no-tasks"
-				open={snackbarOpen}
-				autoHideDuration={4000}
-				onClose={() => setSnackbarOpen(false)}
-				message="No tasks matching search query"
-			/>
 			<Formik onSubmit={handleSubmit} initialValues={{ query: "" }}>
 				{({ isSubmitting }) => (
 					<Form
 						className={`form search__form ${taskListOpen ? "splitscreen" : ""}`}
 					>
+						<Snackbar
+							anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+							className="no-tasks"
+							open={snackbarOpen}
+							autoHideDuration={4000}
+							onClose={() => setSnackbarOpen(false)}
+							message="No tasks matching search query"
+						/>
 						<div className="search__suggestions">
 							{chipSuggestions.map((key, index) => (
 								<Chip
@@ -97,7 +97,6 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 								label="Search WhatsApp maps ground data"
 								as={TextField}
 								className="search__input"
-								// fullWidth
 							/>
 							<ErrorMessage name="query" component="div" className="error" />
 							{/* Submit Button */}
