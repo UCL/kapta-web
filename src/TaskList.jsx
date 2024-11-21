@@ -17,7 +17,7 @@ import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
 import { fetchMyTasks, fetchODTasks } from "./utils/apiQueries";
-import { CloseButton, PinButton } from "./utils/Buttons";
+import { DrawerCloseButton, PinButton } from "./utils/Buttons";
 import TaskCard from "./utils/TaskCard";
 export default function TaskList({
 	isVisible,
@@ -156,8 +156,8 @@ export default function TaskList({
 			className="task-list__drawer"
 			variant={isPinned ? "persistent" : "temporary"}
 		>
+			{isPinned && <DrawerCloseButton setIsVisible={setIsVisible} />}
 			<div className="task-list__content" ref={!isPinned ? taskListRef : null}>
-				{isPinned && <CloseButton setIsVisible={setIsVisible} />}
 				<div className="task-list__header">
 					<PinButton isPinned={isPinned} setIsPinned={setIsPinned} />
 
@@ -208,7 +208,6 @@ export default function TaskList({
 					<p className="no-tasks">No tasks to display</p>
 				)}
 			</div>
-
 			<Snackbar
 				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
 				open={snackbarOpen}

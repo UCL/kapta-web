@@ -6,7 +6,7 @@ import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
 import TaskCard from "./utils/TaskCard";
-import { CloseButton, PinButton } from "./utils/Buttons";
+import { DrawerCloseButton, PinButton } from "./utils/Buttons";
 export default function SearchResults({
 	isVisible,
 	setIsVisible,
@@ -78,11 +78,11 @@ export default function SearchResults({
 			className="task-list__drawer"
 			variant={isPinned ? "persistent" : "temporary"}
 		>
+			{isPinned && <DrawerCloseButton setIsVisible={setIsVisible} />}
 			<div
 				className="task-list__content"
 				ref={!isPinned ? SearchResultsRef : null}
 			>
-				{isPinned && <CloseButton setIsVisible={setIsVisible} />}
 				<div className="task-list__header">
 					<PinButton isPinned={isPinned} setIsPinned={setIsPinned} />
 					Search Results

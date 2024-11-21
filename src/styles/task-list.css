@@ -3,7 +3,7 @@
 
 	.MuiPaper-root {
 		width: 100%;
-		max-width: 40vw;
+		max-width: 42vw;
 	}
 }
 .task-list__header {
@@ -27,6 +27,7 @@
 .task-list__content {
 	margin-inline: 4%;
 	margin-bottom: 12%;
+	padding-left: 1%;
 
 	.no-tasks,
 	.task-list__total {
