@@ -87,9 +87,8 @@ export default function TaskList({
 
 	const handleDownload = async (task) => {
 		// TODO: get data from s3 or db
-		console.log("handle download", task);
-		const id = task.task_id;
-		const bundle = await downloadTaskData({ user, id });
+		const taskId = task.task_id;
+		const bundle = await downloadTaskData({ user, taskId });
 		console.log(bundle);
 	};
 

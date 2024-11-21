@@ -122,9 +122,10 @@ export const updateTask = async ({ user, values }) => {
 	}
 };
 
-export const downloadTaskData = async ({ user, taskID }) => {
+export const downloadTaskData = async ({ user, taskId }) => {
+	console.log("task id for getting:", taskId);
 	try {
-		const response = await fetch(`${REQUEST_URL}/requests/download/${taskID}`, {
+		const response = await fetch(`${REQUEST_URL}/requests/download/${taskId}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
