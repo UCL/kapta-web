@@ -37,7 +37,6 @@ export function DrawerCloseButton({ setIsVisible }) {
 				color="white"
 				aria-label="close drawer"
 				onClick={() => setIsVisible(false)}
-				disableElevation
 				disableRipple
 				disableFocusRipple
 			>

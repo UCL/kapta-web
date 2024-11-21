@@ -6,7 +6,7 @@
 
 .close-btn__container--drawer {
 	height: 100%;
-	position: absolute;
+	position: fixed;
 	align-content: center;
 	.MuiButtonBase-root {
 		padding-left: 0;
