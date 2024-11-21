@@ -4,9 +4,6 @@
 	margin-bottom: 1rem;
 	font-family: "Lato", sans-serif;
 }
-.no-tasks {
-	bottom: 30vh !important;
-}
 
 .search__form {
 	width: 75%;
@@ -30,6 +27,10 @@
 	.MuiInputBase-formControl {
 		border-radius: 1.5rem;
 		padding-right: -1rem;
+	}
+
+	.MuiSnackbar-anchorOriginBottomCenter {
+		position: relative;
 	}
 
 	.search__input {
