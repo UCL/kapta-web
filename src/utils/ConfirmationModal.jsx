@@ -1,4 +1,4 @@
-import CloseButton from "./CloseButton";
+import { CloseButton } from "./Buttons";
 import { Button, TextField } from "@mui/material";
 import { confirmSignUp, resendVerificationCode } from "./auth";
 

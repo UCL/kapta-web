@@ -3,7 +3,7 @@ import { Box, Button, Checkbox, TextField } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { generateTaskId, generateCampaignCode } from "./utils/generators";
 import "./styles/forms.css";
-import CloseButton from "./utils/CloseButton";
+import { CloseButton } from "./utils/Buttons";
 import { createTask, updateTask } from "./utils/apiQueries";
 // import * as Yup from "yup";
 

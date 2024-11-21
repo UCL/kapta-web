@@ -1,0 +1,56 @@
+.no-tasks,
+.results__total {
+	text-align: center;
+	margin-bottom: 1rem;
+	font-family: "Lato", sans-serif;
+}
+
+.search__form {
+	width: 75%;
+	display: flex;
+	align-self: end;
+	justify-self: center;
+	flex-direction: column;
+	margin-bottom: 8vh;
+	margin-inline: 4%;
+	transition: width ease 1.5s;
+	grid-column: span 2;
+
+	&.splitscreen {
+		grid-column: 1;
+		width: 90%;
+		transition: width ease 1.5s;
+		justify-items: center;
+		justify-self: center;
+	}
+
+	.MuiInputBase-formControl {
+		border-radius: 1.5rem;
+		padding-right: -1rem;
+	}
+
+	.MuiSnackbar-anchorOriginBottomCenter {
+		position: relative;
+	}
+
+	.search__input {
+		width: 90%;
+	}
+
+	.search__suggestions {
+		margin-bottom: 0.4rem;
+		gap: 0.4rem;
+		display: flex;
+		justify-content: center;
+	}
+
+	.search__input__wrapper {
+		display: flex;
+		gap: 0.8rem;
+		margin-inline: 4%;
+		width: 100%;
+		flex-grow: 1;
+		flex-shrink: 1;
+		flex-basis: 1rem;
+	}
+}
