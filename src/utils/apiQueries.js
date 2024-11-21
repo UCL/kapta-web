@@ -1,21 +1,6 @@
 import { REQUEST_URL } from "../globals";
 
-export const getMetadata = async (id) => {
-	// TODO: get metadata from dynamodb for task id, maybe combine into other function
-
-	try {
-		const response = await fetch(`${REQUEST_URL}/requests/${id}`);
-		const result = await response.json();
-		const metadata = JSON.parse(result);
-		console.log(metadata);
-
-		return metadata;
-	} catch (error) {
-		console.error("Error fetching tasks:", error);
-	}
-};
-
-export const fetchMyTasks = async ({ user, setIsLoading }) => {
+export const fetchMyTasks = async ({ user }) => {
 	try {
 		const response = await fetch(
 			`${REQUEST_URL}/requests/createdby/${user.userId}`,
@@ -58,6 +43,24 @@ export const fetchMyODTasks = async ({ user }) => {
 export const fetchODTasks = async ({ user }) => {
 	try {
 		const response = await fetch(`${REQUEST_URL}/requests/opendata`, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: user.idToken,
+			},
+		});
+		const result = await response.json();
+		if (result.length > 0) {
+			const fetchedTasks = JSON.parse(result);
+			return fetchedTasks;
+		}
+	} catch (error) {
+		console.error("Error fetching tasks:", error);
+	}
+};
+export const fetchAllTasks = async ({ user }) => {
+	// todo: should maybe have a new route for visible only?
+	try {
+		const response = await fetch(`${REQUEST_URL}/requests`, {
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: user.idToken,

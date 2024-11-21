@@ -5,7 +5,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useState } from "react";
 import "./styles/forms.css";
 import { signUp } from "./utils/auth";
-import CloseButton from "./utils/CloseButton";
+import { CloseButton } from "./utils/Buttons";
 import * as Yup from "yup";
 
 function checkPasswordStrength(password) {

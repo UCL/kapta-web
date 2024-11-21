@@ -1,6 +1,4 @@
-import { Button, ButtonGroup } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import { Button, Fab } from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
 import "./styles/App.css";
 import TaskForm from "./TaskForm";
@@ -15,6 +13,7 @@ import ErrorModal from "./utils/ErrorModal";
 import ConfirmModal from "./utils/ConfirmationModal";
 import SuccessModal from "./SuccessModal";
 import BurgerMenu from "./BurgerMenu";
+import SearchResults from "./SearchResultsList";
 
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
@@ -32,21 +31,27 @@ export default function App() {
 	const [successIsTask, setSuccessIsTask] = useState(false);
 	const [errorMsg, setErrorMsg] = useState("");
 
-	const [isSearchFormVisible, setSearchFormVisible] = useState(true);
+	const [searchResultsVisible, setSearchResultsVisible] = useState(false);
+	const [searchResults, setSearchResults] = useState([]);
 
 	const [BMopen, setBMopen] = useState(false);
+
+	const [boundsVisible, setBoundsVisible] = useState(false);
+	const [polygonStore, setPolygonStore] = useState(null);
+	const [focusTask, setFocusTask] = useState(null);
 
 	const user = useUserStore();
 
 	const showTaskForm = (task) => {
 		setTaskValues(task);
 		setTaskFormVisible(true);
+		setTaskListVisible(false);
 	};
 
 	const showNewTaskForm = () => {
 		setTaskValues(null);
-		setTaskFormVisible(true);
 		setTaskListVisible(false);
+		setTaskFormVisible(true);
 	};
 
 	const showConfirmModal = (recipient) => {
@@ -69,6 +74,36 @@ export default function App() {
 		setSuccessModalVisible(true);
 		setSuccessMsg(message);
 		setSuccessIsTask(true);
+	};
+
+	const showBounds = (bounds) => {
+		setPolygonStore(bounds);
+		setBoundsVisible(true);
+	};
+
+	const getPolygons = (results) => {
+		let polygons = [];
+		results.forEach((task) => {
+			if (task.geo_bounds) {
+				console.log(task.geo_bounds);
+				polygons.push(task.geo_bounds);
+			}
+		});
+		return polygons;
+	};
+
+	const showSearchResults = (results) => {
+		if (results !== searchResults) {
+			setPolygonStore(null); // reset polygon store for each new search
+			setSearchResults(results);
+		}
+		if (!searchResultsVisible) {
+			setSearchResultsVisible(true);
+		}
+		const polygons = getPolygons(results);
+		if (polygons.length > 0) {
+			return showBounds(polygons);
+		}
 	};
 
 	return (
@@ -138,17 +173,40 @@ export default function App() {
 					isTask={true}
 				/>
 			)}
-
 			{user.loggedIn && (
 				<>
 					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
 
-					<div className="response-container">
-						{/* this is where the bot responses will go */}
+					{/* <div className="response-container"> */}
+					{/* this is where the bot responses will go */}
+					{/* </div> */}
+					<div className="task-map-wrapper">
+						<Map
+							boundsVisible={boundsVisible}
+							polygonStore={polygonStore}
+							taskListOpen={isTaskListVisible || searchResultsVisible}
+							focusTask={focusTask}
+						/>
+						<TaskList
+							isVisible={isTaskListVisible}
+							setIsVisible={setTaskListVisible}
+							user={user}
+							showTaskForm={showTaskForm}
+							showNewTaskForm={showNewTaskForm}
+							showBounds={showBounds}
+						/>
+
+						<SearchResults
+							isVisible={searchResultsVisible}
+							setIsVisible={setSearchResultsVisible}
+							results={searchResults}
+							setFocusTask={setFocusTask}
+						/>
+						<SearchForm
+							showSearchResults={showSearchResults}
+							taskListOpen={isTaskListVisible || searchResultsVisible}
+						/>
 					</div>
-
-					<Map />
-
 					<TaskForm
 						isVisible={isTaskFormVisible}
 						setIsVisible={setTaskFormVisible}
@@ -156,26 +214,15 @@ export default function App() {
 						taskValues={taskValues}
 						showTaskSuccessModal={showTaskSuccessModal}
 					/>
-					<TaskList
-						isVisible={isTaskListVisible}
-						setIsVisible={setTaskListVisible}
-						user={user}
-						showTaskForm={showTaskForm}
-						showNewTaskForm={showNewTaskForm}
-					/>
-					<div className="user-action__wrapper">
-						<SearchForm isVisible={isSearchFormVisible} />
-
-						<Button
-							size="medium"
-							variant="outlined"
-							color="tomato"
-							onClick={() => setTaskListVisible(true)}
-							className="btn--view-tasks"
-						>
-							TASKS
-						</Button>
-					</div>
+					<Fab
+						size="medium"
+						variant="extended"
+						color="tomato"
+						onClick={() => setTaskListVisible(true)}
+						className="btn--view-tasks"
+					>
+						TASKS
+					</Fab>
 				</>
 			)}
 		</main>

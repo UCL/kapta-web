@@ -4,11 +4,24 @@
 	bottom: 0;
 	width: 100%;
 	height: 100%;
-	/* z-index: -1; */
+}
+#map {
+	height: 100%;
+	grid-column: span 2;
+	canvas {
+		transition: transform 0.3s;
+	}
+	&.splitscreen {
+		grid-column: span 1;
+		canvas {
+			transform: translateX(-18%);
+		}
+	}
 }
 
 .mapboxgl-ctrl-attrib {
 	background-color: transparent !important;
+	font-size: 0.6rem;
 
 	.mapboxgl-ctrl-attrib-inner > a {
 		color: grey;
