@@ -121,3 +121,24 @@ export const updateTask = async ({ user, values }) => {
 		console.error("Error:", error);
 	}
 };
+
+export const downloadTaskData = async ({ user, taskID }) => {
+	try {
+		const response = await fetch(`${REQUEST_URL}/requests/download/${taskID}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: user.idToken,
+			},
+		});
+
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+
+		const result = await response.json();
+		return result;
+	} catch (error) {
+		console.error("Error:", error);
+	}
+};

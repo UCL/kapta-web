@@ -16,7 +16,11 @@ import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
-import { fetchMyTasks, fetchODTasks } from "./utils/apiQueries";
+import {
+	downloadTaskData,
+	fetchMyTasks,
+	fetchODTasks,
+} from "./utils/apiQueries";
 import { DrawerCloseButton, PinButton } from "./utils/Buttons";
 import TaskCard from "./utils/TaskCard";
 export default function TaskList({
@@ -81,9 +85,12 @@ export default function TaskList({
 		}
 	};
 
-	const handleDownload = () => {
+	const handleDownload = async (task) => {
 		// TODO: get data from s3 or db
-		console.log("handle download");
+		console.log("handle download", task);
+		const id = task.task_id;
+		const bundle = await downloadTaskData({ user, id });
+		console.log(bundle);
 	};
 
 	const handleEdit = (task) => {
@@ -130,6 +137,7 @@ export default function TaskList({
 			action: (task) => () => handleShowOnMap(task),
 			variant: "contained",
 		},
+
 		{
 			text: "Download Data",
 			icon: <DownloadIcon />,
