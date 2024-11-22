@@ -12,6 +12,7 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 	const user = useUserStore();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [tasks, setTasks] = useState([]);
+	const [query, setQuery] = useState("");
 
 	useEffect(() => {
 		const fetchTasks = async () => {
@@ -29,6 +30,7 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 		// for the given set of tasks (currently all where visible===true), check in title and then description for the query
 		// todo: how do we want to handle plurals? eg elf and elves mentioned
 		const q = values.query?.toLowerCase() || values;
+		setQuery(q);
 		var results = [];
 
 		tasks.forEach((task) => {
@@ -42,6 +44,23 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 		if (results.length === 0) {
 			setSnackbarOpen(true);
 		} else showSearchResults(results);
+	};
+	const handleRefresh = async () => {
+		try {
+			const fetchTasks = async () => {
+				var fetchedTasks = await fetchAllTasks({ user });
+				return fetchedTasks;
+			};
+
+			fetchTasks().then((tasks) => {
+				const visibleTasks = tasks.filter((task) => task.visible === true);
+				setTasks(visibleTasks);
+			});
+
+			handleSubmit(query);
+		} catch (error) {
+			console.error("Error fetching tasks:", error);
+		}
 	};
 
 	const chipSuggestions = [
