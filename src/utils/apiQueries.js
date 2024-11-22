@@ -147,7 +147,7 @@ export const downloadTaskData = async ({ user, task }) => {
 			const zip = new JSZip();
 
 			zip.file(`${task.task_title}-${task.campaign_code}.txt`, txtContent);
-			zip.file(`${task.task_title}-${task.campaign_code}.json`, jsonContent);
+			zip.file(`${task.task_title}-${task.campaign_code}.geojson`, jsonContent);
 
 			const zipBlob = await zip.generateAsync({ type: "blob" });
 			const zipUrl = URL.createObjectURL(zipBlob);
