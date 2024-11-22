@@ -8,9 +8,7 @@ import {
 	ToggleButtonGroup,
 	Tooltip,
 } from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
 import AddIcon from "@mui/icons-material/Add";
-import PinDropIcon from "@mui/icons-material/PinDrop";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
@@ -85,13 +83,6 @@ export default function TaskList({
 		}
 	};
 
-	const handleDownload = async (task) => {
-		// TODO: get data from s3 or db
-		const taskId = task.task_id;
-		const bundle = await downloadTaskData({ user, taskId });
-		console.log(bundle);
-	};
-
 	const handleEdit = (task) => {
 		showTaskForm(task);
 		setIsVisible(false);
@@ -129,29 +120,12 @@ export default function TaskList({
 		}
 	};
 
-	const cardActionBtns = [
-		{
-			text: "Show on Map",
-			icon: <PinDropIcon />,
-			action: (task) => () => handleShowOnMap(task),
-			variant: "contained",
-		},
-
-		{
-			text: "Download Data",
-			icon: <DownloadIcon />,
-			action: (task) => () => handleDownload(task),
-			variant: "outlined",
-			color: "orange",
-		},
-	];
-
 	useClickOutside(taskListRef, () => setIsVisible(false));
 
 	const taskCardProps = {
-		cardActionBtns: cardActionBtns,
+		showTaskOnMap: handleShowOnMap,
 		handleCopy: handleCopy,
-		userID: user.userId,
+		user: user,
 		handleEdit: handleEdit,
 	};
 

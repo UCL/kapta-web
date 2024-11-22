@@ -1,6 +1,4 @@
 import { Drawer, Snackbar } from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
-import PinDropIcon from "@mui/icons-material/PinDrop";
 import { useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
@@ -17,17 +15,24 @@ export default function SearchResults({
 	const [snackbarMsg, setSnackbarMsg] = useState("Code copied to clipboard!");
 	const [isPinned, setIsPinned] = useState(false);
 	const SearchResultsRef = useRef(null);
+	const [isLoading, setIsLoading] = useState(true);
+
+	const handleRefresh = async () => {
+		setIsLoading(true);
+		try {
+			// let newResults = await refreshSearchResult();
+		} catch (error) {
+			console.error("Error fetching tasks:", error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
 	const handleCopy = async (text) => {
 		const success = await copyToClipboard(text);
 		if (success) {
 			openSnackbar("Code copied to clipboard!");
 		}
-	};
-
-	const handleDownload = () => {
-		// TODO: get data from rds
-		console.log("handle download");
 	};
 
 	const openSnackbar = (msg) => {
@@ -44,28 +49,12 @@ export default function SearchResults({
 		}
 	};
 
-	const cardActionBtns = [
-		{
-			text: "Show on Map",
-			icon: <PinDropIcon />,
-			action: (task) => () => handleShowOnMap(task),
-			variant: "contained",
-		},
-		{
-			text: "Download Data",
-			icon: <DownloadIcon />,
-			action: (task) => () => handleDownload(task),
-			variant: "outlined",
-			color: "orange",
-		},
-	];
-
 	useClickOutside(SearchResultsRef, () => setIsVisible(false));
 
 	const taskCardProps = {
-		cardActionBtns: cardActionBtns,
+		showTaskOnMap: handleShowOnMap,
 		handleCopy: handleCopy,
-		userID: null,
+		user: null,
 		handleEdit: null,
 	};
 

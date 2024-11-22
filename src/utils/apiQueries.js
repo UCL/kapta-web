@@ -1,4 +1,5 @@
 import { REQUEST_URL } from "../globals";
+import JSZip from "jszip";
 
 export const fetchMyTasks = async ({ user }) => {
 	try {
@@ -20,7 +21,6 @@ export const fetchMyTasks = async ({ user }) => {
 };
 
 export const fetchMyODTasks = async ({ user }) => {
-	console.log(`${REQUEST_URL}/requests/opendata/createdby/${user.userId}`);
 	try {
 		const response = await fetch(
 			`${REQUEST_URL}/requests/opendata/createdby/${user.userId}`,
@@ -122,14 +122,15 @@ export const updateTask = async ({ user, values }) => {
 	}
 };
 
-export const downloadTaskData = async ({ user, taskId }) => {
-	console.log("task id for getting:", taskId);
+export const downloadTaskData = async ({ user, task }) => {
+	const taskId = task.task_id;
+	const userID = user.idToken;
 	try {
 		const response = await fetch(`${REQUEST_URL}/requests/download/${taskId}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: user.idToken,
+				Authorization: userID,
 			},
 		});
 
@@ -138,7 +139,23 @@ export const downloadTaskData = async ({ user, taskId }) => {
 		}
 
 		const result = await response.json();
-		return result;
+		const data = JSON.parse(result);
+		if (data.taskID === taskId) {
+			const txtContent = data.txtFileContent;
+			const jsonContent = data.jsonFileContent;
+
+			const zip = new JSZip();
+
+			zip.file(`${task.task_title}-${task.campaign_code}.txt`, txtContent);
+			zip.file(`${task.task_title}-${task.campaign_code}.json`, jsonContent);
+
+			const zipBlob = await zip.generateAsync({ type: "blob" });
+			const zipUrl = URL.createObjectURL(zipBlob);
+			return { response: 200, content: zipUrl };
+		} else {
+			console.error("task details do not match");
+			return { response: 409 };
+		}
 	} catch (error) {
 		console.error("Error:", error);
 	}
