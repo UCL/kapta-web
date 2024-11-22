@@ -24,7 +24,7 @@ export default function TaskCard({
 	user,
 	handleEdit,
 }) {
-	const userID = user.userId;
+	const userID = user?.userId || null;
 	const [isLoading, setIsLoading] = useState(false);
 	// console.log(userToken);
 	// dynamically set campaign code visibility
