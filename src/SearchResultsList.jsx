@@ -41,25 +41,19 @@ export default function SearchResults({
 		setSnackbarMsg(msg);
 	};
 
-	const handleShowOnMap = (task) => {
-		if (task.geo_bounds) {
-			setFocusTask(task);
-			if (!isPinned) setIsVisible(false);
-		} else {
-			openSnackbar("No location data available for this task");
-		}
-	};
-
 	useClickOutside(SearchResultsRef, () => setIsVisible(false));
 
 	const taskCardProps = {
-		showTaskOnMap: handleShowOnMap,
 		handleCopy: handleCopy,
 		user: null,
 		handleEdit: null,
 		displayedTask: displayedTask,
 		setDisplayedTask: setDisplayedTask,
 		setFocusTask: setFocusTask,
+		openSnackbar: openSnackbar,
+		isPinned: isPinned,
+		setIsVisible: setIsVisible,
+		showBounds: null,
 	};
 
 	if (!isVisible) return null;

@@ -21,13 +21,16 @@ import JSZip from "jszip";
 
 export default function TaskCard({
 	task,
-	showTaskOnMap,
 	handleCopy,
 	user,
 	handleEdit,
 	displayedTask,
 	setDisplayedTask,
 	setFocusTask,
+	openSnackbar,
+	isPinned,
+	setIsVisible,
+	showBounds,
 }) {
 	const userID = user?.userId || null;
 	const taskId = task.task_id;
@@ -72,12 +75,26 @@ export default function TaskCard({
 		}
 	};
 
+	const handleShowOnMap = (task) => {
+		if (task.geo_bounds) {
+			if (showBounds) showBounds(task.geo_bounds);
+			else setFocusTask(task);
+			if (!isPinned) setIsVisible(false);
+		} else {
+			openSnackbar("No location data available for this task");
+		}
+	};
+
 	const showDataPoints = async (task) => {
+		setFocusTask(null);
 		const data = await getDataFromBucket({ user, task });
-		const geojson = data.content.jsonFileContent;
-		const featureCollection = JSON.parse(geojson);
-		console.log("geojson", featureCollection.features.length);
-		setFocusTask(featureCollection);
+		if (data.content.jsonFileContent) {
+			const geojson = data.content.jsonFileContent;
+			const featureCollection = JSON.parse(geojson);
+			setFocusTask(featureCollection);
+		} else {
+			openSnackbar("No location data available for this task");
+		}
 	};
 
 	const cardActionBtns = [
@@ -89,8 +106,7 @@ export default function TaskCard({
 				taskId === displayedTask?.task_id
 					? (task) => showDataPoints(task)
 					: (task) => {
-							setFocusTask(null);
-							showTaskOnMap(task);
+							handleShowOnMap(task);
 							setDisplayedTask(task);
 					  },
 			variant: "contained",
