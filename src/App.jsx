@@ -76,8 +76,9 @@ export default function App() {
 		setSuccessIsTask(true);
 	};
 
-	const showBounds = (bounds) => {
-		setPolygonStore(bounds);
+	const showBounds = (tasks) => {
+		console.log("showbounds called", tasks);
+		setPolygonStore(tasks);
 		setBoundsVisible(true);
 	};
 
@@ -85,8 +86,7 @@ export default function App() {
 		let polygons = [];
 		results.forEach((task) => {
 			if (task.geo_bounds) {
-				console.log(task.geo_bounds);
-				polygons.push(task.geo_bounds);
+				polygons.push(task);
 			}
 		});
 		return polygons;

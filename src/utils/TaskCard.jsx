@@ -77,7 +77,7 @@ export default function TaskCard({
 
 	const handleShowOnMap = (task) => {
 		if (task.geo_bounds) {
-			if (showBounds) showBounds(task.geo_bounds);
+			if (showBounds) showBounds(task);
 			else setFocusTask(task);
 			if (!isPinned) setIsVisible(false);
 		} else {

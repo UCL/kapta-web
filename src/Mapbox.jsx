@@ -26,6 +26,10 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 				"star-intensity": 0,
 			});
 		});
+		window.handlePopupDetailsClick = (id) => {
+			console.log("clicked", id);
+			// todo: call function to open task list with this task
+		};
 	}, []);
 
 	// adding polygon source data
@@ -34,7 +38,8 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 
 		// source does not exist
 		if (!map.current.getSource("polygon-source")) {
-			// not an array of polygons
+			console.log("polygonstore", polygonStore);
+			// not an array of polygons (not search results)
 			if (!Array.isArray(polygonStore)) {
 				map.current.addSource("polygon-source", {
 					type: "geojson",
@@ -42,7 +47,12 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 						type: "Feature",
 						geometry: {
 							type: "Polygon",
-							coordinates: [polygonStore.coordinates],
+							coordinates: [polygonStore.geo_bounds.coordinates],
+						},
+						properties: {
+							id: polygonStore.task_id,
+							title: polygonStore.task_title,
+							description: polygonStore.task_description,
 						},
 					},
 				});
@@ -53,7 +63,12 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 						type: "Feature",
 						geometry: {
 							type: "Polygon",
-							coordinates: [polygon.coordinates],
+							coordinates: [polygon.geo_bounds.coordinates],
+						},
+						properties: {
+							id: polygon.task_id,
+							title: polygon.task_title,
+							description: polygon.task_description,
 						},
 					})),
 				};
@@ -64,6 +79,11 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 				});
 			}
 		} else {
+			// removing data points since new task
+			if (map.current.getLayer("datapoints-layer")) {
+				map.current.removeLayer("datapoints-layer");
+			}
+
 			// source already exists, used when viewing task list and clicking between tasks
 			let source = map.current.getSource("polygon-source");
 			let existingData = source._data;
@@ -75,11 +95,6 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 				};
 			}
 
-			// resetting data points
-			if (map.current.getLayer("datapoints-layer")) {
-				map.current.removeLayer("datapoints-layer");
-			}
-
 			// Ensure polygonStore is an array so we can use .map() even if it's one item (the initial one)
 			const polygons = Array.isArray(polygonStore)
 				? polygonStore
@@ -89,7 +104,12 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 				type: "Feature",
 				geometry: {
 					type: "Polygon",
-					coordinates: [polygon.coordinates],
+					coordinates: [polygon.geo_bounds.coordinates],
+				},
+				properties: {
+					id: polygon.task_id,
+					title: polygon.task_title,
+					description: polygon.task_description,
 				},
 			}));
 
@@ -101,7 +121,7 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 			source.setData(newData);
 		}
 
-		//draw the polygons and their outlines
+		// draw the polygons and their outlines
 		if (boundsVisible) {
 			if (!map.current.getLayer("polygon-fill")) {
 				map.current.addLayer({
@@ -126,6 +146,36 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 					},
 				});
 				map.current.moveLayer("polygon-outline");
+
+				// listen for click on a polygon
+				map.current.on("click", "polygon-fill", (e) => {
+					const features = map.current.queryRenderedFeatures(e.point, {
+						layers: ["polygon-fill"],
+					});
+
+					if (features.length) {
+						const feature = features[0];
+						const coordinates = e.lngLat;
+						const description =
+							feature.properties.description || "No description available";
+
+						new mapboxgl.Popup()
+							.setLngLat(coordinates)
+							.setHTML(
+								`<h3>${feature.properties.title}</h3><p>${description}</p><p><a id="show-task-details"onclick="handlePopupDetailsClick('${feature.properties.id}')">Show task details</a></p>`
+							)
+							.addTo(map.current);
+					}
+				});
+
+				// Change cursor style on hover
+				map.current.on("mouseenter", "polygons-layer", () => {
+					map.current.getCanvas().style.cursor = "pointer";
+				});
+
+				map.current.on("mouseleave", "polygons-layer", () => {
+					map.current.getCanvas().style.cursor = "";
+				});
 			} else {
 				// make sure they're at the top
 				map.current.moveLayer("polygon-fill");
@@ -160,7 +210,7 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 				padding: 200,
 			});
 		}
-		// if focusTask is a feature collection (showing data points)
+		// if focusTask is a feature collection (used for showing data points)
 		else if (focusTask && focusTask.type === "FeatureCollection") {
 			// add source
 			if (!map.current.getSource("datapoints-source")) {
@@ -195,17 +245,19 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 	}, [focusTask]);
 
 	const getBounds = (polygonStore) => {
+		// expects either a single task object or an array of task objects with geo_bounds as the relevant part
 		var bounds = new mapboxgl.LngLatBounds();
 		if (Array.isArray(polygonStore)) {
 			// only an array if multiple, unclear why there are slightly different structures
 
-			polygonStore.forEach((array) => {
-				if (array.type === "Polygon") {
-					array.coordinates.forEach((coord) => {
+			polygonStore.forEach((object) => {
+				const geoBounds = object.geo_bounds;
+				if (geoBounds.type === "Polygon") {
+					geoBounds.coordinates.forEach((coord) => {
 						bounds.extend(coord);
 					});
 				} else {
-					array.forEach((item) => {
+					geoBounds.forEach((item) => {
 						if (item.type === "Polygon") {
 							item.coordinates.forEach((coord) => {
 								bounds.extend(coord);
@@ -215,7 +267,7 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 				}
 			});
 		} else {
-			const coordinates = polygonStore.coordinates;
+			const coordinates = polygonStore.geo_bounds.coordinates;
 			coordinates.forEach((coord) => {
 				bounds.extend(coord);
 			});

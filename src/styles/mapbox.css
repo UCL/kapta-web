@@ -17,6 +17,21 @@
 			transform: translateX(-18%);
 		}
 	}
+	.mapboxgl-popup-tip {
+		border-top-color: var(--intrinsic-grey);
+	}
+	.mapboxgl-popup-content {
+		background-color: var(--intrinsic-grey);
+		color: var(--off-white);
+		font-family: "Lato", sans-serif;
+		font-weight: 400;
+		font-size: 0.8rem;
+
+		#show-task-details {
+			color: var(--mui-palette-info-200);
+			cursor: pointer;
+		}
+	}
 }
 
 .mapboxgl-ctrl-attrib {
