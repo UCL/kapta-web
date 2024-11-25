@@ -138,17 +138,53 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 
 		if (bounds) {
 			map.current.fitBounds(bounds, {
-				padding: 200
+				padding: 200,
 			});
 		}
 	}, [polygonStore, boundsVisible]);
 
+	// fly to and show data points
 	useEffect(() => {
+		// flying to task when multiple loaded
+		if (!map.current || !map.current.isStyleLoaded() || !focusTask) return;
+
 		if (focusTask && focusTask.geo_bounds) {
 			map.current.flyTo({
-				center: focusTask.geo_bounds.coordinates[0],
-				zoom: 12,
+				center: focusTask.geo_bounds.coordinates[1],
 				essential: true, // not user-interruptible
+				padding: 200,
+			});
+		}
+		// if focusTask is a feature collection (showing data points)
+		else if (focusTask && focusTask.type === "FeatureCollection") {
+			// add source
+			if (!map.current.getSource("datapoints-source")) {
+				map.current.addSource("datapoints-source", {
+					type: "geojson",
+					data: focusTask,
+				});
+			} else {
+				map.current.getSource("datapoints-source").setData(focusTask);
+			}
+
+			// add layer
+			if (!map.current.getLayer("datapoints-layer")) {
+				map.current.addLayer({
+					id: "datapoints-layer",
+					type: "circle",
+					source: "datapoints-source",
+					paint: {
+						"circle-radius": 5,
+						"circle-color": "#c8ff00",
+					},
+				});
+			}
+			// fly to it (in case they moved away)
+			map.current.flyTo({
+				center: focusTask.features[0].geometry.coordinates,
+				essential: true,
+				padding: 200,
+				zoom: 12,
 			});
 		}
 	}, [focusTask]);

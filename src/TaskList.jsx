@@ -14,11 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
-import {
-	downloadTaskData,
-	fetchMyTasks,
-	fetchODTasks,
-} from "./utils/apiQueries";
+import { fetchMyTasks, fetchODTasks } from "./utils/apiQueries";
 import { DrawerCloseButton, PinButton } from "./utils/Buttons";
 import TaskCard from "./utils/TaskCard";
 export default function TaskList({
@@ -28,6 +24,7 @@ export default function TaskList({
 	showTaskForm,
 	showNewTaskForm,
 	showBounds,
+	setFocusTask,
 }) {
 	const [tasks, setTasks] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -37,6 +34,7 @@ export default function TaskList({
 	const [taskListName, setTaskListName] = useState("mine");
 	const taskListRef = useRef(null);
 	const [isPinned, setIsPinned] = useState(false);
+	const [displayedTask, setDisplayedTask] = useState(null);
 
 	useEffect(() => {
 		if (isVisible) {
@@ -127,6 +125,9 @@ export default function TaskList({
 		handleCopy: handleCopy,
 		user: user,
 		handleEdit: handleEdit,
+		displayedTask: displayedTask,
+		setDisplayedTask: setDisplayedTask,
+		setFocusTask: setFocusTask,
 	};
 
 	if (!isVisible) return null;

@@ -27,6 +27,7 @@ export default function TaskCard({
 	handleEdit,
 	displayedTask,
 	setDisplayedTask,
+	setFocusTask,
 }) {
 	const userID = user?.userId || null;
 	const taskId = task.task_id;
@@ -71,13 +72,12 @@ export default function TaskCard({
 		}
 	};
 
-	const showDataPoints = (task) => {
-		console.log("showDataPoints", task);
-		// todo: showDataPoints:
-		// trigger api call to s3 bucket
-		const data = getDataFromBucket({ user, task });
+	const showDataPoints = async (task) => {
+		const data = await getDataFromBucket({ user, task });
 		const geojson = data.content.jsonFileContent;
-		console.log("geojson", geojson);
+		const featureCollection = JSON.parse(geojson);
+		console.log("geojson", featureCollection.features.length);
+		setFocusTask(featureCollection);
 	};
 
 	const cardActionBtns = [
@@ -87,8 +87,9 @@ export default function TaskCard({
 			icon: <PinDropIcon />,
 			action:
 				taskId === displayedTask?.task_id
-					? showDataPoints(task)
+					? (task) => showDataPoints(task)
 					: (task) => {
+							setFocusTask(null);
 							showTaskOnMap(task);
 							setDisplayedTask(task);
 					  },

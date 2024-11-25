@@ -16,6 +16,7 @@ export default function SearchResults({
 	const [isPinned, setIsPinned] = useState(false);
 	const SearchResultsRef = useRef(null);
 	const [isLoading, setIsLoading] = useState(true);
+	const [displayedTask, setDisplayedTask] = useState(null);
 
 	const handleRefresh = async () => {
 		setIsLoading(true);
@@ -56,6 +57,9 @@ export default function SearchResults({
 		handleCopy: handleCopy,
 		user: null,
 		handleEdit: null,
+		displayedTask: displayedTask,
+		setDisplayedTask: setDisplayedTask,
+		setFocusTask: setFocusTask,
 	};
 
 	if (!isVisible) return null;

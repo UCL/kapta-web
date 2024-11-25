@@ -194,6 +194,7 @@ export default function App() {
 							showTaskForm={showTaskForm}
 							showNewTaskForm={showNewTaskForm}
 							showBounds={showBounds}
+							setFocusTask={setFocusTask}
 						/>
 
 						<SearchResults
