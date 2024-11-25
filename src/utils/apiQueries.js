@@ -122,7 +122,7 @@ export const updateTask = async ({ user, values }) => {
 	}
 };
 
-export const downloadTaskData = async ({ user, task }) => {
+export const getDataFromBucket = async ({ user, task }) => {
 	const taskId = task.task_id;
 	const userID = user.idToken;
 	try {
@@ -140,18 +140,9 @@ export const downloadTaskData = async ({ user, task }) => {
 
 		const result = await response.json();
 		const data = JSON.parse(result);
+
 		if (data.taskID === taskId) {
-			const txtContent = data.txtFileContent;
-			const jsonContent = data.jsonFileContent;
-
-			const zip = new JSZip();
-
-			zip.file(`${task.task_title}-${task.campaign_code}.txt`, txtContent);
-			zip.file(`${task.task_title}-${task.campaign_code}.geojson`, jsonContent);
-
-			const zipBlob = await zip.generateAsync({ type: "blob" });
-			const zipUrl = URL.createObjectURL(zipBlob);
-			return { response: 200, content: zipUrl };
+			return { response: 200, content: data };
 		} else {
 			console.error("task details do not match");
 			return { response: 409 };
