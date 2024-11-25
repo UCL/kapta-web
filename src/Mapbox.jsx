@@ -75,6 +75,11 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 				};
 			}
 
+			// resetting data points
+			if (map.current.getLayer("datapoints-layer")) {
+				map.current.removeLayer("datapoints-layer");
+			}
+
 			// Ensure polygonStore is an array so we can use .map() even if it's one item (the initial one)
 			const polygons = Array.isArray(polygonStore)
 				? polygonStore
@@ -184,7 +189,7 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 				center: focusTask.features[0].geometry.coordinates,
 				essential: true,
 				padding: 200,
-				zoom: 12,
+				zoom: 13,
 			});
 		}
 	}, [focusTask]);
