@@ -15,18 +15,23 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import PlaceIcon from "@mui/icons-material/Place";
 import EditIcon from "@mui/icons-material/Edit";
 import PersonIcon from "@mui/icons-material/Person";
-import { downloadTaskData } from "./apiQueries";
+import { getDataFromBucket } from "./apiQueries";
 import { useState } from "react";
+import JSZip from "jszip";
+
 export default function TaskCard({
 	task,
 	showTaskOnMap,
 	handleCopy,
 	user,
 	handleEdit,
+	displayedTask,
+	setDisplayedTask,
 }) {
 	const userID = user?.userId || null;
+	const taskId = task.task_id;
 	const [isLoading, setIsLoading] = useState(false);
-	// console.log(userToken);
+
 	// dynamically set campaign code visibility
 	let codeVisible = false;
 	if (task.created_by === userID) {
@@ -37,15 +42,27 @@ export default function TaskCard({
 
 	const handleDownload = async (task) => {
 		setIsLoading(true);
-		const taskId = task.task_id;
-		const zipUrl = await downloadTaskData({ user, task });
-		if (zipUrl.response !== 200) {
+
+		const data = await getDataFromBucket({ user, task });
+
+		if (data.response !== 200) {
 			// todo: show an error
 			return;
 		} else {
+			const txtContent = data.content.txtFileContent;
+			const jsonContent = data.content.jsonFileContent;
+
+			const zip = new JSZip();
+
+			zip.file(`${task.task_title}-${task.campaign_code}.txt`, txtContent);
+			zip.file(`${task.task_title}-${task.campaign_code}.geojson`, jsonContent);
+
 			setIsLoading(false);
+
+			const zipBlob = await zip.generateAsync({ type: "blob" });
+			const zipUrl = URL.createObjectURL(zipBlob);
 			const zipLink = document.createElement("a");
-			zipLink.href = zipUrl.content;
+			zipLink.href = zipUrl;
 			zipLink.download = `${taskId}.zip`;
 			document.body.appendChild(zipLink);
 			zipLink.click();
@@ -54,11 +71,27 @@ export default function TaskCard({
 		}
 	};
 
+	const showDataPoints = (task) => {
+		console.log("showDataPoints", task);
+		// todo: showDataPoints:
+		// trigger api call to s3 bucket
+		const data = getDataFromBucket({ user, task });
+		const geojson = data.content.jsonFileContent;
+		console.log("geojson", geojson);
+	};
+
 	const cardActionBtns = [
 		{
-			text: "Show on Map",
+			text:
+				taskId === displayedTask?.task_id ? "Show data points" : "Show on Map",
 			icon: <PinDropIcon />,
-			action: (task) => showTaskOnMap(task),
+			action:
+				taskId === displayedTask?.task_id
+					? showDataPoints(task)
+					: (task) => {
+							showTaskOnMap(task);
+							setDisplayedTask(task);
+					  },
 			variant: "contained",
 			loading: false,
 		},
