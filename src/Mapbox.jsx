@@ -254,8 +254,12 @@ export function Map({
 				});
 			}
 			// fly to it (in case they moved away)
+			const middleIndex = Math.floor(focusTask.features.length / 2);
+			const middleCoordinates =
+				focusTask.features[middleIndex].geometry.coordinates;
+
 			map.current.flyTo({
-				center: focusTask.features[0].geometry.coordinates,
+				center: middleCoordinates,
 				essential: true,
 				padding: 200,
 			});
