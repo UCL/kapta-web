@@ -109,7 +109,6 @@ export default function App() {
 	const showTaskInList = (id) => {
 		setChosenTask(id);
 		setTaskListVisible(true);
-		// todo: probably need to figure out if it should be opendata or personal list
 	};
 
 	return (

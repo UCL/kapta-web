@@ -72,7 +72,12 @@ export default function TaskList({
 	}, [taskListName, user]);
 
 	useEffect(() => {
+		if (chosenTask && chosenTask.includes("opendata")) {
+			setTaskListName("opendata");
+		}
 		if (chosenTask && taskRefs.current[chosenTask]) {
+			console.log("chosentask", chosenTask);
+
 			// Scroll to the chosen task
 			taskRefs.current[chosenTask].scrollIntoView({
 				behavior: "smooth",
