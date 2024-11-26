@@ -27,31 +27,18 @@ export default function TaskList({
 	setFocusTask,
 	chosenTask,
 	scrollFlashTask,
+	taskListName,
+	setTaskListName,
 }) {
 	const [tasks, setTasks] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMsg, setSnackbarMsg] = useState("Code copied to clipboard!");
 
-	const [taskListName, setTaskListName] = useState("mine");
 	const taskListRef = useRef(null);
 	const taskRefs = useRef({});
 	const [isPinned, setIsPinned] = useState(false);
 	const [displayedTask, setDisplayedTask] = useState(null);
-
-	useEffect(() => {
-		if (isVisible) {
-			setIsLoading(true);
-			const fetchTasks = async () => {
-				var fetchedTasks = await fetchMyTasks({ user, setTasks });
-				setTasks(fetchedTasks);
-				setTaskListName("mine");
-				setIsLoading(false);
-			};
-			setIsLoading(true);
-			fetchTasks();
-		}
-	}, [isVisible, user]);
 
 	useEffect(() => {
 		if (taskListName === "opendata") {

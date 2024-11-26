@@ -41,6 +41,8 @@ export default function App() {
 	const [focusTask, setFocusTask] = useState(null);
 	const [chosenTask, setChosenTask] = useState(null);
 
+	const [taskListName, setTaskListName] = useState("mine");
+
 	const user = useUserStore();
 
 	const showTaskForm = (task) => {
@@ -109,6 +111,23 @@ export default function App() {
 	const showTaskInList = (id) => {
 		setChosenTask(id);
 		setTaskListVisible(true);
+	};
+
+	const scrollFlashTask = (taskRefs) => {
+		// Scroll to the chosen task
+		taskRefs.current[chosenTask].scrollIntoView({
+			behavior: "smooth",
+			block: "center",
+		});
+		// Make it flash
+		const taskElement = taskRefs.current[chosenTask];
+		taskElement.classList.add("flash");
+
+		// Remove the flash class after the animation duration
+		setTimeout(() => {
+			taskElement.classList.remove("flash");
+			setChosenTask(null);
+		}, 1600);
 	};
 
 	return (
@@ -202,6 +221,9 @@ export default function App() {
 							showBounds={showBounds}
 							setFocusTask={setFocusTask}
 							chosenTask={chosenTask}
+							scrollFlashTask={scrollFlashTask}
+							taskListName={taskListName}
+							setTaskListName={setTaskListName}
 						/>
 
 						<SearchResults
@@ -210,6 +232,7 @@ export default function App() {
 							results={searchResults}
 							setFocusTask={setFocusTask}
 							chosenTask={chosenTask}
+							scrollFlashTask={scrollFlashTask}
 						/>
 						<SearchForm
 							showSearchResults={showSearchResults}
