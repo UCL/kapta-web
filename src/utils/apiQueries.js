@@ -32,7 +32,6 @@ export const fetchMyODTasks = async ({ user }) => {
 			}
 		);
 		const result = await response.json();
-		console.log("result", result);
 		const fetchedTasks = JSON.parse(result);
 		return fetchedTasks;
 	} catch (error) {

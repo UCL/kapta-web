@@ -11,7 +11,6 @@ import { cognito } from "../globals";
 
 const signUp = async (values) => {
 	const client = new CognitoIdentityProviderClient(cognito);
-	console.log(values);
 
 	const command = new SignUpCommand({
 		ClientId: cognito.userPoolClientId,
@@ -44,10 +43,8 @@ const signUp = async (values) => {
 			},
 		].filter((attr) => attr.Value !== undefined && attr.Value !== null),
 	});
-	console.log("going to sign up");
 	try {
 		const response = await client.send(command);
-		console.log("signup response", response);
 		if (response.$metadata.httpStatusCode === 200) {
 			return { response: true };
 		}
@@ -69,7 +66,6 @@ const confirmSignUp = async (code, recipient) => {
 
 	try {
 		const response = await client.send(command);
-		console.log("User confirmed successfully", response);
 		return response;
 	} catch (error) {
 		console.error("Error confirming user", error);
@@ -132,7 +128,6 @@ const resendVerificationCode = async (email) => {
 			Username: email,
 		});
 		const response = await client.send(command);
-		console.log("Verification code resent successfully:", response);
 	} catch (error) {
 		console.error("Error resending verification code:", error);
 	}
