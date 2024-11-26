@@ -26,6 +26,7 @@ export default function TaskList({
 	showBounds,
 	setFocusTask,
 	chosenTask,
+	scrollFlashTask,
 }) {
 	const [tasks, setTasks] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -76,21 +77,26 @@ export default function TaskList({
 			setTaskListName("opendata");
 		}
 		if (chosenTask && taskRefs.current[chosenTask]) {
-			// Scroll to the chosen task
-			taskRefs.current[chosenTask].scrollIntoView({
-				behavior: "smooth",
-				block: "center",
-			});
-			// Make it flash
-			const taskElement = taskRefs.current[chosenTask];
-			taskElement.classList.add("flash");
-
-			// Remove the flash class after the animation duration
-			setTimeout(() => {
-				taskElement.classList.remove("flash");
-			}, 1600);
+			scrollFlashTask(taskRefs);
 		}
 	});
+
+	useEffect(() => {
+		// set pinned preference when component mounts
+		const storedPinnedPreference = localStorage.getItem(
+			"tasklistPinnedPreference"
+		);
+		if (storedPinnedPreference) {
+			setIsPinned(storedPinnedPreference);
+		}
+	}, []);
+
+	// Store pinned task in localStorage whenever it changes
+	useEffect(() => {
+		if (isPinned) {
+			localStorage.setItem("tasklistPinnedPreference", isPinned);
+		}
+	}, [isPinned]);
 
 	const openSnackbar = (msg) => {
 		setSnackbarOpen(true);

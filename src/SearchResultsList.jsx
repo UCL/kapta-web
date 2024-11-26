@@ -1,4 +1,4 @@
-import { Drawer, Snackbar } from "@mui/material";
+import { CircularProgress, Drawer, Snackbar } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
@@ -11,6 +11,7 @@ export default function SearchResults({
 	results,
 	setFocusTask,
 	chosenTask,
+	scrollFlashTask,
 }) {
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMsg, setSnackbarMsg] = useState("Code copied to clipboard!");
@@ -22,21 +23,26 @@ export default function SearchResults({
 
 	useEffect(() => {
 		if (chosenTask && taskRefs.current[chosenTask]) {
-			// Scroll to the chosen task
-			taskRefs.current[chosenTask].scrollIntoView({
-				behavior: "smooth",
-				block: "center",
-			});
-			// Make it flash
-			const taskElement = taskRefs.current[chosenTask];
-			taskElement.classList.add("flash");
-
-			// Remove the flash class after the animation duration
-			setTimeout(() => {
-				taskElement.classList.remove("flash");
-			}, 1600);
+			scrollFlashTask(taskRefs);
 		}
 	});
+
+	useEffect(() => {
+		// set pinned preference when component mounts
+		const storedPinnedPreference = localStorage.getItem(
+			"resultsPinnedPreference"
+		);
+		if (storedPinnedPreference) {
+			setIsPinned(storedPinnedPreference);
+		}
+	}, []);
+
+	// Store pinned task in localStorage whenever it changes
+	useEffect(() => {
+		if (isPinned) {
+			localStorage.setItem("resultsPinnedPreference", isPinned);
+		}
+	}, [isPinned]);
 
 	const handleRefresh = async () => {
 		// todo: refresh the results
@@ -96,10 +102,18 @@ export default function SearchResults({
 					<PinButton isPinned={isPinned} setIsPinned={setIsPinned} />
 					Search Results
 				</div>
-				<div className="task-list__total">Total: {results.length || 0}</div>
-				{results.map((task) => (
-					<TaskCard key={task.task_id} task={task} {...taskCardProps} />
-				))}
+				{!isLoading && (
+					<div className="task-list__total">Total: {results?.length || 0}</div>
+				)}
+				{isLoading ? (
+					<div className="loader">
+						<CircularProgress />
+					</div>
+				) : (
+					results.map((task) => (
+						<TaskCard key={task.task_id} task={task} {...taskCardProps} />
+					))
+				)}
 			</div>
 			<Snackbar
 				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
