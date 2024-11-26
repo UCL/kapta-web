@@ -76,8 +76,6 @@ export default function TaskList({
 			setTaskListName("opendata");
 		}
 		if (chosenTask && taskRefs.current[chosenTask]) {
-			console.log("chosentask", chosenTask);
-
 			// Scroll to the chosen task
 			taskRefs.current[chosenTask].scrollIntoView({
 				behavior: "smooth",
