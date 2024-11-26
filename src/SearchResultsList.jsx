@@ -1,5 +1,5 @@
 import { Drawer, Snackbar } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
@@ -10,6 +10,7 @@ export default function SearchResults({
 	setIsVisible,
 	results,
 	setFocusTask,
+	chosenTask,
 }) {
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMsg, setSnackbarMsg] = useState("Code copied to clipboard!");
@@ -17,8 +18,28 @@ export default function SearchResults({
 	const SearchResultsRef = useRef(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const [displayedTask, setDisplayedTask] = useState(null);
+	const taskRefs = useRef({});
+
+	useEffect(() => {
+		if (chosenTask && taskRefs.current[chosenTask]) {
+			// Scroll to the chosen task
+			taskRefs.current[chosenTask].scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+			});
+			// Make it flash
+			const taskElement = taskRefs.current[chosenTask];
+			taskElement.classList.add("flash");
+
+			// Remove the flash class after the animation duration
+			setTimeout(() => {
+				taskElement.classList.remove("flash");
+			}, 1600);
+		}
+	});
 
 	const handleRefresh = async () => {
+		// todo: refresh the results
 		setIsLoading(true);
 		try {
 			// let newResults = await refreshSearchResult();
@@ -54,6 +75,7 @@ export default function SearchResults({
 		isPinned: isPinned,
 		setIsVisible: setIsVisible,
 		showBounds: null,
+		taskRefs: taskRefs,
 	};
 
 	if (!isVisible) return null;

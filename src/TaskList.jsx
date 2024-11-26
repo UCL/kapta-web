@@ -25,6 +25,7 @@ export default function TaskList({
 	showNewTaskForm,
 	showBounds,
 	setFocusTask,
+	chosenTask,
 }) {
 	const [tasks, setTasks] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +34,7 @@ export default function TaskList({
 
 	const [taskListName, setTaskListName] = useState("mine");
 	const taskListRef = useRef(null);
+	const taskRefs = useRef({});
 	const [isPinned, setIsPinned] = useState(false);
 	const [displayedTask, setDisplayedTask] = useState(null);
 
@@ -68,6 +70,24 @@ export default function TaskList({
 		}
 		setIsLoading(false);
 	}, [taskListName, user]);
+
+	useEffect(() => {
+		if (chosenTask && taskRefs.current[chosenTask]) {
+			// Scroll to the chosen task
+			taskRefs.current[chosenTask].scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+			});
+			// Make it flash
+			const taskElement = taskRefs.current[chosenTask];
+			taskElement.classList.add("flash");
+
+			// Remove the flash class after the animation duration
+			setTimeout(() => {
+				taskElement.classList.remove("flash");
+			}, 1600);
+		}
+	});
 
 	const openSnackbar = (msg) => {
 		setSnackbarOpen(true);
@@ -122,6 +142,7 @@ export default function TaskList({
 		isPinned: isPinned,
 		setIsVisible: setIsVisible,
 		showBounds: showBounds,
+		taskRefs: taskRefs,
 	};
 
 	if (!isVisible) return null;

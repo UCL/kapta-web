@@ -104,3 +104,17 @@
 		justify-content: center;
 	}
 }
+
+/* flash animation for highlighting task */
+@keyframes flash {
+	0% {
+		background-color: #f0f0b7c4;
+	}
+	100% {
+		background-color: inherit;
+	}
+}
+
+.flash {
+	animation: flash 1.3s ease 0.2s;
+}

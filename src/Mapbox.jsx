@@ -3,7 +3,13 @@ import { useEffect, useRef } from "react";
 import { MAPBOX_TOKEN } from "./globals";
 import "./styles/mapbox.css";
 
-export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
+export function Map({
+	boundsVisible,
+	polygonStore,
+	taskListOpen,
+	focusTask,
+	showTaskInList,
+}) {
 	const map = useRef(null);
 
 	// base map
@@ -26,19 +32,19 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 				"star-intensity": 0,
 			});
 		});
+
+		// make this function available from when the map initialises
 		window.handlePopupDetailsClick = (id) => {
-			console.log("clicked", id);
-			// todo: call function to open task list with this task
+			showTaskInList(id);
 		};
 	}, []);
 
-	// adding polygon source data
+	// handle polygons
 	useEffect(() => {
 		if (!map.current || !map.current.isStyleLoaded() || !polygonStore) return;
 
 		// source does not exist
 		if (!map.current.getSource("polygon-source")) {
-			console.log("polygonstore", polygonStore);
 			// not an array of polygons (not search results)
 			if (!Array.isArray(polygonStore)) {
 				map.current.addSource("polygon-source", {
@@ -198,7 +204,7 @@ export function Map({ boundsVisible, polygonStore, taskListOpen, focusTask }) {
 		}
 	}, [polygonStore, boundsVisible]);
 
-	// fly to and show data points
+	// fly to focused task and show data points
 	useEffect(() => {
 		// flying to task when multiple loaded
 		if (!map.current || !map.current.isStyleLoaded() || !focusTask) return;

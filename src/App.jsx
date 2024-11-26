@@ -39,6 +39,7 @@ export default function App() {
 	const [boundsVisible, setBoundsVisible] = useState(false);
 	const [polygonStore, setPolygonStore] = useState(null);
 	const [focusTask, setFocusTask] = useState(null);
+	const [chosenTask, setChosenTask] = useState(null);
 
 	const user = useUserStore();
 
@@ -77,7 +78,6 @@ export default function App() {
 	};
 
 	const showBounds = (tasks) => {
-		console.log("showbounds called", tasks);
 		setPolygonStore(tasks);
 		setBoundsVisible(true);
 	};
@@ -104,6 +104,12 @@ export default function App() {
 		if (polygons.length > 0) {
 			return showBounds(polygons);
 		}
+	};
+
+	const showTaskInList = (id) => {
+		setChosenTask(id);
+		setTaskListVisible(true);
+		// todo: probably need to figure out if it should be opendata or personal list
 	};
 
 	return (
@@ -186,6 +192,7 @@ export default function App() {
 							polygonStore={polygonStore}
 							taskListOpen={isTaskListVisible || searchResultsVisible}
 							focusTask={focusTask}
+							showTaskInList={showTaskInList}
 						/>
 						<TaskList
 							isVisible={isTaskListVisible}
@@ -195,6 +202,7 @@ export default function App() {
 							showNewTaskForm={showNewTaskForm}
 							showBounds={showBounds}
 							setFocusTask={setFocusTask}
+							chosenTask={chosenTask}
 						/>
 
 						<SearchResults
@@ -202,6 +210,7 @@ export default function App() {
 							setIsVisible={setSearchResultsVisible}
 							results={searchResults}
 							setFocusTask={setFocusTask}
+							chosenTask={chosenTask}
 						/>
 						<SearchForm
 							showSearchResults={showSearchResults}

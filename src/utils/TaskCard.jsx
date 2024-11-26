@@ -31,6 +31,7 @@ export default function TaskCard({
 	isPinned,
 	setIsVisible,
 	showBounds,
+	taskRefs,
 }) {
 	const userID = user?.userId || null;
 	const taskId = task.task_id;
@@ -81,6 +82,7 @@ export default function TaskCard({
 			else setFocusTask(task);
 			if (!isPinned) setIsVisible(false);
 		} else {
+			// shouldn't trigger since btn should be disabled
 			openSnackbar("No location data available for this task");
 		}
 	};
@@ -111,6 +113,7 @@ export default function TaskCard({
 					  },
 			variant: "contained",
 			loading: false,
+			disabled: !task.geo_bounds,
 		},
 
 		{
@@ -126,7 +129,10 @@ export default function TaskCard({
 	// todo: if task list is od use a tag to show if it belogs to the user, if org===opendata? may want to do this on the parent level
 
 	return (
-		<Card className="task-card">
+		<Card
+			className="task-card"
+			ref={(el) => (taskRefs.current[task.task_id] = el)}
+		>
 			<Box
 				className={`task-card__status-strip ${
 					task.status?.toLowerCase() || "active"
@@ -187,6 +193,7 @@ export default function TaskCard({
 									color={btn.color}
 									startIcon={btn.icon}
 									onClick={() => btn.action(task)}
+									disabled={btn.disabled}
 								>
 									{btn.text}
 								</LoadingButton>
@@ -197,6 +204,7 @@ export default function TaskCard({
 									color={btn.color}
 									onClick={() => btn.action(task)} // Pass as a function
 									startIcon={btn.icon}
+									disabled={btn.disabled}
 								>
 									{btn.text}
 								</Button>
