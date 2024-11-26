@@ -258,7 +258,6 @@ export function Map({
 				center: focusTask.features[0].geometry.coordinates,
 				essential: true,
 				padding: 200,
-				zoom: 13,
 			});
 		}
 	}, [focusTask]);

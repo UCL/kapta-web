@@ -46,7 +46,7 @@ export default function TaskCard({
 	}
 
 	const handleDownload = async (task) => {
-		setIsLoading(true);
+		setIsLoading({ download: true });
 
 		const data = await getDataFromBucket({ user, task });
 
@@ -62,7 +62,7 @@ export default function TaskCard({
 			zip.file(`${task.task_title}-${task.campaign_code}.txt`, txtContent);
 			zip.file(`${task.task_title}-${task.campaign_code}.geojson`, jsonContent);
 
-			setIsLoading(false);
+			setIsLoading({ download: false });
 
 			const zipBlob = await zip.generateAsync({ type: "blob" });
 			const zipUrl = URL.createObjectURL(zipBlob);
@@ -89,11 +89,13 @@ export default function TaskCard({
 
 	const showDataPoints = async (task) => {
 		setFocusTask(null);
+		setIsLoading({ points: true });
 		const data = await getDataFromBucket({ user, task });
 		if (data.content.jsonFileContent) {
 			const geojson = data.content.jsonFileContent;
 			const featureCollection = JSON.parse(geojson);
 			setFocusTask(featureCollection);
+			setIsLoading({ points: false });
 		} else {
 			openSnackbar("No location data available for this task");
 		}
@@ -112,8 +114,9 @@ export default function TaskCard({
 							setDisplayedTask(task);
 					  },
 			variant: "contained",
-			loading: false,
+			loading: taskId === displayedTask?.task_id,
 			disabled: !task.geo_bounds,
+			typeName: "points",
 		},
 
 		{
@@ -123,11 +126,11 @@ export default function TaskCard({
 			variant: "outlined",
 			color: "orange",
 			loading: true,
+			typeName: "download",
 		},
 	];
 
 	// todo: if task list is od use a tag to show if it belogs to the user, if org===opendata? may want to do this on the parent level
-
 	return (
 		<Card
 			className="task-card"
@@ -188,7 +191,7 @@ export default function TaskCard({
 								<LoadingButton
 									key={index}
 									variant={btn.variant}
-									loading={isLoading}
+									loading={isLoading[btn.typeName]}
 									loadingPosition="start"
 									color={btn.color}
 									startIcon={btn.icon}
