@@ -119,9 +119,22 @@ export function Map({
 				},
 			}));
 
+			// if the polygon is already on the map, don't add it again
+			const filteredNewFeatures = newFeatures.filter((newFeature) => {
+				return !existingData.features.some(
+					(existingFeature) =>
+						existingFeature.properties.id === newFeature.properties.id
+				);
+			});
+
+			const updatedFeatures = [
+				...existingData.features,
+				...filteredNewFeatures,
+			];
+
 			const newData = {
 				type: "FeatureCollection",
-				features: [...existingData.features, ...newFeatures],
+				features: updatedFeatures,
 			};
 
 			source.setData(newData);
