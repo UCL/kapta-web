@@ -1,5 +1,4 @@
 import { REQUEST_URL } from "../globals";
-import JSZip from "jszip";
 
 export const fetchMyTasks = async ({ user }) => {
 	try {

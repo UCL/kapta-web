@@ -17,7 +17,7 @@ export default function SearchResults({
 	const [snackbarMsg, setSnackbarMsg] = useState("Code copied to clipboard!");
 	const [isPinned, setIsPinned] = useState(false);
 	const SearchResultsRef = useRef(null);
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	const [displayedTask, setDisplayedTask] = useState(null);
 	const taskRefs = useRef({});
 

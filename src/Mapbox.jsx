@@ -1,6 +1,8 @@
 import mapboxgl from "mapbox-gl";
 import { useEffect, useRef } from "react";
 import { MAPBOX_TOKEN } from "./globals";
+import { centroid } from "@turf/turf";
+
 import "./styles/mapbox.css";
 
 export function Map({
@@ -12,21 +14,18 @@ export function Map({
 }) {
 	const map = useRef(null);
 	const popupRef = useRef(null);
+	const longtAdjustment = 0.015; // used when splitscreen since transform mucks up the interaction
 
 	const addMapClickListener = () => {
 		// listen for click on a polygon
 		map.current.on("click", "polygon-fill", (e) => {
-			console.log("map was clicked");
 			if (popupRef.current) {
-				console.log("there is a popup ref");
 				popupRef.current.remove();
 				popupRef.current = null;
 			}
 			const features = map.current.queryRenderedFeatures(e.point, {
 				layers: ["polygon-fill"],
 			});
-
-			console.log("features", features);
 
 			if (features.length) {
 				const feature = features[0];
@@ -224,15 +223,29 @@ export function Map({
 			map.current.off("click");
 		}
 
+		const adjustedBounds = (bounds) => {
+			const sw = bounds.getSouthWest();
+			const ne = bounds.getNorthEast();
+
+			// Shift bounds by adjusting the longitude
+			const newSw = new mapboxgl.LngLat(sw.lng + longtAdjustment, sw.lat);
+			const newNe = new mapboxgl.LngLat(ne.lng + longtAdjustment, ne.lat);
+
+			const adjustedBounds = new mapboxgl.LngLatBounds(newSw, newNe);
+
+			return adjustedBounds;
+		};
 		// fit to polygon and center it
-		const bounds = getBounds(polygonStore);
+		const bounds = taskListOpen
+			? adjustedBounds(getBounds(polygonStore))
+			: getBounds(polygonStore);
 
 		if (bounds) {
 			map.current.fitBounds(bounds, {
 				padding: 200,
 			});
 		}
-	}, [polygonStore, boundsVisible]);
+	}, [polygonStore, boundsVisible, taskListOpen]);
 
 	// fly to focused task and show data points
 	useEffect(() => {
@@ -240,8 +253,14 @@ export function Map({
 		if (!map.current || !map.current.isStyleLoaded() || !focusTask) return;
 
 		if (focusTask && focusTask.geo_bounds) {
+			const centroidPoint = centroid(focusTask.geo_bounds);
+			let [longitude, latitude] = centroidPoint.geometry.coordinates;
+			if (taskListOpen) {
+				longitude += longtAdjustment;
+			}
+
 			map.current.flyTo({
-				center: focusTask.geo_bounds.coordinates[1],
+				center: [longitude, latitude],
 				essential: true, // not user-interruptible
 				padding: 200,
 			});
@@ -270,10 +289,15 @@ export function Map({
 					},
 				});
 			}
+
 			// fly to it (in case they moved away)
 			const middleIndex = Math.floor(focusTask.features.length / 2);
 			const middleCoordinates =
 				focusTask.features[middleIndex].geometry.coordinates;
+
+			if (taskListOpen) {
+				middleCoordinates[0] += longtAdjustment;
+			}
 
 			map.current.flyTo({
 				center: middleCoordinates,
