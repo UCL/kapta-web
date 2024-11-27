@@ -20,6 +20,7 @@ export function Map({
 		// listen for click on a polygon
 		map.current.on("click", "polygon-fill", (e) => {
 			if (popupRef.current) {
+				// remove popup if you click outside it
 				popupRef.current.remove();
 				popupRef.current = null;
 			}
@@ -82,6 +83,7 @@ export function Map({
 		};
 	}, []);
 
+	// resize the map when splitscreen
 	useEffect(() => {
 		if (map.current) {
 			map.current.resize();
@@ -137,6 +139,10 @@ export function Map({
 			// removing data points since new task
 			if (map.current.getLayer("datapoints-layer")) {
 				map.current.removeLayer("datapoints-layer");
+			}
+			if (map.current && popupRef.current) {
+				popupRef.current.remove();
+				popupRef.current = null;
 			}
 
 			// source already exists, used when viewing task list and clicking between tasks
