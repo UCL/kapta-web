@@ -200,10 +200,16 @@ export default function App() {
 			{user.loggedIn && (
 				<>
 					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
+					<div className="search-response-wrapper">
+						<div className="response-container">
+							{/* this is where the bot responses will go */}
+						</div>
 
-					{/* <div className="response-container"> */}
-					{/* this is where the bot responses will go */}
-					{/* </div> */}
+						<SearchForm
+							showSearchResults={showSearchResults}
+							taskListOpen={isTaskListVisible || searchResultsVisible}
+						/>
+					</div>
 					<div className="task-map-wrapper">
 						<Map
 							boundsVisible={boundsVisible}
@@ -233,10 +239,6 @@ export default function App() {
 							setFocusTask={setFocusTask}
 							chosenTask={chosenTask}
 							scrollFlashTask={scrollFlashTask}
-						/>
-						<SearchForm
-							showSearchResults={showSearchResults}
-							taskListOpen={isTaskListVisible || searchResultsVisible}
 						/>
 					</div>
 					<TaskForm

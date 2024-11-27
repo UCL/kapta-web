@@ -40,10 +40,24 @@ main {
 
 .task-map-wrapper {
 	display: grid;
-	grid-template-columns: 1.3fr 1fr;
+	grid-template-columns: 1.35fr 1fr;
+	grid-template-rows: 1fr;
+
 	height: 100%;
 	width: 100%;
 	position: absolute;
+}
+
+.search-response-wrapper {
+	display: grid;
+	grid-template-rows: 1fr 1fr;
+	grid-template-columns: 1.35fr 1fr; /* for working with splitscreen */
+
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	z-index: 1;
+	pointer-events: none;
 }
 
 .btn--view-tasks {

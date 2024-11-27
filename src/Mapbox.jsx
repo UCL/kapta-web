@@ -56,6 +56,7 @@ export function Map({
 
 	// base map
 	useEffect(() => {
+		if (map.current) return;
 		mapboxgl.accessToken = MAPBOX_TOKEN;
 
 		map.current = new mapboxgl.Map({
@@ -80,6 +81,12 @@ export function Map({
 			showTaskInList(id);
 		};
 	}, []);
+
+	useEffect(() => {
+		if (map.current) {
+			map.current.resize();
+		}
+	}, [taskListOpen]);
 
 	// handle polygons
 	useEffect(() => {
