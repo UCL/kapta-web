@@ -11,6 +11,49 @@ export function Map({
 	showTaskInList,
 }) {
 	const map = useRef(null);
+	const popupRef = useRef(null);
+
+	const addMapClickListener = () => {
+		// listen for click on a polygon
+		map.current.on("click", "polygon-fill", (e) => {
+			console.log("map was clicked");
+			if (popupRef.current) {
+				console.log("there is a popup ref");
+				popupRef.current.remove();
+				popupRef.current = null;
+			}
+			const features = map.current.queryRenderedFeatures(e.point, {
+				layers: ["polygon-fill"],
+			});
+
+			console.log("features", features);
+
+			if (features.length) {
+				const feature = features[0];
+				const coordinates = e.lngLat;
+				const description =
+					feature.properties.description || "No description available";
+
+				const popup = new mapboxgl.Popup()
+					.setLngLat(coordinates)
+					.setHTML(
+						`<h3>${feature.properties.title}</h3><p>${description}</p><p><a id="show-task-details"onclick="handlePopupDetailsClick('${feature.properties.id}')">Show task details</a></p>`
+					)
+					.addTo(map.current);
+
+				popupRef.current = popup;
+			}
+		});
+
+		// Change cursor style on hover
+		map.current.on("mouseenter", "polygons-layer", () => {
+			map.current.getCanvas().style.cursor = "pointer";
+		});
+
+		map.current.on("mouseleave", "polygons-layer", () => {
+			map.current.getCanvas().style.cursor = "";
+		});
+	};
 
 	// base map
 	useEffect(() => {
@@ -166,45 +209,19 @@ export function Map({
 				});
 				map.current.moveLayer("polygon-outline");
 
-				// listen for click on a polygon
-				map.current.on("click", "polygon-fill", (e) => {
-					const features = map.current.queryRenderedFeatures(e.point, {
-						layers: ["polygon-fill"],
-					});
-
-					if (features.length) {
-						const feature = features[0];
-						const coordinates = e.lngLat;
-						const description =
-							feature.properties.description || "No description available";
-
-						new mapboxgl.Popup()
-							.setLngLat(coordinates)
-							.setHTML(
-								`<h3>${feature.properties.title}</h3><p>${description}</p><p><a id="show-task-details"onclick="handlePopupDetailsClick('${feature.properties.id}')">Show task details</a></p>`
-							)
-							.addTo(map.current);
-					}
-				});
-
-				// Change cursor style on hover
-				map.current.on("mouseenter", "polygons-layer", () => {
-					map.current.getCanvas().style.cursor = "pointer";
-				});
-
-				map.current.on("mouseleave", "polygons-layer", () => {
-					map.current.getCanvas().style.cursor = "";
-				});
+				addMapClickListener();
 			} else {
 				// make sure they're at the top
 				map.current.moveLayer("polygon-fill");
 				map.current.moveLayer("polygon-outline");
+				addMapClickListener();
 			}
 		} else {
 			// if bounds not visible, remove polygon layer
 			if (map.current.getLayer("polygon-fill")) {
 				map.current.removeLayer("polygon-fill");
 			}
+			map.current.off("click");
 		}
 
 		// fit to polygon and center it
