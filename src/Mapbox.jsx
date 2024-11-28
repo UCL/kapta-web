@@ -1,7 +1,7 @@
 import mapboxgl from "mapbox-gl";
 import { useEffect, useRef } from "react";
 import { MAPBOX_TOKEN } from "./globals";
-import { centroid, polygon } from "@turf/turf";
+import { centroid, polygon, bbox } from "@turf/turf";
 
 import "./styles/mapbox.css";
 
@@ -14,7 +14,6 @@ export function Map({
 }) {
 	const map = useRef(null);
 	const popupRef = useRef(null);
-	const longtAdjustment = 0.015; // used when splitscreen since transform mucks up the interaction
 
 	console.log("polygonStore in map", polygonStore);
 
@@ -57,21 +56,12 @@ export function Map({
 		});
 	};
 
-	const getCentroidAndFlyTo = (focusTask) => {
+	const getAndFitBounds = (focusTask) => {
 		const turfPoly = polygon([focusTask.geo_bounds.coordinates]);
 
-		const centroidPoint = centroid(turfPoly);
-
-		let [longitude, latitude] = centroidPoint.geometry.coordinates;
-		if (taskListOpen) {
-			longitude += longtAdjustment;
-		}
-
-		map.current.flyTo({
-			center: [longitude, latitude],
-			essential: true, // not user-interruptible
+		const bounds = bbox(turfPoly);
+		map.current.fitBounds(bounds, {
 			padding: 200,
-			zoom: 10,
 		});
 	};
 
@@ -227,30 +217,7 @@ export function Map({
 			}
 			map.current.off("click");
 		}
-		getCentroidAndFlyTo(polygonStore);
-
-		// const adjustedBounds = (bounds) => {
-		// 	const sw = bounds.getSouthWest();
-		// 	const ne = bounds.getNorthEast();
-
-		// 	// Shift bounds by adjusting the longitude
-		// 	const newSw = new mapboxgl.LngLat(sw.lng + longtAdjustment, sw.lat);
-		// 	const newNe = new mapboxgl.LngLat(ne.lng + longtAdjustment, ne.lat);
-
-		// 	const adjustedBounds = new mapboxgl.LngLatBounds(newSw, newNe);
-
-		// 	return adjustedBounds;
-		// };
-		// // fit to polygon and center it
-		// const bounds = taskListOpen
-		// 	? adjustedBounds(getBounds(polygonStore))
-		// 	: getBounds(polygonStore);
-
-		// if (bounds) {
-		// 	map.current.fitBounds(bounds, {
-		// 	padding: 200,
-		// 	});
-		// }
+		getAndFitBounds(polygonStore);
 	}, [polygonStore, boundsVisible, taskListOpen]);
 
 	// fly to focused task and show data points
@@ -261,7 +228,7 @@ export function Map({
 		console.log("flyign to task", focusTask);
 
 		if (focusTask && focusTask.geo_bounds) {
-			getCentroidAndFlyTo(focusTask);
+			getAndFitBounds(focusTask);
 		}
 		// if focusTask is a feature collection (used for showing data points)
 		else if (focusTask && focusTask.type === "FeatureCollection") {
@@ -288,40 +255,9 @@ export function Map({
 				});
 			}
 
-			getCentroidAndFlyTo(focusTask);
+			getAndFitBounds(focusTask);
 		}
 	}, [focusTask]);
-
-	const getBounds = (polygonStore) => {
-		// expects either a single task object or an array of task objects with geo_bounds as the relevant part
-		var bounds = new mapboxgl.LngLatBounds();
-		if (Array.isArray(polygonStore)) {
-			// only an array if multiple, unclear why there are slightly different structures
-
-			polygonStore.forEach((object) => {
-				const geoBounds = object.geo_bounds;
-				if (geoBounds.type === "Polygon") {
-					geoBounds.coordinates.forEach((coord) => {
-						bounds.extend(coord);
-					});
-				} else {
-					geoBounds.forEach((item) => {
-						if (item.type === "Polygon") {
-							item.coordinates.forEach((coord) => {
-								bounds.extend(coord);
-							});
-						}
-					});
-				}
-			});
-		} else {
-			const coordinates = polygonStore.geo_bounds.coordinates;
-			coordinates.forEach((coord) => {
-				bounds.extend(coord);
-			});
-		}
-		return bounds;
-	};
 
 	return <div id="map" className={taskListOpen ? "splitscreen" : ""}></div>;
 }
