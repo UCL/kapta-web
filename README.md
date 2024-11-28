@@ -29,9 +29,13 @@ Currently the core Kapta team consists of:
 - [Amanda Ho-Lyn](https://www.ucl.ac.uk/advanced-research-computing/research-software-engineers-0), UCL ARC
 - [Muki Haklay](https://www.ucl.ac.uk/geography/muki-haklay-facss), UCL Geography
 - [Claire Ellul](https://www.ucl.ac.uk/civil-environmental-geomatic-engineering/people/dr-claire-ellul), UCL CEGE
+- [Jerome Lewis](https://www.ucl.ac.uk/anthropology/people/academic-and-teaching-staff/jerome-lewis), UCL Anthropology
 - [Jonathan Cooper](https://www.ucl.ac.uk/advanced-research-computing/people/jonathan-cooper), UCL ARC
 - [Jed Stevenson](https://www.durham.ac.uk/staff/jed-stevenson/), Durham University
 - [Dessalegn Teckle](https://et.linkedin.com/in/dessalegn-tekle-02b848ba), Addis Ababa University, NGO IPC
+- [Igor Tseyzer](https://profiles.ucl.ac.uk/98596-igor-tseyzer), UCL ARC
+- [Socrates Varakliotis](https://profiles.ucl.ac.uk/11085-socrates-varakliotis), UCL ARC
+
 
 # Guidance for Developers
 
