@@ -114,6 +114,7 @@ export function Map({
 					},
 				});
 			} else {
+				// is search results, should be treated as collection
 				const newData = {
 					type: "FeatureCollection",
 					features: polygonStore.map((polygon) => ({
@@ -136,60 +137,37 @@ export function Map({
 				});
 			}
 		} else {
+			// source already exists, update the data
+
 			// removing data points since new task
 			if (map.current.getLayer("datapoints-layer")) {
 				map.current.removeLayer("datapoints-layer");
 			}
+			// removing popup since new task
 			if (map.current && popupRef.current) {
 				popupRef.current.remove();
 				popupRef.current = null;
 			}
 
-			// source already exists, used when viewing task list and clicking between tasks
 			let source = map.current.getSource("polygon-source");
-			let existingData = source._data;
 
-			if (!existingData || existingData.type !== "FeatureCollection") {
-				existingData = {
-					type: "FeatureCollection",
-					features: [],
-				};
-			}
-
-			// Ensure polygonStore is an array so we can use .map() even if it's one item (the initial one)
-			const polygons = Array.isArray(polygonStore)
-				? polygonStore
-				: [polygonStore];
 			// Set structure like this, particular attention to the [] around coordinates, otherwise polygon will not show
-			const newFeatures = polygons.map((polygon) => ({
+			const newFeature = {
 				type: "Feature",
 				geometry: {
 					type: "Polygon",
-					coordinates: [polygon.geo_bounds.coordinates],
+					coordinates: [polygonStore.geo_bounds.coordinates],
 				},
 				properties: {
-					id: polygon.task_id,
-					title: polygon.task_title,
-					description: polygon.task_description,
+					id: polygonStore.task_id,
+					title: polygonStore.task_title,
+					description: polygonStore.task_description,
 				},
-			}));
-
-			// if the polygon is already on the map, don't add it again
-			const filteredNewFeatures = newFeatures.filter((newFeature) => {
-				return !existingData.features.some(
-					(existingFeature) =>
-						existingFeature.properties.id === newFeature.properties.id
-				);
-			});
-
-			const updatedFeatures = [
-				...existingData.features,
-				...filteredNewFeatures,
-			];
+			};
 
 			const newData = {
 				type: "FeatureCollection",
-				features: updatedFeatures,
+				features: [newFeature],
 			};
 
 			source.setData(newData);
