@@ -1,7 +1,7 @@
 import mapboxgl from "mapbox-gl";
 import { useEffect, useRef } from "react";
 import { MAPBOX_TOKEN } from "./globals";
-import { centroid } from "@turf/turf";
+import { centroid, polygon } from "@turf/turf";
 
 import "./styles/mapbox.css";
 
@@ -15,6 +15,8 @@ export function Map({
 	const map = useRef(null);
 	const popupRef = useRef(null);
 	const longtAdjustment = 0.015; // used when splitscreen since transform mucks up the interaction
+
+	console.log("polygonStore in map", polygonStore);
 
 	const addMapClickListener = () => {
 		// listen for click on a polygon
@@ -52,6 +54,24 @@ export function Map({
 
 		map.current.on("mouseleave", "polygons-layer", () => {
 			map.current.getCanvas().style.cursor = "";
+		});
+	};
+
+	const getCentroidAndFlyTo = (focusTask) => {
+		const turfPoly = polygon([focusTask.geo_bounds.coordinates]);
+
+		const centroidPoint = centroid(turfPoly);
+
+		let [longitude, latitude] = centroidPoint.geometry.coordinates;
+		if (taskListOpen) {
+			longitude += longtAdjustment;
+		}
+
+		map.current.flyTo({
+			center: [longitude, latitude],
+			essential: true, // not user-interruptible
+			padding: 200,
+			zoom: 10,
 		});
 	};
 
@@ -94,49 +114,55 @@ export function Map({
 	useEffect(() => {
 		if (!map.current || !map.current.isStyleLoaded() || !polygonStore) return;
 
+		var newData;
+
+		// is search results
+		if (Array.isArray(polygonStore)) {
+			console.log("is array");
+			newData = {
+				type: "FeatureCollection",
+				features: polygonStore.map((polygon) => ({
+					type: "Feature",
+					geometry: {
+						type: "Polygon",
+						coordinates: [polygon.geo_bounds.coordinates],
+					},
+					properties: {
+						id: polygon.task_id,
+						title: polygon.task_title,
+						description: polygon.task_description,
+					},
+				})),
+			};
+		} else {
+			// single polygon
+			const newFeature = {
+				type: "Feature",
+				geometry: {
+					type: "Polygon",
+					coordinates: [polygonStore.geo_bounds.coordinates],
+				},
+				properties: {
+					id: polygonStore.task_id,
+					title: polygonStore.task_title,
+					description: polygonStore.task_description,
+				},
+			};
+
+			newData = {
+				type: "FeatureCollection",
+				features: [newFeature],
+			};
+		}
+
 		// source does not exist
 		if (!map.current.getSource("polygon-source")) {
-			// not an array of polygons (not search results)
-			if (!Array.isArray(polygonStore)) {
-				map.current.addSource("polygon-source", {
-					type: "geojson",
-					data: {
-						type: "Feature",
-						geometry: {
-							type: "Polygon",
-							coordinates: [polygonStore.geo_bounds.coordinates],
-						},
-						properties: {
-							id: polygonStore.task_id,
-							title: polygonStore.task_title,
-							description: polygonStore.task_description,
-						},
-					},
-				});
-			} else {
-				// is search results, should be treated as collection
-				const newData = {
-					type: "FeatureCollection",
-					features: polygonStore.map((polygon) => ({
-						type: "Feature",
-						geometry: {
-							type: "Polygon",
-							coordinates: [polygon.geo_bounds.coordinates],
-						},
-						properties: {
-							id: polygon.task_id,
-							title: polygon.task_title,
-							description: polygon.task_description,
-						},
-					})),
-				};
-
-				map.current.addSource("polygon-source", {
-					type: "geojson",
-					data: newData,
-				});
-			}
+			map.current.addSource("polygon-source", {
+				type: "geojson",
+				data: newData,
+			});
 		} else {
+			console.log("source exists");
 			// source already exists, update the data
 
 			// removing data points since new task
@@ -151,26 +177,14 @@ export function Map({
 
 			let source = map.current.getSource("polygon-source");
 
-			// Set structure like this, particular attention to the [] around coordinates, otherwise polygon will not show
-			const newFeature = {
-				type: "Feature",
-				geometry: {
-					type: "Polygon",
-					coordinates: [polygonStore.geo_bounds.coordinates],
-				},
-				properties: {
-					id: polygonStore.task_id,
-					title: polygonStore.task_title,
-					description: polygonStore.task_description,
-				},
-			};
+			// if (!Array.isArray(polygonStore)) {
+			// 	// Set structure like this, particular attention to the [] around coordinates, otherwise polygon will not show
 
-			const newData = {
-				type: "FeatureCollection",
-				features: [newFeature],
-			};
-
+			// 	source.setData(newData);
+			// } else {
+			// source exists and is search results
 			source.setData(newData);
+			// }
 		}
 
 		// draw the polygons and their outlines
@@ -213,29 +227,30 @@ export function Map({
 			}
 			map.current.off("click");
 		}
+		getCentroidAndFlyTo(polygonStore);
 
-		const adjustedBounds = (bounds) => {
-			const sw = bounds.getSouthWest();
-			const ne = bounds.getNorthEast();
+		// const adjustedBounds = (bounds) => {
+		// 	const sw = bounds.getSouthWest();
+		// 	const ne = bounds.getNorthEast();
 
-			// Shift bounds by adjusting the longitude
-			const newSw = new mapboxgl.LngLat(sw.lng + longtAdjustment, sw.lat);
-			const newNe = new mapboxgl.LngLat(ne.lng + longtAdjustment, ne.lat);
+		// 	// Shift bounds by adjusting the longitude
+		// 	const newSw = new mapboxgl.LngLat(sw.lng + longtAdjustment, sw.lat);
+		// 	const newNe = new mapboxgl.LngLat(ne.lng + longtAdjustment, ne.lat);
 
-			const adjustedBounds = new mapboxgl.LngLatBounds(newSw, newNe);
+		// 	const adjustedBounds = new mapboxgl.LngLatBounds(newSw, newNe);
 
-			return adjustedBounds;
-		};
-		// fit to polygon and center it
-		const bounds = taskListOpen
-			? adjustedBounds(getBounds(polygonStore))
-			: getBounds(polygonStore);
+		// 	return adjustedBounds;
+		// };
+		// // fit to polygon and center it
+		// const bounds = taskListOpen
+		// 	? adjustedBounds(getBounds(polygonStore))
+		// 	: getBounds(polygonStore);
 
-		if (bounds) {
-			map.current.fitBounds(bounds, {
-				padding: 200,
-			});
-		}
+		// if (bounds) {
+		// 	map.current.fitBounds(bounds, {
+		// 	padding: 200,
+		// 	});
+		// }
 	}, [polygonStore, boundsVisible, taskListOpen]);
 
 	// fly to focused task and show data points
@@ -243,18 +258,10 @@ export function Map({
 		// flying to task when multiple loaded
 		if (!map.current || !map.current.isStyleLoaded() || !focusTask) return;
 
-		if (focusTask && focusTask.geo_bounds) {
-			const centroidPoint = centroid(focusTask.geo_bounds);
-			let [longitude, latitude] = centroidPoint.geometry.coordinates;
-			if (taskListOpen) {
-				longitude += longtAdjustment;
-			}
+		console.log("flyign to task", focusTask);
 
-			map.current.flyTo({
-				center: [longitude, latitude],
-				essential: true, // not user-interruptible
-				padding: 200,
-			});
+		if (focusTask && focusTask.geo_bounds) {
+			getCentroidAndFlyTo(focusTask);
 		}
 		// if focusTask is a feature collection (used for showing data points)
 		else if (focusTask && focusTask.type === "FeatureCollection") {
@@ -281,20 +288,7 @@ export function Map({
 				});
 			}
 
-			// fly to it (in case they moved away)
-			const middleIndex = Math.floor(focusTask.features.length / 2);
-			const middleCoordinates =
-				focusTask.features[middleIndex].geometry.coordinates;
-
-			if (taskListOpen) {
-				middleCoordinates[0] += longtAdjustment;
-			}
-
-			map.current.flyTo({
-				center: middleCoordinates,
-				essential: true,
-				padding: 200,
-			});
+			getCentroidAndFlyTo(focusTask);
 		}
 	}, [focusTask]);
 
