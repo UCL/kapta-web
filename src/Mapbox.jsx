@@ -165,16 +165,10 @@ export function Map({
 				popupRef.current = null;
 			}
 
+			// getting and setting source
 			let source = map.current.getSource("polygon-source");
 
-			// if (!Array.isArray(polygonStore)) {
-			// 	// Set structure like this, particular attention to the [] around coordinates, otherwise polygon will not show
-
-			// 	source.setData(newData);
-			// } else {
-			// source exists and is search results
 			source.setData(newData);
-			// }
 		}
 
 		// draw the polygons and their outlines
@@ -217,7 +211,21 @@ export function Map({
 			}
 			map.current.off("click");
 		}
-		getAndFitBounds(polygonStore);
+		if (!Array.isArray(polygonStore)) {
+			getAndFitBounds(polygonStore);
+		} else {
+			// fly to first task of results but not zoom in
+			const taskWithGeoBounds = polygonStore.find((task) => task.geo_bounds);
+
+			const turfPoly = polygon([taskWithGeoBounds.geo_bounds.coordinates]);
+			const centroidPoint = centroid(turfPoly);
+
+			map.current.flyTo({
+				center: centroidPoint.geometry.coordinates,
+				essential: true,
+				zoom: 3,
+			});
+		}
 	}, [polygonStore, boundsVisible, taskListOpen]);
 
 	// fly to focused task and show data points
