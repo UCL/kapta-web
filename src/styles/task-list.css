@@ -1,5 +1,5 @@
 .task-list__drawer {
-	z-index: 3;
+	z-index: 2;
 
 	.MuiPaper-root {
 		width: 100%;

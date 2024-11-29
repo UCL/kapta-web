@@ -96,7 +96,6 @@ export default function App() {
 	};
 
 	const showSearchResults = (results) => {
-		console.log("show search results", results);
 		setBoundsVisible(false);
 		if (results !== searchResults) {
 			setPolygonStore(null); // reset polygon store for each new search

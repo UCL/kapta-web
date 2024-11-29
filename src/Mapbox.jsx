@@ -103,9 +103,12 @@ export function Map({
 
 	// resize the map when splitscreen
 	useEffect(() => {
-		if (map.current) {
-			map.current.resize();
-		}
+		const timeoutId = setTimeout(() => {
+			if (map.current) {
+				map.current.resize();
+			}
+		}, 100);
+		return () => clearTimeout(timeoutId);
 	}, [taskListOpen]);
 
 	// handle polygons

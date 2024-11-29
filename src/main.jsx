@@ -44,7 +44,6 @@ const theme = createTheme({
 	cssVariables: true,
 });
 const isMobile = isMobileDevice();
-console.log("isMobile", isMobile);
 
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
