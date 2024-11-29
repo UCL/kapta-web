@@ -202,26 +202,31 @@ export default function App() {
 					/>
 				)}
 				<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
-				{user.loggedIn && (
-					<>
-						<div className="search-response-wrapper">
-							<div className="response-container">
-								{/* this is where the bot responses will go */}
-							</div>
 
-							<SearchForm
-								showSearchResults={showSearchResults}
-								taskListOpen={isTaskListVisible || searchResultsVisible}
-							/>
-						</div>
-						<div className="task-map-wrapper">
-							<Map
-								boundsVisible={boundsVisible}
-								polygonStore={polygonStore}
-								taskListOpen={isTaskListVisible || searchResultsVisible}
-								focusTask={focusTask}
-								showTaskInList={showTaskInList}
-							/>
+				{!user.loggedIn && <div className="background shield"></div>}
+
+				<div className="search-response-wrapper">
+					<div className="response-container">
+						{/* this is where the bot responses will go */}
+					</div>
+
+					<SearchForm
+						showSearchResults={showSearchResults}
+						taskListOpen={isTaskListVisible || searchResultsVisible}
+						isBackground={!user.loggedIn}
+					/>
+				</div>
+				<div className="task-map-wrapper">
+					<Map
+						boundsVisible={boundsVisible}
+						polygonStore={polygonStore}
+						taskListOpen={isTaskListVisible || searchResultsVisible}
+						focusTask={focusTask}
+						showTaskInList={showTaskInList}
+						isBackground={!user.loggedIn}
+					/>
+					{user.loggedIn && (
+						<>
 							<TaskList
 								isVisible={isTaskListVisible}
 								setIsVisible={setTaskListVisible}
@@ -244,25 +249,26 @@ export default function App() {
 								chosenTask={chosenTask}
 								scrollFlashTask={scrollFlashTask}
 							/>
-						</div>
-						<TaskForm
-							isVisible={isTaskFormVisible}
-							setIsVisible={setTaskFormVisible}
-							user={user}
-							taskValues={taskValues}
-							showTaskSuccessModal={showTaskSuccessModal}
-						/>
-						<Fab
-							size="medium"
-							variant="extended"
-							color="tomato"
-							onClick={() => setTaskListVisible(true)}
-							className="btn--view-tasks"
-						>
-							TASKS
-						</Fab>
-					</>
-				)}
+
+							<Fab
+								size="medium"
+								variant="extended"
+								color="tomato"
+								onClick={() => setTaskListVisible(true)}
+								className="btn--view-tasks"
+							>
+								Task WhatsApp Mappers
+							</Fab>
+						</>
+					)}
+				</div>
+				<TaskForm
+					isVisible={isTaskFormVisible}
+					setIsVisible={setTaskFormVisible}
+					user={user}
+					taskValues={taskValues}
+					showTaskSuccessModal={showTaskSuccessModal}
+				/>
 			</main>
 		</>
 	);

@@ -11,11 +11,10 @@ export function Map({
 	taskListOpen,
 	focusTask,
 	showTaskInList,
+	isBackground,
 }) {
 	const map = useRef(null);
 	const popupRef = useRef(null);
-
-	console.log("polygonStore in map", polygonStore);
 
 	const addMapClickListener = () => {
 		// listen for click on a polygon
@@ -73,7 +72,7 @@ export function Map({
 		map.current = new mapboxgl.Map({
 			container: "map",
 			style: "mapbox://styles/mapbox/dark-v11",
-			zoom: 1.2,
+			zoom: 1.3,
 			center: [30, 50],
 			projection: "globe",
 		});
@@ -267,5 +266,12 @@ export function Map({
 		}
 	}, [focusTask]);
 
-	return <div id="map" className={taskListOpen ? "splitscreen" : ""}></div>;
+	return (
+		<div
+			id="map"
+			className={
+				taskListOpen ? "splitscreen" : isBackground ? "background" : ""
+			}
+		></div>
+	);
 }

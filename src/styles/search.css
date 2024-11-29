@@ -6,7 +6,7 @@
 }
 
 .search__form {
-	width: 75%;
+	width: 40%;
 	display: flex;
 	align-self: end;
 	justify-self: center;
@@ -19,7 +19,7 @@
 
 	&.splitscreen {
 		grid-column: 1;
-		width: 90%;
+		width: 80%;
 		transition: width ease 1.5s;
 		justify-items: center;
 		justify-self: center;

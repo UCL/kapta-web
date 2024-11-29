@@ -3,7 +3,7 @@
 	height: fit-content;
 	margin-left: 1rem !important;
 	margin-top: 1rem !important;
-	z-index: 1;
+	z-index: 3;
 	justify-self: flex-start;
 	align-self: flex-start;
 }

@@ -8,7 +8,11 @@ import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 
 import "./styles/search.css";
 
-export default function SearchForm({ showSearchResults, taskListOpen }) {
+export default function SearchForm({
+	showSearchResults,
+	taskListOpen,
+	isBackground,
+}) {
 	const user = useUserStore();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [tasks, setTasks] = useState([]);
@@ -46,6 +50,7 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 		} else showSearchResults(results);
 	};
 	const handleRefresh = async () => {
+		// todo: get this to work
 		try {
 			const fetchTasks = async () => {
 				var fetchedTasks = await fetchAllTasks({ user });
@@ -95,7 +100,9 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 			<Formik onSubmit={handleSubmit} initialValues={{ query: "" }}>
 				{({ isSubmitting, setFieldValue }) => (
 					<Form
-						className={`form search__form ${taskListOpen ? "splitscreen" : ""}`}
+						className={`form search__form ${
+							taskListOpen ? "splitscreen" : isBackground ? "background" : ""
+						}`}
 					>
 						<Snackbar
 							anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
@@ -122,7 +129,7 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 							<Field
 								type="text"
 								name="query"
-								label="Search WhatsApp maps ground data"
+								label="Search WhatsApp Maps"
 								as={TextField}
 								className="search__input"
 							/>
