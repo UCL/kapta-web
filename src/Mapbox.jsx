@@ -75,6 +75,7 @@ export function Map({
 			zoom: 1.3,
 			center: [30, 50],
 			projection: "globe",
+			attributionControl: true,
 		});
 		map.current.on("load", () => {
 			map.current.setFog({

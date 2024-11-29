@@ -27,6 +27,9 @@
 			cursor: pointer;
 		}
 	}
+	.mapbox-improve-map {
+		display: none;
+	}
 }
 
 .mapboxgl-ctrl-attrib {
