@@ -225,41 +225,39 @@ export default function App() {
 						showTaskInList={showTaskInList}
 						isBackground={!user.loggedIn}
 					/>
+
+					<TaskList
+						isVisible={user.loggedIn && isTaskListVisible}
+						setIsVisible={setTaskListVisible}
+						user={user}
+						showTaskForm={showTaskForm}
+						showNewTaskForm={showNewTaskForm}
+						showBounds={showBounds}
+						setFocusTask={setFocusTask}
+						chosenTask={chosenTask}
+						scrollFlashTask={scrollFlashTask}
+						taskListName={taskListName}
+						setTaskListName={setTaskListName}
+					/>
+
+					<SearchResults
+						isVisible={user.loggedIn && searchResultsVisible}
+						setIsVisible={setSearchResultsVisible}
+						results={searchResults}
+						setFocusTask={setFocusTask}
+						chosenTask={chosenTask}
+						scrollFlashTask={scrollFlashTask}
+					/>
 					{user.loggedIn && (
-						<>
-							<TaskList
-								isVisible={isTaskListVisible}
-								setIsVisible={setTaskListVisible}
-								user={user}
-								showTaskForm={showTaskForm}
-								showNewTaskForm={showNewTaskForm}
-								showBounds={showBounds}
-								setFocusTask={setFocusTask}
-								chosenTask={chosenTask}
-								scrollFlashTask={scrollFlashTask}
-								taskListName={taskListName}
-								setTaskListName={setTaskListName}
-							/>
-
-							<SearchResults
-								isVisible={searchResultsVisible}
-								setIsVisible={setSearchResultsVisible}
-								results={searchResults}
-								setFocusTask={setFocusTask}
-								chosenTask={chosenTask}
-								scrollFlashTask={scrollFlashTask}
-							/>
-
-							<Fab
-								size="medium"
-								variant="extended"
-								color="tomato"
-								onClick={() => setTaskListVisible(true)}
-								className="btn--view-tasks"
-							>
-								Task WhatsApp Mappers
-							</Fab>
-						</>
+						<Fab
+							size="medium"
+							variant="extended"
+							color="tomato"
+							onClick={() => setTaskListVisible(true)}
+							className="btn--view-tasks"
+						>
+							Task WhatsApp Mappers
+						</Fab>
 					)}
 				</div>
 				<TaskForm

@@ -84,8 +84,6 @@ export default function SearchResults({
 		taskRefs: taskRefs,
 	};
 
-	if (!isVisible) return null;
-
 	return (
 		<Drawer
 			anchor="right"

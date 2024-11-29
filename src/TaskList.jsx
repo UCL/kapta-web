@@ -141,7 +141,6 @@ export default function TaskList({
 		taskRefs: taskRefs,
 	};
 
-	if (!isVisible) return null;
 	return (
 		<Drawer
 			anchor="right"

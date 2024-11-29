@@ -6,23 +6,27 @@
 }
 
 .search__form {
-	width: 40%;
+	width: 80%;
 	display: flex;
 	align-self: end;
+	align-items: center;
 	justify-self: center;
 	flex-direction: column;
 	margin-bottom: 8vh;
 	margin-inline: 4%;
-	transition: width ease 1.5s;
 	grid-column: span 2;
 	pointer-events: auto;
+	transition: all ease 1.5s;
 
 	&.splitscreen {
 		grid-column: 1;
 		width: 80%;
-		transition: width ease 1.5s;
 		justify-items: center;
 		justify-self: center;
+
+		.search__input__wrapper {
+			width: 80%;
+		}
 	}
 
 	.MuiInputBase-formControl {
@@ -44,15 +48,17 @@
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
+		transition: flex-wrap ease 1.5s;
 	}
 
 	.search__input__wrapper {
 		display: flex;
 		gap: 0.8rem;
 		margin-inline: 4%;
-		width: 100%;
+		width: 60%;
 		flex-grow: 1;
 		flex-shrink: 1;
 		flex-basis: 1rem;
+		transition: width ease 1.5s;
 	}
 }
