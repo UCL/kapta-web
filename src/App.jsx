@@ -37,9 +37,9 @@ export default function App() {
 	const [BMopen, setBMopen] = useState(false);
 
 	const [boundsVisible, setBoundsVisible] = useState(false);
-	const [polygonStore, setPolygonStore] = useState(null);
-	const [focusTask, setFocusTask] = useState(null);
-	const [chosenTask, setChosenTask] = useState(null);
+	const [polygonStore, setPolygonStore] = useState(null); // for showing polygons
+	const [focusTask, setFocusTask] = useState(null); // for showing data points
+	const [chosenTask, setChosenTask] = useState(null); // for showing task in list from popup
 
 	const [taskListName, setTaskListName] = useState("mine");
 
@@ -91,10 +91,13 @@ export default function App() {
 				polygons.push(task);
 			}
 		});
+		console.log("polygons", polygons);
 		return polygons;
 	};
 
 	const showSearchResults = (results) => {
+		console.log("show search results", results);
+		setBoundsVisible(false);
 		if (results !== searchResults) {
 			setPolygonStore(null); // reset polygon store for each new search
 			setSearchResults(results);
@@ -131,134 +134,136 @@ export default function App() {
 	};
 
 	return (
-		<main>
-			{errorMsg && <ErrorModal message={errorMsg} />}
-			{!isLoginFormVisible && !user.loggedIn && !signUpFormVisible && (
-				<div className="login-signup__wrapper">
-					<Button
-						variant="outlined"
-						onClick={() => {
-							setLoginFormVisible(true);
-						}}
-						startIcon={<LoginIcon />}
-						className="btn--login"
-					>
-						Login
-					</Button>
-					<Button
-						color="secondary"
-						variant="outlined"
-						onClick={() => {
-							setSignUpFormVisible(true);
-						}}
-						className="btn--signup"
-					>
-						Sign Up
-					</Button>
-				</div>
-			)}
-			<LoginForm
-				isVisible={isLoginFormVisible}
-				setIsVisible={setLoginFormVisible}
-				setSignUpVisible={setSignUpFormVisible}
-				setErrorMsg={setErrorMsg}
-				showConfirmModal={showConfirmModal}
-				showLoginSuccessModal={showLoginSuccessModal}
-				prefilledEmail={email}
-			/>
-			<SignUpForm
-				isVisible={signUpFormVisible}
-				setIsVisible={setSignUpFormVisible}
-				showConfirmModal={showConfirmModal}
-				showFilledLoginForm={showFilledLoginForm}
-			/>
-			{confirmModalVisible && (
-				<ConfirmModal
-					isVisible={confirmModalVisible}
-					setIsVisible={setConfirmModalVisible}
-					recipient={cmRecipient}
+		<>
+			<main>
+				{errorMsg && <ErrorModal message={errorMsg} />}
+				{!isLoginFormVisible && !user.loggedIn && !signUpFormVisible && (
+					<div className="login-signup__wrapper">
+						<Button
+							variant="outlined"
+							onClick={() => {
+								setLoginFormVisible(true);
+							}}
+							startIcon={<LoginIcon />}
+							className="btn--login"
+						>
+							Login
+						</Button>
+						<Button
+							color="secondary"
+							variant="outlined"
+							onClick={() => {
+								setSignUpFormVisible(true);
+							}}
+							className="btn--signup"
+						>
+							Sign Up
+						</Button>
+					</div>
+				)}
+				<LoginForm
+					isVisible={isLoginFormVisible}
+					setIsVisible={setLoginFormVisible}
+					setSignUpVisible={setSignUpFormVisible}
+					setErrorMsg={setErrorMsg}
+					showConfirmModal={showConfirmModal}
 					showLoginSuccessModal={showLoginSuccessModal}
+					prefilledEmail={email}
 				/>
-			)}
-			{successModalVisible && !successIsTask && (
-				<SuccessModal
-					taskTitle={successMsg}
-					setSuccessModalVisible={setSuccessModalVisible}
-					isTask={successIsTask}
+				<SignUpForm
+					isVisible={signUpFormVisible}
+					setIsVisible={setSignUpFormVisible}
+					showConfirmModal={showConfirmModal}
+					showFilledLoginForm={showFilledLoginForm}
 				/>
-			)}
-			{successModalVisible && successIsTask && (
-				<SuccessModal
-					taskTitle={successMsg.title}
-					taskDescription={successMsg.description}
-					taskID={successMsg.taskID}
-					campaignCode={successMsg.campaignCode}
-					setSuccessModalVisible={setSuccessModalVisible}
-					isTask={true}
-				/>
-			)}
-			{user.loggedIn && (
-				<>
-					<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
-					<div className="search-response-wrapper">
-						<div className="response-container">
-							{/* this is where the bot responses will go */}
-						</div>
-
-						<SearchForm
-							showSearchResults={showSearchResults}
-							taskListOpen={isTaskListVisible || searchResultsVisible}
-						/>
-					</div>
-					<div className="task-map-wrapper">
-						<Map
-							boundsVisible={boundsVisible}
-							polygonStore={polygonStore}
-							taskListOpen={isTaskListVisible || searchResultsVisible}
-							focusTask={focusTask}
-							showTaskInList={showTaskInList}
-						/>
-						<TaskList
-							isVisible={isTaskListVisible}
-							setIsVisible={setTaskListVisible}
-							user={user}
-							showTaskForm={showTaskForm}
-							showNewTaskForm={showNewTaskForm}
-							showBounds={showBounds}
-							setFocusTask={setFocusTask}
-							chosenTask={chosenTask}
-							scrollFlashTask={scrollFlashTask}
-							taskListName={taskListName}
-							setTaskListName={setTaskListName}
-						/>
-
-						<SearchResults
-							isVisible={searchResultsVisible}
-							setIsVisible={setSearchResultsVisible}
-							results={searchResults}
-							setFocusTask={setFocusTask}
-							chosenTask={chosenTask}
-							scrollFlashTask={scrollFlashTask}
-						/>
-					</div>
-					<TaskForm
-						isVisible={isTaskFormVisible}
-						setIsVisible={setTaskFormVisible}
-						user={user}
-						taskValues={taskValues}
-						showTaskSuccessModal={showTaskSuccessModal}
+				{confirmModalVisible && (
+					<ConfirmModal
+						isVisible={confirmModalVisible}
+						setIsVisible={setConfirmModalVisible}
+						recipient={cmRecipient}
+						showLoginSuccessModal={showLoginSuccessModal}
 					/>
-					<Fab
-						size="medium"
-						variant="extended"
-						color="tomato"
-						onClick={() => setTaskListVisible(true)}
-						className="btn--view-tasks"
-					>
-						TASKS
-					</Fab>
-				</>
-			)}
-		</main>
+				)}
+				{successModalVisible && !successIsTask && (
+					<SuccessModal
+						taskTitle={successMsg}
+						setSuccessModalVisible={setSuccessModalVisible}
+						isTask={successIsTask}
+					/>
+				)}
+				{successModalVisible && successIsTask && (
+					<SuccessModal
+						taskTitle={successMsg.title}
+						taskDescription={successMsg.description}
+						taskID={successMsg.taskID}
+						campaignCode={successMsg.campaignCode}
+						setSuccessModalVisible={setSuccessModalVisible}
+						isTask={true}
+					/>
+				)}
+				<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
+				{user.loggedIn && (
+					<>
+						<div className="search-response-wrapper">
+							<div className="response-container">
+								{/* this is where the bot responses will go */}
+							</div>
+
+							<SearchForm
+								showSearchResults={showSearchResults}
+								taskListOpen={isTaskListVisible || searchResultsVisible}
+							/>
+						</div>
+						<div className="task-map-wrapper">
+							<Map
+								boundsVisible={boundsVisible}
+								polygonStore={polygonStore}
+								taskListOpen={isTaskListVisible || searchResultsVisible}
+								focusTask={focusTask}
+								showTaskInList={showTaskInList}
+							/>
+							<TaskList
+								isVisible={isTaskListVisible}
+								setIsVisible={setTaskListVisible}
+								user={user}
+								showTaskForm={showTaskForm}
+								showNewTaskForm={showNewTaskForm}
+								showBounds={showBounds}
+								setFocusTask={setFocusTask}
+								chosenTask={chosenTask}
+								scrollFlashTask={scrollFlashTask}
+								taskListName={taskListName}
+								setTaskListName={setTaskListName}
+							/>
+
+							<SearchResults
+								isVisible={searchResultsVisible}
+								setIsVisible={setSearchResultsVisible}
+								results={searchResults}
+								setFocusTask={setFocusTask}
+								chosenTask={chosenTask}
+								scrollFlashTask={scrollFlashTask}
+							/>
+						</div>
+						<TaskForm
+							isVisible={isTaskFormVisible}
+							setIsVisible={setTaskFormVisible}
+							user={user}
+							taskValues={taskValues}
+							showTaskSuccessModal={showTaskSuccessModal}
+						/>
+						<Fab
+							size="medium"
+							variant="extended"
+							color="tomato"
+							onClick={() => setTaskListVisible(true)}
+							className="btn--view-tasks"
+						>
+							TASKS
+						</Fab>
+					</>
+				)}
+			</main>
+		</>
 	);
 }
