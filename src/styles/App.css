@@ -80,3 +80,13 @@ main {
 	z-index: 2 !important;
 	text-transform: none !important;
 }
+
+.temp-mobile-app {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-inline: 4%;
+	text-align: center;
+}

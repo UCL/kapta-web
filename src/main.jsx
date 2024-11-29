@@ -12,6 +12,8 @@ import {
 	deepOrange,
 	grey,
 } from "@mui/material/colors";
+import { isMobileDevice } from "./utils/generalUtils.js";
+import TempMobileApp from "./TempMobileApp.jsx";
 
 const theme = createTheme({
 	palette: {
@@ -41,13 +43,15 @@ const theme = createTheme({
 	},
 	cssVariables: true,
 });
+const isMobile = isMobileDevice();
+console.log("isMobile", isMobile);
 
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
 		<UserProvider>
 			{" "}
 			<ThemeProvider theme={theme}>
-				<App />{" "}
+				{isMobile ? <TempMobileApp /> : <App />}{" "}
 			</ThemeProvider>
 		</UserProvider>
 	</StrictMode>
