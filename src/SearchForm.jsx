@@ -70,11 +70,11 @@ export default function SearchForm({
 
 	const chipSuggestions = [
 		{
-			label: "Show me all the sanity tasks",
+			label: "Show me all the sanitation tasks",
 			icon: <></>,
 			action: (setFieldValue) => {
-				setFieldValue("query", "sanity");
-				handleSubmit("sanity");
+				setFieldValue("query", "sanitation");
+				handleSubmit("sanitation");
 			},
 		},
 		{
@@ -83,6 +83,22 @@ export default function SearchForm({
 			action: (setFieldValue) => {
 				setFieldValue("query", "points");
 				handleSubmit("points");
+			},
+		},
+		{
+			label: "Information about postboxes",
+			icon: <></>,
+			action: (setFieldValue) => {
+				setFieldValue("query", "postbox");
+				handleSubmit("postbox");
+			},
+		},
+		{
+			label: "Bakery recommendations",
+			icon: <></>,
+			action: (setFieldValue) => {
+				setFieldValue("query", "bakeries");
+				handleSubmit("bakeries");
 			},
 		},
 		{
