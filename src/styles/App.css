@@ -78,4 +78,5 @@ main {
 	right: 4%;
 	bottom: 9%;
 	z-index: 2 !important;
+	text-transform: none !important;
 }
