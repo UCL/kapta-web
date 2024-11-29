@@ -49,7 +49,7 @@ Currently the core Kapta team consists of:
 
 1. Clone the repository: `git clone https://github.com/UCL/kapta-web.git && cd kapta-web`
 2. Run `npm install` in the root directory
-3. Create config file (see below)
+3. Create .env file (see below)
 4. Run `npm run build` to build the project
 5. Run `npm run dev` to start the development server
 6. Open `http://localhost:5173` in your browser
@@ -59,20 +59,14 @@ Currently the core Kapta team consists of:
 <!-- need to update to make relevant to env vars -->
 <!-- something like Kapta requires certain environment variables to work, look in globals.js to see what they're called -->
 
-Kapta requires a configuration file to be created in the src directory. The file should be named `config.json` and should contain the following fields:
+Kapta requires a configuration file to be created in the root directory. The file should be named `.env` and should contain the following fields do not put quotes or spaces around the values:
 
-```json
-{
-	"mapbox": {
-		"accessToken": "YOUR_MAPBOX_ACCESS_TOKEN"
-	},
-	"api": {
-		"invokeUrl": "" // API URL (optional)
-	},
-	"kapta": {
-		"askTheTeamURL": "" // URL for user support e.g. WhatsApp business chat URL (optional)
-	}
-}
+```
+VITE_REQUEST_URL=
+VITE_WEB_POOL_ID=
+VITE_CLIENT_ID=
+VITE_REGION=
+VITE_MAPBOX_TOKEN=
 ```
 
 # Legal disclaimer
