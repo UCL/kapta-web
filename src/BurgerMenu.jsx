@@ -161,7 +161,9 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 					</List>
 					<div className="bm__footer">
 						<Typography>Have feedback or want to get in touch?</Typography>
-						<Button>Contact Us</Button>
+						<Button onClick={() => (window.location.href = WA_CHAT_URL)}>
+							Contact Us
+						</Button>
 					</div>
 					<Button
 						onClick={handleLogout}
