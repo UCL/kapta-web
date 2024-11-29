@@ -62,10 +62,10 @@ export default function App() {
 		setConfirmModalVisible(true);
 	};
 	const showLoginSuccessModal = (message) => {
-		setSuccessModalVisible(true);
-		setSuccessMsg(message);
-		setSuccessIsTask(false);
-		setEmail("");
+		// setSuccessModalVisible(true);
+		// setSuccessMsg(message);
+		// setSuccessIsTask(false);
+		// setEmail("");
 	};
 
 	const showFilledLoginForm = (email) => {
