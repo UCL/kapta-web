@@ -87,6 +87,14 @@ export function Map({
 			});
 		});
 
+		const attributionControl = map.current._controls.find(
+			(control) => control instanceof mapboxgl.AttributionControl
+		);
+
+		if (attributionControl) {
+			attributionControl._container.innerHTML =
+				'© <a href="https://www.mapbox.com/about/maps/">Mapbox</a>, <a href="http://www.openstreetmap.org/copyright">OpenStreetMap Contributors</a>';
+		}
 		// make this function available from when the map initialises
 		window.handlePopupDetailsClick = (id) => {
 			showTaskInList(id);

@@ -35,8 +35,8 @@
 .mapboxgl-ctrl-attrib {
 	background-color: transparent !important;
 	font-size: 0.6rem;
-
-	.mapboxgl-ctrl-attrib-inner > a {
+	a,
+	& {
 		color: grey;
 	}
 }
