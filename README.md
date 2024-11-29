@@ -51,8 +51,8 @@ Currently the core Kapta team consists of:
 2. Run `npm install` in the root directory
 3. Create config file (see below)
 4. Run `npm run build` to build the project
-5. Run `npm start` to start the development server
-6. Open `http://localhost:8080` in your browser
+5. Run `npm run dev` to start the development server
+6. Open `http://localhost:5173` in your browser
 
 ## Configuration
 
