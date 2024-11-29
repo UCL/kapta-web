@@ -101,7 +101,7 @@ export default function TaskForm({
 				// validation schema currently not valid
 				onSubmit={taskValues ? handleEdit : handleSubmit}
 			>
-				{({ isSubmitting, setFieldValue }) => (
+				{({ isSubmitting, setFieldValue, values }) => (
 					<Form className="form task-request-form">
 						<CloseButton setIsVisible={setIsVisible} />
 						<h2 color="info">
@@ -154,13 +154,6 @@ export default function TaskForm({
 								</label>
 							</div> */}
 
-							{/* Visible on Kapta Web */}
-							<div>
-								<label>
-									<Field type="checkbox" name="visible" as={Checkbox} />I want
-									the WhatsApp Maps of this task to be open data.
-								</label>
-							</div>
 							{/* Title */}
 							<Field
 								name="title"
@@ -191,11 +184,18 @@ export default function TaskForm({
 							{taskValues && (
 								<p>Your campaign code: {initialValues.campaignCode}</p>
 							)}
+							{/* Visible on Kapta Web */}
+							<div>
+								<label>
+									<Field type="checkbox" name="visible" as={Checkbox} />I want
+									the WhatsApp Maps of this task to be open data.
+								</label>
+							</div>
 
 							{/* Submit Button */}
 							<Button
 								type="submit"
-								disabled={isSubmitting}
+								disabled={!values.visible || isSubmitting}
 								color="success"
 								variant="contained"
 								className="btn--submit"
