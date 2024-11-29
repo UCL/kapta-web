@@ -7,10 +7,6 @@ import { CloseButton } from "./utils/Buttons";
 import { createTask, updateTask } from "./utils/apiQueries";
 // import * as Yup from "yup";
 
-// these will be dynamically taken from their login and generated
-const taskID = generateTaskId();
-const campaignCode = generateCampaignCode();
-
 // const validationSchema = Yup.object({
 // 	organisation: Yup.string().required("Organisation is required"), // in future maybe we turn this into a dropdown with "add new?" and generate a uuid
 // 	logo: Yup.mixed(),
@@ -32,7 +28,7 @@ export default function TaskForm({
 		organisation: user.organisation || "",
 		logo: null,
 		private: false,
-		visible: true,
+		visible: false,
 		title: "",
 		description: "",
 	};
@@ -63,7 +59,11 @@ export default function TaskForm({
 		// const imageBuffer = fs.readFileSync(imagePath);
 		// const base64Image = imageBuffer.toString('base64');
 
+		const taskID = generateTaskId();
+		const campaignCode = generateCampaignCode();
+
 		values = { ...values, taskID: taskID, campaignCode: campaignCode };
+
 		try {
 			const response = await createTask({ user, values });
 			if (response) {
@@ -158,8 +158,8 @@ export default function TaskForm({
 							{/* Visible on Kapta Web */}
 							<div>
 								<label>
-									<Field type="checkbox" name="visible" as={Checkbox} />
-									Does the request appear on Kapta Web searches?
+									<Field type="checkbox" name="visible" as={Checkbox} />I want
+									the WhatsApp Maps of this task to be open data.
 								</label>
 							</div>
 							{/* Title */}
