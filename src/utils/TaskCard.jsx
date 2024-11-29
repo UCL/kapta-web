@@ -104,10 +104,12 @@ export default function TaskCard({
 	const cardActionBtns = [
 		{
 			text:
-				taskId === displayedTask?.task_id ? "Show data points" : "Show on Map",
+				taskId === displayedTask?.task_id && userID === task.created_by
+					? "Show data points"
+					: "Show on Map",
 			icon: <PinDropIcon />,
 			action:
-				taskId === displayedTask?.task_id
+				taskId === displayedTask?.task_id && userID === task.created_by
 					? (task) => showDataPoints(task)
 					: (task) => {
 							handleShowOnMap(task);
@@ -120,13 +122,14 @@ export default function TaskCard({
 		},
 
 		{
-			text: "Download Data",
+			text: userID === task.created_by ? "Download Data" : "Request Data",
 			icon: <DownloadIcon />,
 			action: (task) => handleDownload(task),
 			variant: "outlined",
 			color: "orange",
 			loading: true,
 			typeName: "download",
+			disabled: userID !== task.created_by,
 		},
 	];
 

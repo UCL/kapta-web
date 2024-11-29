@@ -119,7 +119,6 @@ export function Map({
 
 		// is search results
 		if (Array.isArray(polygonStore)) {
-			console.log("is array");
 			newData = {
 				type: "FeatureCollection",
 				features: polygonStore.map((polygon) => ({
@@ -163,7 +162,6 @@ export function Map({
 				data: newData,
 			});
 		} else {
-			console.log("source exists");
 			// source already exists, update the data
 
 			// removing data points since new task
@@ -234,7 +232,7 @@ export function Map({
 			map.current.flyTo({
 				center: centroidPoint.geometry.coordinates,
 				essential: true,
-				zoom: 3,
+				zoom: 4,
 			});
 		}
 	}, [polygonStore, boundsVisible, taskListOpen]);
@@ -243,8 +241,6 @@ export function Map({
 	useEffect(() => {
 		// flying to task when multiple loaded
 		if (!map.current || !map.current.isStyleLoaded() || !focusTask) return;
-
-		console.log("flyign to task", focusTask);
 
 		if (focusTask && focusTask.geo_bounds) {
 			getAndFitBounds(focusTask);
