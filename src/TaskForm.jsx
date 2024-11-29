@@ -127,8 +127,8 @@ export default function TaskForm({
 								/>
 
 								{/* Logo */}
-
-								<Button
+								{/* this also isn't working, should fix */}
+								{/* <Button
 									variant="contained"
 									tabIndex={-1}
 									startIcon={<CloudUploadIcon />}
@@ -143,7 +143,7 @@ export default function TaskForm({
 											setFieldValue("logo", event.currentTarget.files[0]);
 										}}
 									/>
-								</Button>
+								</Button> */}
 							</Box>
 
 							{/* Private to Org */}
