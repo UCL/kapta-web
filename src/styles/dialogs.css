@@ -11,7 +11,8 @@
 #success-dialog {
 	background-color: #2d5b39eb;
 	top: 20%;
-	width: 60vw;
+	width: 50vw;
+	max-width: 50rem;
 	color: white;
 
 	h3 {
@@ -19,9 +20,6 @@
 		font-weight: 700;
 		font-size: 1.5rem;
 		color: #c9ff79;
-	}
-	.task-info__container {
-		border: 1px solid var(--rose);
 	}
 	.task-info {
 		font-size: 1.2rem;

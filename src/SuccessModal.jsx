@@ -5,7 +5,6 @@ import { copyToClipboard } from "./utils/copyToClipboard";
 import { useAutoClose } from "./utils/autoCloseHook";
 
 export default function SuccessModal({
-	taskID = "",
 	taskTitle = "",
 	taskDescription = "",
 	campaignCode = "",
@@ -37,16 +36,13 @@ export default function SuccessModal({
 					{" "}
 					<div className="task-info__container">
 						<p className="task-info">
-							<strong>{taskTitle}</strong> <small>{taskID}</small>
+							<strong>{taskTitle}</strong>
 						</p>
 						<p className="task-info">{taskDescription}</p>
 					</div>
 					<div>
 						<Divider />
-						<p>
-							Below is the campaign code for people to access your study on{" "}
-							Kapta Mobile and contribute to it.
-						</p>
+						<p>Use this code to upload and search WhatsApp Maps.</p>
 						<div
 							className="campaign-code"
 							onClick={() => handleCopy(campaignCode)}

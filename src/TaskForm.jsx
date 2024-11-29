@@ -68,9 +68,7 @@ export default function TaskForm({
 			const response = await createTask({ user, values });
 			if (response) {
 				let msg = {
-					title: values.title,
-					description: values.description,
-					taskID: values.taskID,
+					title: "Your task has been created",
 					campaignCode: values.campaignCode,
 				};
 				showSuccess(msg);
@@ -87,7 +85,6 @@ export default function TaskForm({
 				let msg = {
 					title: values.title,
 					description: values.description,
-					taskID: values.taskID,
 					campaignCode: values.campaignCode,
 				};
 				showSuccess(msg);
@@ -107,7 +104,9 @@ export default function TaskForm({
 				{({ isSubmitting, setFieldValue }) => (
 					<Form className="form task-request-form">
 						<CloseButton setIsVisible={setIsVisible} />
-						<h2 color="info">Tell us about your task</h2>
+						<h2 color="info">
+							{taskValues ? "Edit task details" : "Tell us about your task"}
+						</h2>
 						<div className="form__body">
 							{/* Hidden field for Created By */}
 							<Field type="hidden" name="createdBy" />
@@ -179,6 +178,8 @@ export default function TaskForm({
 								label="Description"
 								fullWidth
 								required
+								multiline
+								rows={2}
 							/>
 							<ErrorMessage
 								name="description"
@@ -199,7 +200,7 @@ export default function TaskForm({
 								variant="contained"
 								className="btn--submit"
 							>
-								{taskValues ? "Edit Task" : "Submit Request"}
+								{taskValues ? "Update" : "Submit Request"}
 							</Button>
 						</div>
 					</Form>
