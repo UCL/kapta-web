@@ -162,7 +162,7 @@ export default function TaskList({
 					<PinButton isPinned={isPinned} setIsPinned={setIsPinned} />
 
 					<ToggleButtonGroup
-						color="tomato"
+						color="info3"
 						value={taskListName}
 						exclusive
 						size="small"

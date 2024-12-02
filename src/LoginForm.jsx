@@ -51,7 +51,7 @@ export default function LoginForm({
 				<Formik onSubmit={handleSubmit} initialValues={initialValues}>
 					{({ isSubmitting }) => (
 						<Form className="form login__form">
-							<Typography variant="h4" color="orange">
+							<Typography variant="h4" color="info2">
 								Log in
 							</Typography>
 							<Field

@@ -9,7 +9,7 @@
 	padding-bottom: 3rem;
 	margin-top: -5rem;
 	color: var(--off-white);
-	border: 1px solid var(--tomato);
+	border: 1px solid var(--mui-palette-info-main);
 	border-radius: 8px;
 
 	.form__body {

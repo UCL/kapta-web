@@ -29,9 +29,9 @@
 	}
 
 	a {
-		color: var(--tomato);
+		color: var(--mui-palette-info3-main);
 		&:hover {
-			color: salmon;
+			color: var(--mui-palette-info2-main);
 		}
 	}
 

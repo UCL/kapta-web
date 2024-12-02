@@ -83,11 +83,11 @@
 			display: flex;
 			justify-content: space-evenly;
 			.task__info-chip {
-				color: var(--mui-palette-tomato-main);
-				border-color: var(--mui-palette-tomato-main);
+				color: var(--mui-palette-info3-main);
+				border-color: var(--mui-palette-info2-main);
 				margin-left: 0.2rem;
 				svg {
-					color: var(--mui-palette-secondary-700);
+					color: var(--mui-palette-secondary-dark);
 					padding-left: 0.1rem;
 				}
 			}

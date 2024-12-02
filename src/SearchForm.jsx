@@ -156,11 +156,11 @@ export default function SearchForm({
 							<Fab
 								type="submit"
 								disabled={isSubmitting}
-								color="info"
+								color="primary"
 								variant="contained"
 								className="search__submit__btn"
 							>
-								<ArrowUpwardRoundedIcon fontSize="large" />
+								<ArrowUpwardRoundedIcon fontSize="large" color="white" />
 							</Fab>
 						</div>
 					</Form>

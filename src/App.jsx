@@ -254,7 +254,7 @@ export default function App() {
 						<Fab
 							size="medium"
 							variant="extended"
-							color="tomato"
+							color="primary"
 							onClick={() => setTaskListVisible(true)}
 							className="btn--view-tasks"
 						>
