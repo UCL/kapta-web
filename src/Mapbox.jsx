@@ -44,15 +44,6 @@ export function Map({
 				popupRef.current = popup;
 			}
 		});
-
-		// Change cursor style on hover
-		map.current.on("mouseenter", "polygons-layer", () => {
-			map.current.getCanvas().style.cursor = "pointer";
-		});
-
-		map.current.on("mouseleave", "polygons-layer", () => {
-			map.current.getCanvas().style.cursor = "";
-		});
 	};
 
 	const getAndFitBounds = (focusTask) => {
@@ -105,7 +96,11 @@ export function Map({
 	useEffect(() => {
 		const timeoutId = setTimeout(() => {
 			if (map.current) {
+				const center = map.current.getCenter();
+				const zoom = map.current.getZoom();
 				map.current.resize();
+				map.current.setCenter(center);
+				map.current.setZoom(zoom);
 			}
 		}, 100);
 		return () => clearTimeout(timeoutId);
@@ -239,9 +234,9 @@ export function Map({
 
 	// fly to focused task and show data points
 	useEffect(() => {
-		// flying to task when multiple loaded
 		if (!map.current || !map.current.isStyleLoaded() || !focusTask) return;
 
+		// flying to task polygon when multiple loaded
 		if (focusTask && focusTask.geo_bounds) {
 			getAndFitBounds(focusTask);
 		}
