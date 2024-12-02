@@ -165,13 +165,15 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 							Contact Us
 						</Button>
 					</div>
-					<Button
-						onClick={handleLogout}
-						endIcon={<LogoutIcon />}
-						className="btn--logout"
-					>
-						Logout
-					</Button>
+					{user.loggedIn && (
+						<Button
+							onClick={handleLogout}
+							endIcon={<LogoutIcon />}
+							className="btn--logout"
+						>
+							Logout
+						</Button>
+					)}
 				</div>
 			</Drawer>
 		</>
