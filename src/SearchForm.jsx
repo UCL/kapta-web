@@ -24,10 +24,12 @@ export default function SearchForm({
 			return fetchedTasks;
 		};
 
-		fetchTasks().then((tasks) => {
-			const visibleTasks = tasks.filter((task) => task.visible === true);
-			setTasks(visibleTasks);
-		});
+		if (user?.idToken) {
+			fetchTasks().then((tasks) => {
+				const visibleTasks = tasks.filter((task) => task.visible === true);
+				setTasks(visibleTasks);
+			});
+		}
 	}, [user]);
 
 	const handleSubmit = async (values) => {

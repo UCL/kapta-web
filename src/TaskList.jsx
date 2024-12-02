@@ -41,22 +41,24 @@ export default function TaskList({
 	const [displayedTask, setDisplayedTask] = useState(null);
 
 	useEffect(() => {
-		if (taskListName === "opendata") {
-			setIsLoading(true);
-			const fetchTasks = async () => {
-				var fetchedTasks = await fetchODTasks({ user });
-				setTasks(fetchedTasks);
-			};
-			fetchTasks();
-		} else if (taskListName === "mine") {
-			setIsLoading(true);
-			const fetchTasks = async () => {
-				var fetchedTasks = await fetchMyTasks({ user });
-				setTasks(fetchedTasks);
-			};
-			fetchTasks();
+		if (user?.idToken) {
+			if (taskListName === "opendata") {
+				setIsLoading(true);
+				const fetchTasks = async () => {
+					var fetchedTasks = await fetchODTasks({ user });
+					setTasks(fetchedTasks);
+				};
+				fetchTasks();
+			} else if (taskListName === "mine") {
+				setIsLoading(true);
+				const fetchTasks = async () => {
+					var fetchedTasks = await fetchMyTasks({ user });
+					setTasks(fetchedTasks);
+				};
+				fetchTasks();
+			}
+			setIsLoading(false);
 		}
-		setIsLoading(false);
 	}, [taskListName, user]);
 
 	useEffect(() => {
