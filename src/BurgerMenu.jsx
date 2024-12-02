@@ -81,7 +81,14 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 			title: "About",
 			icon: <InfoIcon />,
 			subtitle: "Kapta Mobile is a Progressive Web App to create WhatsApp Maps",
-			content: "",
+			content: `<h4>Legal Notice</h4>
+			<p>
+This website is operated by <strong>Wisdom of the Crowd Labs Ltd</strong>, a not-for-profit UCL spinout company registered in England and Wales.<br>
+<strong>Registered Office:</strong> ExCiteS C/O WCL, Geography Department, University College London, Gower St, London, United Kingdom, WC1E 6BT<br>
+<strong>Company Registration Number:</strong> 15934186<br>
+<strong>Contact:</strong> info@kapta.earth<br>
+All content on this website is protected by copyright and other applicable laws. Wisdom of the Crowd Labs Ltd accepts no liability for external links or third-party content.<br>
+<strong>Governing Law:</strong> This website and its use are governed by the laws of England and Wales</p>`,
 		},
 		{
 			title: "People",
@@ -103,13 +110,6 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 			subtitle:
 				"Kapta:A (de)centralised crowdsourcing system to connect users and producers of ground information.",
 			content: "",
-		},
-		{
-			title: "Disclaimer",
-			icon: <CampaignOutlinedIcon />,
-			subtitle:
-				"The Kapta team has made every effort to develop an app that parse WhatsApp chats to create WhatsApp Maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur.",
-			content: ` Please always make your own judgement about the accuracy of the maps and validate the information using other sources. If you encounter any issues or have feedback, please reach out to us at <a href="mailto:geog.excites@ucl.ac.uk?subject=Kapta Mobile Feedback">geog.excites@ucl.ac.uk</a> or via WhatsApp at <a href=${WA_CHAT_URL}>+34 678380944.</a>`,
 		},
 	];
 	const handleAccordionChange = (panel) => (event, isExpanded) => {
