@@ -25,7 +25,7 @@ export default function TaskList({
 	showNewTaskForm,
 	showBounds,
 	setFocusTask,
-	chosenTask,
+	chosenTaskId,
 	scrollFlashTask,
 	taskListName,
 	setTaskListName,
@@ -62,27 +62,30 @@ export default function TaskList({
 	}, [taskListName, user]);
 
 	useEffect(() => {
-		if (chosenTask && chosenTask.includes("opendata")) {
+		console.log("in task list");
+		if (chosenTaskId && chosenTaskId.includes("opendata")) {
 			setTaskListName("opendata");
 		}
-		if (chosenTask && taskRefs.current[chosenTask]) {
+		if (chosenTaskId && taskRefs.current[chosenTaskId]) {
+			console.log("going to scroll flash");
 			scrollFlashTask(taskRefs);
 		}
 	});
 
-	useEffect(() => {
-		// set pinned preference when component mounts
-		const storedPinnedPreference = localStorage.getItem(
-			"tasklistPinnedPreference"
-		);
-		if (storedPinnedPreference) {
-			setIsPinned(storedPinnedPreference);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	// set pinned preference when component mounts
+	// 	const storedPinnedPreference = localStorage.getItem(
+	// 		"tasklistPinnedPreference"
+	// 	);
+	// 	console.log(isPinned, storedPinnedPreference);
+	// 	if (storedPinnedPreference) {
+	// 		setIsPinned(...storedPinnedPreference);
+	// 	}
+	// }, []);
 
 	// Store pinned task in localStorage whenever it changes
 	useEffect(() => {
-		if (isPinned) {
+		if (isPinned !== undefined) {
 			localStorage.setItem("tasklistPinnedPreference", isPinned);
 		}
 	}, [isPinned]);
