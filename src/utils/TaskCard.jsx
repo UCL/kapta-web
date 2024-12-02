@@ -18,6 +18,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { getDataFromBucket } from "./apiQueries";
 import { useState } from "react";
 import JSZip from "jszip";
+import { slugify } from "./generalUtils";
 
 export default function TaskCard({
 	task,
@@ -52,15 +53,17 @@ export default function TaskCard({
 
 		if (data.response !== 200) {
 			// todo: show an error
+			console.error("Error downloading task data", data);
 			return;
 		} else {
 			const txtContent = data.content.txtFileContent;
 			const jsonContent = data.content.jsonFileContent;
 
 			const zip = new JSZip();
+			const downloadTitle = slugify(task.task_title);
 
-			zip.file(`${task.task_title}-${task.campaign_code}.txt`, txtContent);
-			zip.file(`${task.task_title}-${task.campaign_code}.geojson`, jsonContent);
+			zip.file(`${downloadTitle}-${task.campaign_code}.txt`, txtContent);
+			zip.file(`${downloadTitle}-${task.campaign_code}.geojson`, jsonContent);
 
 			setIsLoading({ download: false });
 
