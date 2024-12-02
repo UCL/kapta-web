@@ -121,7 +121,7 @@ export const updateTask = async ({ user, values }) => {
 };
 
 export const getDataFromBucket = async ({ user, task }) => {
-	const taskId = task.task_id;
+	let taskId = task.task_id;
 	const userID = user.idToken;
 	try {
 		const response = await fetch(`${REQUEST_URL}/requests/download/${taskId}`, {
@@ -138,7 +138,6 @@ export const getDataFromBucket = async ({ user, task }) => {
 
 		const result = await response.json();
 		const data = JSON.parse(result);
-
 		if (data.taskID === taskId) {
 			return { response: 200, content: data };
 		} else {
