@@ -39,7 +39,7 @@ export default function App() {
 	const [boundsVisible, setBoundsVisible] = useState(false);
 	const [polygonStore, setPolygonStore] = useState(null); // for showing polygons
 	const [focusTask, setFocusTask] = useState(null); // for showing data points
-	const [chosenTask, setChosenTask] = useState(null); // for showing task in list from popup
+	const [chosenTaskId, setChosenTaskId] = useState(null); // for showing task in list from popup
 
 	const [taskListName, setTaskListName] = useState("mine");
 
@@ -111,25 +111,28 @@ export default function App() {
 	};
 
 	const showTaskInList = (id) => {
-		setChosenTask(id);
+		console.log("show task in list", id);
+		setChosenTaskId(id);
 		setTaskListVisible(true);
 	};
 
 	const scrollFlashTask = (taskRefs) => {
+		// if (!isTaskListVisible) setTaskListVisible(true);
+		console.log("scroll flash", taskRefs, chosenTaskId);
 		// Scroll to the chosen task
-		taskRefs.current[chosenTask].scrollIntoView({
+		taskRefs.current[chosenTaskId].scrollIntoView({
 			behavior: "smooth",
 			block: "center",
 		});
 		// Make it flash
-		const taskElement = taskRefs.current[chosenTask];
+		const taskElement = taskRefs.current[chosenTaskId];
 		taskElement.classList.add("flash");
 
 		// Remove the flash class after the animation duration
 		setTimeout(() => {
 			taskElement.classList.remove("flash");
-			setChosenTask(null);
-		}, 1600);
+			setChosenTaskId(null);
+		}, 2600);
 	};
 
 	return (
@@ -233,7 +236,7 @@ export default function App() {
 						showNewTaskForm={showNewTaskForm}
 						showBounds={showBounds}
 						setFocusTask={setFocusTask}
-						chosenTask={chosenTask}
+						chosenTaskId={chosenTaskId}
 						scrollFlashTask={scrollFlashTask}
 						taskListName={taskListName}
 						setTaskListName={setTaskListName}
@@ -244,7 +247,7 @@ export default function App() {
 						setIsVisible={setSearchResultsVisible}
 						results={searchResults}
 						setFocusTask={setFocusTask}
-						chosenTask={chosenTask}
+						chosenTaskId={chosenTaskId}
 						scrollFlashTask={scrollFlashTask}
 					/>
 					{user.loggedIn && (
