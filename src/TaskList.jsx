@@ -62,14 +62,17 @@ export default function TaskList({
 	}, [taskListName, user]);
 
 	useEffect(() => {
-		console.log("in task list");
 		if (chosenTaskId && chosenTaskId.includes("opendata")) {
 			setTaskListName("opendata");
 		}
-		if (chosenTaskId && taskRefs.current[chosenTaskId]) {
-			console.log("going to scroll flash");
-			scrollFlashTask(taskRefs);
-		}
+		const checkTaskRefs = setTimeout(() => {
+			if (taskRefs.current) {
+				if (chosenTaskId && taskRefs.current[chosenTaskId]) {
+					scrollFlashTask(taskRefs);
+				}
+			}
+		}, 100);
+		return () => clearTimeout(checkTaskRefs);
 	});
 
 	// useEffect(() => {
