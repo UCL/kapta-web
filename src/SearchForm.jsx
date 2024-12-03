@@ -160,7 +160,7 @@ export default function SearchForm({
 								variant="contained"
 								className="search__submit__btn"
 							>
-								<ArrowUpwardRoundedIcon fontSize="large" color="white" />
+								<ArrowUpwardRoundedIcon fontSize="large" />
 							</Fab>
 						</div>
 					</Form>

@@ -11,7 +11,12 @@ import TempMobileApp from "./TempMobileApp.jsx";
 const theme = createTheme({
 	palette: {
 		mode: "dark",
-		primary: { main: "#25D366" },
+		primary: {
+			main: "#25D366",
+			dark: "#00ba3c",
+			light: "#95e6a8",
+			contrastText: "#16161d",
+		},
 		secondary: { main: grey[300], contrastText: "#075E54", dark: grey[600] },
 		info: teal,
 		info2: { main: "#075E54", contrastText: grey[200] }, // WA dark teal

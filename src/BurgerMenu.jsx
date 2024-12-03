@@ -161,9 +161,21 @@ All content on this website is protected by copyright and other applicable laws.
 					</List>
 					<div className="bm__footer">
 						<Typography>Have feedback or want to get in touch?</Typography>
-						<Button onClick={() => (window.location.href = WA_CHAT_URL)}>
-							Contact Us
-						</Button>
+						<Typography>
+							Contact us on{" "}
+							<Button onClick={() => (window.location.href = WA_CHAT_URL)}>
+								WhatsApp
+							</Button>{" "}
+							or email us at{" "}
+							<Button
+								onClick={() =>
+									(window.location.href =
+										"mailto:info@kapta.earth?subject=Kapta Web Feedback")
+								}
+							>
+								info@kapta.earth
+							</Button>
+						</Typography>
 					</div>
 					{user.loggedIn && (
 						<Button
@@ -174,6 +186,24 @@ All content on this website is protected by copyright and other applicable laws.
 							Logout
 						</Button>
 					)}
+					<Typography variant="caption" id="legal-notice" color="seondary-dark">
+						Legal Notice
+						<p>
+							This website is operated by{" "}
+							<strong>Wisdom of the Crowd Labs Ltd</strong>, a not-for-profit
+							UCL spinout company registered in England and Wales.<br></br>
+							<strong>Registered Office:</strong> ExCiteS C/O WCL, Geography
+							Department, University College London, Gower St, London, United
+							Kingdom, WC1E 6BT<br></br>
+							<strong>Company Registration Number:</strong> 15934186<br></br>
+							<strong>Contact:</strong> info@kapta.earth<br></br>
+							All content on this website is protected by copyright and other
+							applicable laws. Wisdom of the Crowd Labs Ltd accepts no liability
+							for external links or third-party content.<br></br>
+							<strong>Governing Law:</strong> This website and its use are
+							governed by the laws of England and Wales
+						</p>
+					</Typography>
 				</div>
 			</Drawer>
 		</>

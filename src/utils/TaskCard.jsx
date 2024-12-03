@@ -128,8 +128,8 @@ export default function TaskCard({
 			text: userID === task.created_by ? "Download Data" : "Request Data",
 			icon: <DownloadIcon />,
 			action: (task) => handleDownload(task),
-			variant: "contained",
-			color: "info2",
+			variant: "outlined",
+			color: "primary",
 			loading: true,
 			typeName: "download",
 			disabled: userID !== task.created_by,
@@ -191,7 +191,7 @@ export default function TaskCard({
 					<p>{task.task_description}</p>
 				</CardContent>
 				<CardActions className="task-list__card-actions">
-					<ButtonGroup size="small" color="info">
+					<ButtonGroup size="small" color="primary">
 						{cardActionBtns.map((btn, index) =>
 							btn.loading === true ? (
 								<LoadingButton

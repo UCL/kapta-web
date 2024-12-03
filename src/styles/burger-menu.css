@@ -29,9 +29,9 @@
 	}
 
 	a {
-		color: var(--mui-palette-info3-main);
+		color: var(--mui-palette-secondary-main);
 		&:hover {
-			color: var(--mui-palette-info2-main);
+			color: var(--mui-palette-primary-main);
 		}
 	}
 
@@ -42,5 +42,10 @@
 	.bm__footer {
 		text-align: center;
 		margin-top: 2rem;
+
+		button {
+			text-transform: none;
+			font-size: inherit;
+		}
 	}
 }

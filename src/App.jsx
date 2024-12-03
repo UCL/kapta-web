@@ -250,17 +250,16 @@ export default function App() {
 						chosenTaskId={chosenTaskId}
 						scrollFlashTask={scrollFlashTask}
 					/>
-					{user.loggedIn && (
-						<Fab
-							size="medium"
-							variant="extended"
-							color="primary"
-							onClick={() => setTaskListVisible(true)}
-							className="btn--view-tasks"
-						>
-							Task WhatsApp Mappers
-						</Fab>
-					)}
+					<Fab
+						size="medium"
+						variant="extended"
+						color="primary"
+						onClick={() => setTaskListVisible(true)}
+						className="btn--view-tasks"
+						disabled={!user.loggedIn}
+					>
+						Task WhatsApp Mappers
+					</Fab>
 				</div>
 				<TaskForm
 					isVisible={isTaskFormVisible}
