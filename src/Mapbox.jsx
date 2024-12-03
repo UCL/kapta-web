@@ -98,13 +98,19 @@ export function Map({
 
 	// resize the map when splitscreen
 	useEffect(() => {
+		// todo: this needs some polishing
 		const timeoutId = setTimeout(() => {
 			if (map.current) {
 				const center = map.current.getCenter();
 				const zoom = map.current.getZoom();
 				map.current.resize();
-				// map.current.setCenter(center);
-				// map.current.setZoom(zoom);
+				// setTimeout(() => {
+				map.current.flyTo({
+					center: center,
+					zoom: zoom,
+					speed: 0.8,
+				});
+				// }, 100);
 			}
 		}, 100);
 		return () => clearTimeout(timeoutId);
