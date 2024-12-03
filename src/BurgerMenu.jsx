@@ -1,14 +1,10 @@
 import React, { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import PersonIcon from "@mui/icons-material/Person";
-import SettingsIcon from "@mui/icons-material/Settings";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import InfoIcon from "@mui/icons-material/Info";
-import PeopleIcon from "@mui/icons-material/People";
-import HelpIcon from "@mui/icons-material/Help";
-import NextPlanIcon from "@mui/icons-material/NextPlan";
+import GroupsIcon from "@mui/icons-material/Groups";
 import LogoutIcon from "@mui/icons-material/Logout";
-import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import {
 	Drawer,
 	List,
@@ -24,9 +20,14 @@ import parse from "html-react-parser";
 import { CloseButton } from "./utils/Buttons";
 import "./styles/burger-menu.css";
 import { useUserStore, WA_CHAT_URL } from "./globals";
+import LegalNotice from "./utils/LegalNoticeModal";
+import { KaptaSVGIcon } from "./utils/icons";
 
 export default function BurgerMenu({ isOpen, setIsOpen }) {
 	const [expandedPanel, setExpandedPanel] = useState(false);
+	const [expandedSubPanel, setExpandedSubPanel] = useState(false);
+
+	const [noticeVisible, setNoticeVisible] = useState(false);
 
 	const toggleDrawer = (open) => (event) => {
 		if (
@@ -74,46 +75,88 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 			"https://www.ucl.ac.uk/advanced-research-computing/people/amanda-ho-lyn",
 		jedUrl: "https://www.durham.ac.uk/staff/jed-stevenson/",
 		desUrl: "https://et.linkedin.com/in/dessalegn-tekle-02b848ba",
+		satoUrl: "https://www.linkedin.com/in/satoki-kawabata/",
+		gabrielUrl: "",
 	};
-
 	const menuSections = [
 		{
-			title: "About",
-			icon: <InfoIcon />,
-			subtitle: "Kapta Mobile is a Progressive Web App to create WhatsApp Maps",
-			content: `<h4>Legal Notice</h4>
-			<p>
-This website is operated by <strong>Wisdom of the Crowd Labs Ltd</strong>, a not-for-profit UCL spinout company registered in England and Wales.<br>
-<strong>Registered Office:</strong> ExCiteS C/O WCL, Geography Department, University College London, Gower St, London, United Kingdom, WC1E 6BT<br>
-<strong>Company Registration Number:</strong> 15934186<br>
-<strong>Contact:</strong> info@kapta.earth<br>
-All content on this website is protected by copyright and other applicable laws. Wisdom of the Crowd Labs Ltd accepts no liability for external links or third-party content.<br>
-<strong>Governing Law:</strong> This website and its use are governed by the laws of England and Wales</p>`,
-		},
-		{
-			title: "People",
-			icon: <PeopleIcon />,
+			title: "Kapta",
+			icon: <KaptaSVGIcon />,
 			subtitle:
-				"Kapta is being developed by the University College London (UCL) Extreme Citizen Science (ExCiteS) research group and the Advanced Research Computing Centre (UCL ARC).",
+				"Kapta is a WhatsApp-based crowdsourcing platform to help solve local, national and global challenges through searching WhatsApp Maps and tasking WhatsApp Mappers",
 			content: `Currently the core Kapta team consists of:<br><ul className="bm__people-list"><li><a href='${urls.marcosUrl}'>Marcos Moreu, UCL Geography</a></li><li><a href='${urls.fabienUrl}'>Fabien Moustard, UCL Geography</a></li><li><a href='${urls.tomUrl}'>Tom Couch, UCL ARC</a></li><li><a href='${urls.mukiUrl}'>Muki Haklay, UCL Geography</a></li><li><a href='${urls.jonathanUrl}'>Jonathan Cooper, UCL ARC</a></li><li><a href='${urls.claireUrl}'>Claire Ellul, UCL CEGE</a></li><li><a href='${urls.amandaUrl}'>Amanda Ho-Lyn, UCL ARC</a></li><li><a href='${urls.jedUrl}'>Jed Stevenson, Durham University</a></li><li><a href='${urls.desUrl}'>Dessalegn Teckle, Addis Ababa University, NGO IPC</a></li></ul>`,
 		},
 		{
-			title: "Why Kapta?",
-			icon: <HelpIcon />,
+			title: "Work with us",
+			icon: <GroupsIcon />,
 			subtitle:
-				"To popularise mapping and connect users and producers of ground information.",
-			content: `See our latest blog and where this started in 2010:<br><li><a href='${urls.whatsappMapsUrl}'>WhatsApp Maps? Connecting users and producers of ground information</a></li><br><li><a href='${urls.extremeCitizenUrl}'>Extreme Citizen Science in the Congo rainforest</a></li>`,
+				"We are open to building partnerships. Let's explore how Kapta can support your work.",
+			content: `Contact us at <Button
+								onClick={() =>
+									(window.location.href =
+										"mailto:info@kapta.earth?subject=Kapta Web Feedback")
+								}
+							>
+								info@kapta.earth
+							</Button>`,
 		},
 		{
-			title: "What's Next?",
-			icon: <NextPlanIcon />,
-			subtitle:
-				"Kapta:A (de)centralised crowdsourcing system to connect users and producers of ground information.",
-			content: "",
+			title: "Discover",
+			icon: <TravelExploreIcon />,
+			subtitle: "",
+			hasSubTabs: true,
+			subTabs: [
+				{
+					title: "Case Study",
+					content: `<h4>Is this the first-ever WhatsApp Map?</h4><img src="/Poster_cs_1.svg" alt="Is this the first-ever WhatsApp Map?" />
+					<p>The traditional method of assessing water infrastructure relies on field surveyors, a process that is often slow and costly. This can pose challenges for timely decision-making, especially in regions facing drought and hunger. In May 2024, pastoralists from various villages were engaged in the data collection process. Organised into WhatsApp groups and using Kapta, they facilitated faster and more efficient assessments by creating WhatsApp Maps on water infrastructure. Within just a few days, these WhatsApp mappers determined that 75% of the water infrastructure was non-functional, providing local authorities with accurate, ground-level information to take quicker and more informed action.</p><p><em>More case studies coming soon.</em></p>`,
+				},
+				{
+					title: "Extreme Citizen Science",
+					content: `<p>Kapta is inspired by <a href="https://www.ucl.ac.uk/geography/research/research-centres/extreme-citizen-science-excites">Extreme Citizen Science (ExCiteS)</a>, a community-led approach to creating decision-useful maps via WhatsApp that values and integrates local needs, traditions, and cultures. This co-design-based approach is committed to empowering individuals anywhere to share their knowledge through the development of innovative tools and methods.
+</p>`,
+				},
+			],
+		},
+		{
+			title: "About",
+			icon: <InfoIcon />,
+			subtitle: "",
+			hasSubTabs: true,
+			subTabs: [
+				{
+					title: "Ethics",
+					content: `<p>
+TWe prioritise enhancing the capabilities of individuals and communities impacted by our work, ensuring that every action serves a meaningful purpose and aligns with the public interest. Ethics is at the core of our decisions, helping us build trust and foster collective intelligence. By focusing on fairness, transparency, and inclusivity, we develop solutions that empower people to make better decisions in an increasingly complex world shaped by global environmental changes. Our work is guided by a commitment to contribute to a more equitable, sustainable, and socially responsible future for all.
+</p><p>We embrace open-source principles to promote collective progress and serve the public interest. By sharing our tools and methods openly, we enable others to adapt them to diverse challenges and encourage broader participation in knowledge sharing. This approach fosters collaboration across geographies and cultures, driving solutions that benefit society as a whole.</p>`,
+				},
+				{
+					title: "Team",
+					content: `<p>Founders:<ul>
+					<li><a href='${urls.fabienUrl}'>Fabien Moustard</a></li>
+					<li><a href='${urls.marcosUrl}'>Marcos Moreu</a></li></ul>
+Team:<ul><li><a href='${urls.tomUrl}'>Tom Couch,  Software development</a></li>
+<li><a href='${urls.amandaUrl}'>Amanda Ho-Lyn, Software development</a></li>
+<li><a href='${urls.jedUrl}'>Jed Stevenson, Field implementation </a></li>
+<li><a href='${urls.desUrl}'>Dessalegn Teckle, Field implementation</a></li>
+<li><a href='${urls.satoUrl}'>Satoki Kawabata, Strategic planning </a></li>
+<li><a href='${urls.gabrielUrl}'>Gabriel Dufourcq, Strategic planning </a></li></ul>
+Advisors:<ul>
+<li><a href='${urls.mukiUrl}'>Muki Haklay, UCL Geography</a></li>
+<li><a href='${urls.claireUrl}'>Claire Ellul, UCL  Civil Environmental and Geomatic Engineering</a></li>
+<li><a href='${urls.jeromeUrl}'>Jerome Lewis, UCL Anthropology</a></li>
+<li><a href='${urls.jonathanUrl}'>Jonathan Cooper, UCL Advanced Research Computing</a></li>
+
+</p>`,
+				},
+			],
 		},
 	];
 	const handleAccordionChange = (panel) => (event, isExpanded) => {
 		setExpandedPanel(isExpanded ? panel : false);
+	};
+	const handleSubAccordionChange = (subPanel) => (event, isExpanded) => {
+		setExpandedSubPanel(isExpanded ? subPanel : false);
 	};
 	return (
 		<>
@@ -155,7 +198,36 @@ All content on this website is protected by copyright and other applicable laws.
 								>
 									{section.subtitle}
 								</Typography>
-								<AccordionDetails>{parse(section.content)}</AccordionDetails>
+								<AccordionDetails>
+									{section.hasSubTabs
+										? section.subTabs.map((subTab, subIndex) => (
+												<Accordion
+													key={subTab.title}
+													expanded={
+														expandedSubPanel === `subPanel${index}${subIndex}`
+													}
+													onChange={handleSubAccordionChange(
+														`subPanel${index}${subIndex}`
+													)}
+												>
+													<AccordionSummary
+														expandIcon={<ExpandMoreIcon />}
+														aria-controls={`subPanel${index}${subIndex}a-content`}
+														id={`subPanel${index}${subIndex}a-header`}
+													>
+														<Typography variant="subtitle1">
+															{subTab.title}
+														</Typography>
+													</AccordionSummary>
+													<AccordionDetails>
+														<Typography variant="body2">
+															{parse(subTab.content)}
+														</Typography>
+													</AccordionDetails>
+												</Accordion>
+										  ))
+										: parse(section.content)}
+								</AccordionDetails>
 							</Accordion>
 						))}
 					</List>
@@ -186,24 +258,14 @@ All content on this website is protected by copyright and other applicable laws.
 							Logout
 						</Button>
 					)}
-					<Typography variant="caption" id="legal-notice" color="seondary-dark">
-						Legal Notice
-						<p>
-							This website is operated by{" "}
-							<strong>Wisdom of the Crowd Labs Ltd</strong>, a not-for-profit
-							UCL spinout company registered in England and Wales.<br></br>
-							<strong>Registered Office:</strong> ExCiteS C/O WCL, Geography
-							Department, University College London, Gower St, London, United
-							Kingdom, WC1E 6BT<br></br>
-							<strong>Company Registration Number:</strong> 15934186<br></br>
-							<strong>Contact:</strong> info@kapta.earth<br></br>
-							All content on this website is protected by copyright and other
-							applicable laws. Wisdom of the Crowd Labs Ltd accepts no liability
-							for external links or third-party content.<br></br>
-							<strong>Governing Law:</strong> This website and its use are
-							governed by the laws of England and Wales
-						</p>
+					<Typography variant="caption" id="legal-notice">
+						© 2024 Wisdom of the Crowd Labs, All rights reserved -{" "}
+						<Button onClick={() => setNoticeVisible(true)}>Legal Notice</Button>
 					</Typography>
+					<LegalNotice
+						isVisible={noticeVisible}
+						setIsVisible={setNoticeVisible}
+					/>
 				</div>
 			</Drawer>
 		</>
