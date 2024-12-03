@@ -47,9 +47,13 @@ export function Map({
 	};
 
 	const getAndFitBounds = (focusTask) => {
-		const turfPoly = polygon([focusTask.geo_bounds.coordinates]);
-
-		const bounds = bbox(turfPoly);
+		let bounds;
+		if (focusTask.type === "FeatureCollection") {
+			bounds = bbox(focusTask);
+		} else {
+			const turfPoly = polygon([focusTask.geo_bounds.coordinates]);
+			bounds = bbox(turfPoly);
+		}
 		map.current.fitBounds(bounds, {
 			padding: 200,
 		});
@@ -99,8 +103,8 @@ export function Map({
 				const center = map.current.getCenter();
 				const zoom = map.current.getZoom();
 				map.current.resize();
-				map.current.setCenter(center);
-				map.current.setZoom(zoom);
+				// map.current.setCenter(center);
+				// map.current.setZoom(zoom);
 			}
 		}, 100);
 		return () => clearTimeout(timeoutId);
