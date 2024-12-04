@@ -20,14 +20,11 @@ import parse from "html-react-parser";
 import { CloseButton } from "./utils/Buttons";
 import "./styles/burger-menu.css";
 import { useUserStore, WA_CHAT_URL } from "./globals";
-import LegalNotice from "./utils/LegalNoticeModal";
-import { KaptaSVGIcon } from "./utils/icons";
+import { KaptaSVGIconWhite } from "./utils/icons";
 
-export default function BurgerMenu({ isOpen, setIsOpen }) {
+export default function BurgerMenu({ isOpen, setIsOpen, setNoticeVisible }) {
 	const [expandedPanel, setExpandedPanel] = useState(false);
 	const [expandedSubPanel, setExpandedSubPanel] = useState(false);
-
-	const [noticeVisible, setNoticeVisible] = useState(false);
 
 	const toggleDrawer = (open) => (event) => {
 		if (
@@ -81,24 +78,20 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 	const menuSections = [
 		{
 			title: "Kapta",
-			icon: <KaptaSVGIcon />,
+			icon: <KaptaSVGIconWhite />,
 			subtitle:
 				"Kapta is a WhatsApp-based crowdsourcing platform to help solve local, national and global challenges through searching WhatsApp Maps and tasking WhatsApp Mappers",
-			content: `Currently the core Kapta team consists of:<br><ul className="bm__people-list"><li><a href='${urls.marcosUrl}'>Marcos Moreu, UCL Geography</a></li><li><a href='${urls.fabienUrl}'>Fabien Moustard, UCL Geography</a></li><li><a href='${urls.tomUrl}'>Tom Couch, UCL ARC</a></li><li><a href='${urls.mukiUrl}'>Muki Haklay, UCL Geography</a></li><li><a href='${urls.jonathanUrl}'>Jonathan Cooper, UCL ARC</a></li><li><a href='${urls.claireUrl}'>Claire Ellul, UCL CEGE</a></li><li><a href='${urls.amandaUrl}'>Amanda Ho-Lyn, UCL ARC</a></li><li><a href='${urls.jedUrl}'>Jed Stevenson, Durham University</a></li><li><a href='${urls.desUrl}'>Dessalegn Teckle, Addis Ababa University, NGO IPC</a></li></ul>`,
+			content: "",
 		},
 		{
 			title: "Work with us",
 			icon: <GroupsIcon />,
 			subtitle:
 				"We are open to building partnerships. Let's explore how Kapta can support your work.",
-			content: `Contact us at <Button
-								onClick={() =>
-									(window.location.href =
-										"mailto:info@kapta.earth?subject=Kapta Web Feedback")
-								}
+			content: `Contact us at <a href="mailto:info@kapta.earth?subject=Kapta Web Feedback"
 							>
 								info@kapta.earth
-							</Button>`,
+							</a>`,
 		},
 		{
 			title: "Discover",
@@ -260,12 +253,15 @@ Advisors:<ul>
 					)}
 					<Typography variant="caption" id="legal-notice">
 						© 2024 Wisdom of the Crowd Labs, All rights reserved -{" "}
-						<Button onClick={() => setNoticeVisible(true)}>Legal Notice</Button>
+						<a
+							onClick={(e) => {
+								toggleDrawer(false)(e);
+								setNoticeVisible(true);
+							}}
+						>
+							Legal Notice
+						</a>
 					</Typography>
-					<LegalNotice
-						isVisible={noticeVisible}
-						setIsVisible={setNoticeVisible}
-					/>
 				</div>
 			</Drawer>
 		</>

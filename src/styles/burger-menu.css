@@ -50,8 +50,8 @@
 	}
 
 	#legal-notice {
+		text-align: center;
 		margin-inline: 2%;
 		color: var(--mui-palette-secondary-main);
-		font-size: 50%;
 	}
 }

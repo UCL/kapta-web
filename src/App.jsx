@@ -14,6 +14,7 @@ import ConfirmModal from "./utils/ConfirmationModal";
 import SuccessModal from "./SuccessModal";
 import BurgerMenu from "./BurgerMenu";
 import SearchResults from "./SearchResultsList";
+import LegalNotice from "./utils/LegalNoticeModal";
 
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
@@ -42,6 +43,8 @@ export default function App() {
 	const [chosenTaskId, setChosenTaskId] = useState(null); // for showing task in list from popup
 
 	const [taskListName, setTaskListName] = useState("mine");
+
+	const [noticeVisible, setNoticeVisible] = useState(false);
 
 	const user = useUserStore();
 
@@ -203,7 +206,15 @@ export default function App() {
 						isTask={true}
 					/>
 				)}
-				<BurgerMenu isOpen={BMopen} setIsOpen={setBMopen} />
+				<LegalNotice
+					isVisible={noticeVisible}
+					setIsVisible={setNoticeVisible}
+				/>
+				<BurgerMenu
+					isOpen={BMopen}
+					setIsOpen={setBMopen}
+					setNoticeVisible={setNoticeVisible}
+				/>
 
 				{!user.loggedIn && <div className="background shield"></div>}
 
