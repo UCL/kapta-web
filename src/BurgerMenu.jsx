@@ -51,13 +51,12 @@ export default function BurgerMenu({
 			}
 		});
 
-		// Start observing the target node for configured mutations
 		observer.observe(document.body, { childList: true, subtree: true });
 
 		return () => {
 			observer.disconnect(); // Cleanup observer on component unmount
 		};
-	}, []);
+	}, [isOpen]);
 
 	const toggleDrawer = (open) => (event) => {
 		if (
@@ -122,10 +121,8 @@ export default function BurgerMenu({
 			icon: <GroupsIcon />,
 			subtitle:
 				"We are open to building partnerships. Let's explore how Kapta can support your work.",
-			content: `Contact us at <a href="mailto:info@kapta.earth?subject=Kapta Web Feedback"
-							>
-								info@kapta.earth
-							</a>`,
+			content: `Contact us at <a href="mailto:info@kapta.earth?subject=Kapta Web Feedback">
+				info@kapta.earth</a>`,
 		},
 		{
 			title: "Discover",
