@@ -148,7 +148,7 @@ export default function App() {
 			<main>
 				<div className="kapta-logo--main">
 					<KaptaSVGIconWhite />
-					Kapta
+					<strong>Kapta</strong>
 				</div>
 				{errorMsg && <ErrorModal message={errorMsg} />}
 				{!isLoginFormVisible && !user.loggedIn && !signUpFormVisible && (
