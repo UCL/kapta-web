@@ -107,7 +107,7 @@ export default function BurgerMenu({
 		desUrl: "https://et.linkedin.com/in/dessalegn-tekle-02b848ba",
 		satoUrl: "https://www.linkedin.com/in/satoki-kawabata/",
 		gabrielUrl: "",
-		jeroneUrl:
+		jeromeUrl:
 			"https://www.ucl.ac.uk/anthropology/people/academic-and-teaching-staff/jerome-lewis",
 	};
 	const menuSections = [
