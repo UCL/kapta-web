@@ -72,19 +72,19 @@ export default function SearchForm({
 
 	const chipSuggestions = [
 		{
-			label: "Show me all the sanitation tasks",
+			label: "Show me citizens complaints in Camden, London",
 			icon: <></>,
 			action: (setFieldValue) => {
-				setFieldValue("query", "sanitation");
-				handleSubmit("sanitation");
+				setFieldValue("query", "citizen complaint");
+				handleSubmit("citizen complaint");
 			},
 		},
 		{
-			label: "Display all tasks mentioning 'points'",
+			label: "Water points in Nyangatom, Ethiopia",
 			icon: <></>,
 			action: (setFieldValue) => {
-				setFieldValue("query", "points");
-				handleSubmit("points");
+				setFieldValue("query", "water point");
+				handleSubmit("water point");
 			},
 		},
 		{
@@ -103,14 +103,6 @@ export default function SearchForm({
 				handleSubmit("bakeries");
 			},
 		},
-		{
-			label: "Where are the elves?",
-			icon: <></>,
-			action: (setFieldValue) => {
-				setFieldValue("query", "elf");
-				handleSubmit("elf");
-			},
-		},
 	];
 
 	return (
@@ -123,7 +115,7 @@ export default function SearchForm({
 						}`}
 					>
 						<Snackbar
-							anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+							anchorOrigin={{ vertical: "top", horizontal: "center" }}
 							className="no-tasks"
 							open={snackbarOpen}
 							autoHideDuration={4000}
