@@ -48,6 +48,21 @@ main {
 	background-color: var(--intrinsic-grey--translucent-2);
 	z-index: 2;
 }
+.kapta-logo--main {
+	z-index: 3;
+	position: fixed;
+	height: fit-content;
+	margin-left: 4.5rem;
+	margin-top: 1.5rem;
+	justify-self: flex-start;
+	align-self: flex-start;
+	width: 10vw;
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	opacity: 0.8;
+	pointer-events: none;
+}
 
 .task-map-wrapper {
 	display: grid;

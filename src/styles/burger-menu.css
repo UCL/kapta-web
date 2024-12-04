@@ -6,7 +6,10 @@
 	z-index: 3;
 	justify-self: flex-start;
 	align-self: flex-start;
+	border: 1px solid var(--mui-palette-secondary-main) !important;
+	border-radius: 8px !important;
 }
+
 .bm__drawer {
 	.btn--logout {
 		margin-bottom: 4%;

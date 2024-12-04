@@ -15,6 +15,8 @@ import SuccessModal from "./SuccessModal";
 import BurgerMenu from "./BurgerMenu";
 import SearchResults from "./SearchResultsList";
 import LegalNotice from "./utils/LegalNoticeModal";
+import PosterModal from "./utils/PosterModal";
+import { KaptaSVGIconWhite } from "./utils/icons";
 
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
@@ -45,6 +47,7 @@ export default function App() {
 	const [taskListName, setTaskListName] = useState("mine");
 
 	const [noticeVisible, setNoticeVisible] = useState(false);
+	const [posterVisible, setPosterVisible] = useState(false);
 
 	const user = useUserStore();
 
@@ -141,6 +144,10 @@ export default function App() {
 	return (
 		<>
 			<main>
+				<div className="kapta-logo--main">
+					<KaptaSVGIconWhite />
+					Kapta
+				</div>
 				{errorMsg && <ErrorModal message={errorMsg} />}
 				{!isLoginFormVisible && !user.loggedIn && !signUpFormVisible && (
 					<div className="login-signup__wrapper">
@@ -210,10 +217,15 @@ export default function App() {
 					isVisible={noticeVisible}
 					setIsVisible={setNoticeVisible}
 				/>
+				<PosterModal
+					isVisible={posterVisible}
+					setIsVisible={setPosterVisible}
+				/>
 				<BurgerMenu
 					isOpen={BMopen}
 					setIsOpen={setBMopen}
 					setNoticeVisible={setNoticeVisible}
+					setPosterVisible={setPosterVisible}
 				/>
 
 				{!user.loggedIn && <div className="background shield"></div>}

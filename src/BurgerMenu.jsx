@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
@@ -22,9 +22,42 @@ import "./styles/burger-menu.css";
 import { useUserStore, WA_CHAT_URL } from "./globals";
 import { KaptaSVGIconWhite } from "./utils/icons";
 
-export default function BurgerMenu({ isOpen, setIsOpen, setNoticeVisible }) {
+export default function BurgerMenu({
+	isOpen,
+	setIsOpen,
+	setNoticeVisible,
+	setPosterVisible,
+}) {
 	const [expandedPanel, setExpandedPanel] = useState(false);
 	const [expandedSubPanel, setExpandedSubPanel] = useState(false);
+	const user = useUserStore();
+	const handlePosterClick = () => {
+		setPosterVisible(true);
+		setIsOpen(false);
+		console.log("handlePosterClick");
+	};
+	useEffect(() => {
+		const observer = new MutationObserver((mutationsList, observer) => {
+			for (let mutation of mutationsList) {
+				if (mutation.type === "childList") {
+					const imgElement = document.querySelector(
+						'img[alt="Is this the first-ever WhatsApp Map?"]'
+					);
+					if (imgElement) {
+						imgElement.addEventListener("click", handlePosterClick);
+						observer.disconnect(); // Stop observing once the element is found and event listener is attached
+					}
+				}
+			}
+		});
+
+		// Start observing the target node for configured mutations
+		observer.observe(document.body, { childList: true, subtree: true });
+
+		return () => {
+			observer.disconnect(); // Cleanup observer on component unmount
+		};
+	}, []);
 
 	const toggleDrawer = (open) => (event) => {
 		if (
@@ -35,7 +68,7 @@ export default function BurgerMenu({ isOpen, setIsOpen, setNoticeVisible }) {
 		}
 		setIsOpen(open);
 	};
-	const user = useUserStore();
+
 	const handleLogout = () => {
 		user.logout();
 		toggleDrawer(false);
@@ -46,6 +79,7 @@ export default function BurgerMenu({ isOpen, setIsOpen, setNoticeVisible }) {
 	const viewSettings = () => {
 		console.log("todo: view settings");
 	};
+
 	const navItems = [
 		{ text: "Logout", icon: <LogoutIcon />, function: handleLogout },
 		// { text: "Profile", icon: <PersonIcon />, function: viewProfile },
@@ -101,13 +135,12 @@ export default function BurgerMenu({ isOpen, setIsOpen, setNoticeVisible }) {
 			subTabs: [
 				{
 					title: "Case Study",
-					content: `<h4>Is this the first-ever WhatsApp Map?</h4><img src="/Poster_cs_1.svg" alt="Is this the first-ever WhatsApp Map?" />
-					<p>The traditional method of assessing water infrastructure relies on field surveyors, a process that is often slow and costly. This can pose challenges for timely decision-making, especially in regions facing drought and hunger. In May 2024, pastoralists from various villages were engaged in the data collection process. Organised into WhatsApp groups and using Kapta, they facilitated faster and more efficient assessments by creating WhatsApp Maps on water infrastructure. Within just a few days, these WhatsApp mappers determined that 75% of the water infrastructure was non-functional, providing local authorities with accurate, ground-level information to take quicker and more informed action.</p><p><em>More case studies coming soon.</em></p>`,
+					content: `<div><h4>Is this the first-ever WhatsApp Map?</h4><img src="/Poster_cs_1.svg" alt="Is this the first-ever WhatsApp Map?" onClick="${handlePosterClick}" style="cursor: pointer;" />
+					<p>The traditional method of assessing water infrastructure relies on field surveyors, a process that is often slow and costly. This can pose challenges for timely decision-making, especially in regions facing drought and hunger. In May 2024, pastoralists from various villages were engaged in the data collection process. Organised into WhatsApp groups and using Kapta, they facilitated faster and more efficient assessments by creating WhatsApp Maps on water infrastructure. Within just a few days, these WhatsApp mappers determined that 75% of the water infrastructure was non-functional, providing local authorities with accurate, ground-level information to take quicker and more informed action.</p></div><p><em>More case studies coming soon.</em></p>`,
 				},
 				{
 					title: "Extreme Citizen Science",
-					content: `<p>Kapta is inspired by <a href="https://www.ucl.ac.uk/geography/research/research-centres/extreme-citizen-science-excites">Extreme Citizen Science (ExCiteS)</a>, a community-led approach to creating decision-useful maps via WhatsApp that values and integrates local needs, traditions, and cultures. This co-design-based approach is committed to empowering individuals anywhere to share their knowledge through the development of innovative tools and methods.
-</p>`,
+					content: `Kapta is inspired by <a href="https://www.ucl.ac.uk/geography/research/research-centres/extreme-citizen-science-excites">Extreme Citizen Science (ExCiteS)</a>, a community-led approach to creating decision-useful maps via WhatsApp that values and integrates local needs, traditions, and cultures. This co-design-based approach is committed to empowering individuals anywhere to share their knowledge through the development of innovative tools and methods.`,
 				},
 			],
 		},
@@ -125,7 +158,7 @@ TWe prioritise enhancing the capabilities of individuals and communities impacte
 				},
 				{
 					title: "Team",
-					content: `<p>Founders:<ul>
+					content: `<div>Founders:<ul>
 					<li><a href='${urls.fabienUrl}'>Fabien Moustard</a></li>
 					<li><a href='${urls.marcosUrl}'>Marcos Moreu</a></li></ul>
 Team:<ul><li><a href='${urls.tomUrl}'>Tom Couch,  Software development</a></li>
@@ -140,7 +173,7 @@ Advisors:<ul>
 <li><a href='${urls.jeromeUrl}'>Jerome Lewis, UCL Anthropology</a></li>
 <li><a href='${urls.jonathanUrl}'>Jonathan Cooper, UCL Advanced Research Computing</a></li>
 
-</p>`,
+</div>`,
 				},
 			],
 		},
