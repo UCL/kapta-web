@@ -9,7 +9,7 @@ import { CloseButton } from "./utils/Buttons";
 export default function LoginForm({
 	isVisible,
 	setIsVisible,
-	setSignUpVisible,
+	setSignUpVisible, // actually waitlist
 	setErrorMsg,
 	showConfirmModal,
 	showLoginSuccessModal,

@@ -17,6 +17,7 @@ import SearchResults from "./SearchResultsList";
 import LegalNotice from "./utils/LegalNoticeModal";
 import PosterModal from "./utils/PosterModal";
 import { KaptaSVGIconWhite } from "./utils/icons";
+import WaitlistWidget from "./utils/WaitlistWidget";
 
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
@@ -25,6 +26,7 @@ export default function App() {
 
 	const [isLoginFormVisible, setLoginFormVisible] = useState(false);
 	const [signUpFormVisible, setSignUpFormVisible] = useState(false);
+	const [waitlistVisible, setWaitlistVisible] = useState(false);
 	const [email, setEmail] = useState("");
 	const [confirmModalVisible, setConfirmModalVisible] = useState(false);
 	const [cmRecipient, setCMRecipient] = useState(null);
@@ -165,18 +167,22 @@ export default function App() {
 							color="secondary"
 							variant="outlined"
 							onClick={() => {
-								setSignUpFormVisible(true);
+								setWaitlistVisible(true);
 							}}
 							className="btn--signup"
 						>
-							Sign Up
+							Join Waitlist
 						</Button>
 					</div>
 				)}
+				<WaitlistWidget
+					isVisible={waitlistVisible}
+					setIsVisible={setWaitlistVisible}
+				/>
 				<LoginForm
 					isVisible={isLoginFormVisible}
 					setIsVisible={setLoginFormVisible}
-					setSignUpVisible={setSignUpFormVisible}
+					setSignUpVisible={setWaitlistVisible}
 					setErrorMsg={setErrorMsg}
 					showConfirmModal={showConfirmModal}
 					showLoginSuccessModal={showLoginSuccessModal}
