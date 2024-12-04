@@ -170,7 +170,7 @@ export default function TaskList({
 					>
 						<ToggleButton value="mine">My Tasks</ToggleButton>
 						<ToggleButton value="opendata">
-							Recent WhatsApp Maps created
+							Explore Others&rsquo; Tasks
 						</ToggleButton>
 					</ToggleButtonGroup>
 					<IconButton
