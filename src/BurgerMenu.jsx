@@ -107,6 +107,8 @@ export default function BurgerMenu({
 		desUrl: "https://et.linkedin.com/in/dessalegn-tekle-02b848ba",
 		satoUrl: "https://www.linkedin.com/in/satoki-kawabata/",
 		gabrielUrl: "",
+		jeroneUrl:
+			"https://www.ucl.ac.uk/anthropology/people/academic-and-teaching-staff/jerome-lewis",
 	};
 	const menuSections = [
 		{
@@ -137,7 +139,7 @@ export default function BurgerMenu({
 				},
 				{
 					title: "Extreme Citizen Science",
-					content: `Kapta is inspired by <a href="https://www.ucl.ac.uk/geography/research/research-centres/extreme-citizen-science-excites">Extreme Citizen Science (ExCiteS)</a>, a community-led approach to creating decision-useful maps via WhatsApp that values and integrates local needs, traditions, and cultures. This co-design-based approach is committed to empowering individuals anywhere to share their knowledge through the development of innovative tools and methods.`,
+					content: `Kapta is inspired by <a href="https://www.ucl.ac.uk/geography/research/research-centres/extreme-citizen-science-excites">Extreme Citizen Science</a>, an inclusive approach to citizen science that enables people from all backgrounds, regardless of their literacy, technical, or scientific skills, to co-design and participate in scientific research addressing local challenges. It combines interdisciplinary methodologies and tailored technologies to empower communities, particularly in underrepresented or marginalised areas, to collect, visualise, analyse, and use data for informed decision-making and advocacy.`,
 				},
 			],
 		},
@@ -150,7 +152,7 @@ export default function BurgerMenu({
 				{
 					title: "Ethics",
 					content: `<p>
-TWe prioritise enhancing the capabilities of individuals and communities impacted by our work, ensuring that every action serves a meaningful purpose and aligns with the public interest. Ethics is at the core of our decisions, helping us build trust and foster collective intelligence. By focusing on fairness, transparency, and inclusivity, we develop solutions that empower people to make better decisions in an increasingly complex world shaped by global environmental changes. Our work is guided by a commitment to contribute to a more equitable, sustainable, and socially responsible future for all.
+We prioritise enhancing the capabilities of individuals and communities impacted by our work, ensuring that every action serves a meaningful purpose and aligns with the public interest. Ethics is at the core of our decisions, helping us build trust and foster collective intelligence. By focusing on fairness, transparency, and inclusivity, we develop solutions that empower people to make better decisions in an increasingly complex world shaped by global environmental changes. Our work is guided by a commitment to contribute to a more equitable, sustainable, and socially responsible future for all.
 </p><p>We embrace open-source principles to promote collective progress and serve the public interest. By sharing our tools and methods openly, we enable others to adapt them to diverse challenges and encourage broader participation in knowledge sharing. This approach fosters collaboration across geographies and cultures, driving solutions that benefit society as a whole.</p>`,
 				},
 				{
@@ -277,6 +279,7 @@ Advisors:<ul>
 							onClick={handleLogout}
 							endIcon={<LogoutIcon />}
 							className="btn--logout"
+							color="secondary"
 						>
 							Logout
 						</Button>

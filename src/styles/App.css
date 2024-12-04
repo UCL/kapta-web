@@ -7,7 +7,7 @@
 	--intrinsic-grey--translucent: #16161dd5;
 	--intrinsic-grey--translucent-2: #16161d69;
 	--off-white: #eae1e1;
-	--rose: var(--mui-palette-info-200);
+	--rose: var(--mui-palette-primary-light);
 	--dark-grey--translucent: #2a282888;
 }
 html,

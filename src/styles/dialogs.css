@@ -23,6 +23,7 @@
 	}
 	.task-info {
 		font-size: 1.2rem;
+		margin-inline: 4%;
 		small {
 			display: block;
 			font-size: 0.8rem;
@@ -36,6 +37,7 @@
 		color: var(--rose);
 		font-weight: 700;
 		padding-bottom: 1rem;
+		cursor: pointer;
 	}
 }
 

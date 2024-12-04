@@ -169,7 +169,9 @@ export default function TaskList({
 						onChange={handleChangeTaskList}
 					>
 						<ToggleButton value="mine">My Tasks</ToggleButton>
-						<ToggleButton value="opendata">Open Datasets</ToggleButton>
+						<ToggleButton value="opendata">
+							Recent WhatsApp Maps created
+						</ToggleButton>
 					</ToggleButtonGroup>
 					<IconButton
 						onClick={handleRefresh}
