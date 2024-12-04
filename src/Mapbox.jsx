@@ -194,7 +194,7 @@ export function Map({
 					source: "polygon-source",
 					layout: {},
 					paint: {
-						"fill-color": "#ff6347",
+						"fill-color": "#087669",
 						"fill-opacity": 0.6,
 					},
 				});
@@ -205,7 +205,7 @@ export function Map({
 					type: "line",
 					source: "polygon-source",
 					paint: {
-						"line-color": "#e63621",
+						"line-color": "#075E54",
 						"line-width": 4,
 					},
 				});
@@ -270,7 +270,7 @@ export function Map({
 					source: "datapoints-source",
 					paint: {
 						"circle-radius": 5,
-						"circle-color": "#c8ff00",
+						"circle-color": "#25D366",
 					},
 				});
 			}
