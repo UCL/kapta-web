@@ -5,6 +5,7 @@ import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import InfoIcon from "@mui/icons-material/Info";
 import GroupsIcon from "@mui/icons-material/Groups";
 import LogoutIcon from "@mui/icons-material/Logout";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import {
 	Drawer,
 	List,
@@ -19,7 +20,7 @@ import {
 import parse from "html-react-parser";
 import { CloseButton } from "./utils/Buttons";
 import "./styles/burger-menu.css";
-import { useUserStore, WA_CHAT_URL } from "./globals";
+import { GITHUB_URL, useUserStore, WA_CHAT_URL } from "./globals";
 import { KaptaSVGIconWhite } from "./utils/icons";
 
 export default function BurgerMenu({
@@ -31,6 +32,7 @@ export default function BurgerMenu({
 	const [expandedPanel, setExpandedPanel] = useState(false);
 	const [expandedSubPanel, setExpandedSubPanel] = useState(false);
 	const user = useUserStore();
+
 	const handlePosterClick = () => {
 		setPosterVisible(true);
 		setIsOpen(false);
@@ -273,6 +275,14 @@ Advisors:<ul>
 								info@kapta.earth
 							</Button>
 						</Typography>
+						<Button
+							startIcon={<GitHubIcon />}
+							onClick={() => (window.location.href = GITHUB_URL)}
+							variant="text"
+							color="secondary"
+						>
+							GitHub
+						</Button>
 					</div>
 					{user.loggedIn && (
 						<Button
