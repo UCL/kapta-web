@@ -138,7 +138,8 @@ export default function App() {
 		});
 		if (results.length === 0) {
 			// todo: response in the chat area thing
-		} else showSearchResults(results);
+		}
+		showSearchResults(results);
 	};
 	const showTaskInList = (id) => {
 		setChosenTaskId(id);

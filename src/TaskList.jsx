@@ -63,8 +63,7 @@ export default function TaskList({
 					setTasks(fetchedTasks);
 				};
 				fetchTasks();
-			} else if (searchResults) {
-				setTaskListName("search");
+			} else if (taskListName == "search") {
 				setTasks(searchResults);
 			}
 			setIsLoading(false);
@@ -185,7 +184,7 @@ export default function TaskList({
 						<ToggleButton value="opendata">
 							Explore Others&rsquo; Tasks
 						</ToggleButton>
-						{searchResults.length > 0 && (
+						{searchQuery && (
 							<ToggleButton value="search">Search Results</ToggleButton>
 						)}
 					</ToggleButtonGroup>
