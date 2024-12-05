@@ -159,30 +159,33 @@ export default function App() {
 					<strong>Kapta</strong>
 				</div>
 				{errorMsg && <ErrorModal message={errorMsg} />}
-				{!isLoginFormVisible && !user.loggedIn && !signUpFormVisible && (
-					<div className="login-signup__wrapper">
-						<Button
-							variant="outlined"
-							onClick={() => {
-								setLoginFormVisible(true);
-							}}
-							startIcon={<LoginIcon />}
-							className="btn--login"
-						>
-							Login
-						</Button>
-						<Button
-							color="secondary"
-							variant="outlined"
-							onClick={() => {
-								setWaitlistVisible(true);
-							}}
-							className="btn--signup"
-						>
-							Join Waitlist
-						</Button>
-					</div>
-				)}
+				{!isLoginFormVisible &&
+					!user.loggedIn &&
+					!signUpFormVisible &&
+					!changePasswordVisible && (
+						<div className="login-signup__wrapper">
+							<Button
+								variant="outlined"
+								onClick={() => {
+									setLoginFormVisible(true);
+								}}
+								startIcon={<LoginIcon />}
+								className="btn--login"
+							>
+								Login
+							</Button>
+							<Button
+								color="secondary"
+								variant="outlined"
+								onClick={() => {
+									setWaitlistVisible(true);
+								}}
+								className="btn--signup"
+							>
+								Join Waitlist
+							</Button>
+						</div>
+					)}
 				<WaitlistWidget
 					isVisible={waitlistVisible}
 					setIsVisible={setWaitlistVisible}
