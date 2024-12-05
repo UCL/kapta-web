@@ -3,10 +3,10 @@ import { Button, TextField, Typography, useTheme } from "@mui/material";
 import { useState } from "react";
 import "./styles/forms.css";
 import { signUp } from "./utils/auth";
+import { checkPasswordStrength } from "./utils/generalUtils";
 import { CloseButton } from "./utils/Buttons";
 import * as Yup from "yup";
 import PasswordChecker from "./utils/PasswordChecker";
-import { checkPasswordStrength } from "./utils/generalUtils";
 
 export default function SignUpForm({
 	isVisible,
