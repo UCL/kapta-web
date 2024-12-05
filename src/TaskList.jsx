@@ -169,9 +169,7 @@ export default function TaskList({
 						onChange={handleChangeTaskList}
 					>
 						<ToggleButton value="mine">My Tasks</ToggleButton>
-						<ToggleButton value="opendata">
-							Explore Others&rsquo; Tasks
-						</ToggleButton>
+						<ToggleButton value="opendata">Connect with others</ToggleButton>
 					</ToggleButtonGroup>
 					<IconButton
 						onClick={handleRefresh}
