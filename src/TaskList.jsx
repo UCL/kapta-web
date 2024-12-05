@@ -29,6 +29,7 @@ export default function TaskList({
 	scrollFlashTask,
 	taskListName,
 	setTaskListName,
+	searchResults,
 }) {
 	const [tasks, setTasks] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -56,6 +57,9 @@ export default function TaskList({
 					setTasks(fetchedTasks);
 				};
 				fetchTasks();
+			} else if (searchResults) {
+				setTaskListName("search");
+				setTasks(searchResults);
 			}
 			setIsLoading(false);
 		}
@@ -125,6 +129,7 @@ export default function TaskList({
 			} else if (taskListName == "opendata") {
 				fetchedTasks = await await fetchODTasks({ user });
 			}
+			// todo: if it's search
 			setTasks(fetchedTasks);
 		} catch (error) {
 			console.error("Error fetching tasks:", error);
@@ -172,6 +177,9 @@ export default function TaskList({
 						<ToggleButton value="opendata">
 							Explore Others&rsquo; Tasks
 						</ToggleButton>
+						{searchResults && (
+							<ToggleButton value="search">Search Results</ToggleButton>
+						)}
 					</ToggleButtonGroup>
 					<IconButton
 						onClick={handleRefresh}

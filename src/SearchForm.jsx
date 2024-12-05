@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Chip, Snackbar } from "@mui/material";
-import { fetchAllTasks } from "./utils/apiQueries";
+import { fetchAllVisibleTasks } from "./utils/apiQueries";
 import { useUserStore } from "./globals";
 import { useEffect, useState } from "react";
 import { Fab, TextField } from "@mui/material";
@@ -20,14 +20,13 @@ export default function SearchForm({
 
 	useEffect(() => {
 		const fetchTasks = async () => {
-			var fetchedTasks = await fetchAllTasks({ user });
+			var fetchedTasks = await fetchAllVisibleTasks({ user });
 			return fetchedTasks;
 		};
 
 		if (user?.idToken) {
 			fetchTasks().then((tasks) => {
-				const visibleTasks = tasks.filter((task) => task.visible === true);
-				setTasks(visibleTasks);
+				setTasks(tasks);
 			});
 		}
 	}, [user]);
@@ -35,6 +34,11 @@ export default function SearchForm({
 	const handleSubmit = async (values) => {
 		// for the given set of tasks (currently all where visible===true), check in title and then description for the query
 		// todo: how do we want to handle plurals? eg elf and elves mentioned
+		if (!tasks) {
+			await fetchAllVisibleTasks({ user }).then((tasks) => {
+				setTasks(tasks);
+			});
+		}
 		const q = values.query?.toLowerCase() || values;
 		setQuery(q);
 		var results = [];
@@ -55,7 +59,7 @@ export default function SearchForm({
 		// todo: get this to work
 		try {
 			const fetchTasks = async () => {
-				var fetchedTasks = await fetchAllTasks({ user });
+				var fetchedTasks = await fetchAllVisibleTasks({ user });
 				return fetchedTasks;
 			};
 

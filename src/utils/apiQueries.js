@@ -55,10 +55,9 @@ export const fetchODTasks = async ({ user }) => {
 		console.error("Error fetching tasks:", error);
 	}
 };
-export const fetchAllTasks = async ({ user }) => {
-	// todo: should maybe have a new route for visible only?
+export const fetchAllVisibleTasks = async ({ user }) => {
 	try {
-		const response = await fetch(`${REQUEST_URL}/requests`, {
+		const response = await fetch(`${REQUEST_URL}/requests/visible`, {
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: user.idToken,

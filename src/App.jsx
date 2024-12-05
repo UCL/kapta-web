@@ -13,7 +13,6 @@ import ErrorModal from "./utils/ErrorModal";
 import ConfirmModal from "./utils/ConfirmationModal";
 import SuccessModal from "./SuccessModal";
 import BurgerMenu from "./BurgerMenu";
-import SearchResults from "./SearchResultsList";
 import LegalNotice from "./utils/LegalNoticeModal";
 import PosterModal from "./utils/PosterModal";
 import { KaptaSVGIconWhite } from "./utils/icons";
@@ -39,7 +38,6 @@ export default function App() {
 	const [successIsTask, setSuccessIsTask] = useState(false);
 	const [errorMsg, setErrorMsg] = useState("");
 
-	const [searchResultsVisible, setSearchResultsVisible] = useState(false);
 	const [searchResults, setSearchResults] = useState([]);
 
 	const [BMopen, setBMopen] = useState(false);
@@ -116,9 +114,10 @@ export default function App() {
 		if (results !== searchResults) {
 			setPolygonStore(null); // reset polygon store for each new search
 			setSearchResults(results);
+			setTaskListName("search");
 		}
-		if (!searchResultsVisible) {
-			setSearchResultsVisible(true);
+		if (!isTaskListVisible) {
+			setTaskListVisible(true);
 		}
 		const polygons = getPolygons(results);
 		if (polygons.length > 0) {
@@ -262,7 +261,7 @@ export default function App() {
 
 					<SearchForm
 						showSearchResults={showSearchResults}
-						taskListOpen={isTaskListVisible || searchResultsVisible}
+						taskListOpen={isTaskListVisible}
 						isBackground={!user.loggedIn}
 					/>
 				</div>
@@ -270,7 +269,7 @@ export default function App() {
 					<Map
 						boundsVisible={boundsVisible}
 						polygonStore={polygonStore}
-						taskListOpen={isTaskListVisible || searchResultsVisible}
+						taskListOpen={isTaskListVisible}
 						focusTask={focusTask}
 						showTaskInList={showTaskInList}
 						isBackground={!user.loggedIn}
@@ -288,16 +287,9 @@ export default function App() {
 						scrollFlashTask={scrollFlashTask}
 						taskListName={taskListName}
 						setTaskListName={setTaskListName}
+						searchResults={searchResults}
 					/>
 
-					<SearchResults
-						isVisible={user.loggedIn && searchResultsVisible}
-						setIsVisible={setSearchResultsVisible}
-						results={searchResults}
-						setFocusTask={setFocusTask}
-						chosenTaskId={chosenTaskId}
-						scrollFlashTask={scrollFlashTask}
-					/>
 					<Fab
 						size="medium"
 						variant="extended"
