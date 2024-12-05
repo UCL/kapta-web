@@ -1,44 +1,13 @@
-# Kapta Web
+# Kapta
 
-## What?
-
-Kapta Web is a platform for searching WhatsApp Maps and tasking WhatsApp Mappers
+Kapta is a platform that brings people together to create and share WhatsApp Maps
 
 👉 https://kapta.earth
 
-## Why?
-
-To connect users and producers of ground information. See our latest blog and where this started in 2010:
-
-- [WhatsApp Maps? Connecting users and producers of ground information](https://uclexcites.blog/2024/06/26/whatsapp-maps-connecting-users-and-producers-of-ground-information/)
-- [Extreme Citizen Science in the Congo rainforest](https://www.youtube.com/watch?v=IgQc7GQ1m_Y)
-
-## What's next?
-
-Kapta AI: The first WhatsApp Maps Assistant for creating and searching WhatsApp Maps
-
-## Who?
-
-Kapta is being developed by the [University College London (UCL)](http://ucl.ac.uk) [Extreme Citizen Science (ExCiteS) research group](http://ucl.ac.uk/excites) and the [Advanced Research Computing Centre (UCL ARC)](https://www.ucl.ac.uk/advanced-research-computing), with help from outside partners & contributors.
-
-Currently the core Kapta team consists of:
-
-- [Marcos Moreu](https://www.ucl.ac.uk/geography/people/research-staff/marcos-moreu), UCL Geography
-- [Fabien Moustard](https://www.ucl.ac.uk/geography/fabien-moustard), UCL Geography
-- [Tom Couch](https://www.ucl.ac.uk/advanced-research-computing/people/tom-couch), UCL ARC
-- [Amanda Ho-Lyn](https://www.ucl.ac.uk/advanced-research-computing/research-software-engineers-0), UCL ARC
-- [Muki Haklay](https://www.ucl.ac.uk/geography/muki-haklay-facss), UCL Geography
-- [Claire Ellul](https://www.ucl.ac.uk/civil-environmental-geomatic-engineering/people/dr-claire-ellul), UCL CEGE
-- [Jerome Lewis](https://www.ucl.ac.uk/anthropology/people/academic-and-teaching-staff/jerome-lewis), UCL Anthropology
-- [Jonathan Cooper](https://www.ucl.ac.uk/advanced-research-computing/people/jonathan-cooper), UCL ARC
-- [Jed Stevenson](https://www.durham.ac.uk/staff/jed-stevenson/), Durham University
-- [Dessalegn Teckle](https://et.linkedin.com/in/dessalegn-tekle-02b848ba), Addis Ababa University, NGO IPC
-- [Igor Tseyzer](https://profiles.ucl.ac.uk/98596-igor-tseyzer), UCL ARC
-- [Socrates Varakliotis](https://profiles.ucl.ac.uk/11085-socrates-varakliotis), UCL ARC
-
-
 # Guidance for Developers
-
+- [Kapta Mobile repository](https://github.com/UCL/kapta-mobile)
+- [Kapta Infrastructure repository](https://github.com/UCL/kapta-infrastructure)
+  
 ## Requirements
 
 - Node.js v20.0.0 or later
