@@ -1,6 +1,5 @@
 import DangerousIcon from "@mui/icons-material/Dangerous";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import "./styles/forms.css";
 
 export default function PasswordChecker({ passwordStrength }) {
 	return (
