@@ -3,6 +3,7 @@ import "./styles/dialogs.css";
 import { useState } from "react";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useAutoClose } from "./utils/autoCloseHook";
+import { WA_CHAT_URL } from "./globals";
 
 export default function SuccessModal({
 	taskTitle = "",
@@ -49,11 +50,19 @@ export default function SuccessModal({
 						>
 							{campaignCode}
 						</div>
+						<Button
+							href={`${WA_CHAT_URL}text=${campaignCode}`}
+							variant="contained"
+							color="secondary"
+						>
+							Start Tasking
+						</Button>
 					</div>
 				</>
 			)}
+			<br></br>
 			<Button
-				variant="contained"
+				variant="outlined"
 				color="secondary"
 				onClick={() => setSuccessModalVisible(false)}
 			>
