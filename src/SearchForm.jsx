@@ -9,14 +9,14 @@ import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import "./styles/search.css";
 
 export default function SearchForm({
-	showSearchResults,
+	doSearch,
 	taskListOpen,
 	isBackground,
+	query,
 }) {
 	const user = useUserStore();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [tasks, setTasks] = useState([]);
-	const [query, setQuery] = useState("");
 
 	useEffect(() => {
 		const fetchTasks = async () => {
@@ -40,20 +40,21 @@ export default function SearchForm({
 			});
 		}
 		const q = values.query?.toLowerCase() || values;
-		setQuery(q);
-		var results = [];
+		doSearch(q, tasks);
+		// setQuery(q);
+		// var results = [];
 
-		tasks.forEach((task) => {
-			if (
-				task.task_title.toLowerCase().includes(q) ||
-				task.task_description.toLowerCase().includes(q)
-			) {
-				results.push(task);
-			}
-		});
-		if (results.length === 0) {
-			setSnackbarOpen(true);
-		} else showSearchResults(results);
+		// tasks.forEach((task) => {
+		// 	if (
+		// 		task.task_title.toLowerCase().includes(q) ||
+		// 		task.task_description.toLowerCase().includes(q)
+		// 	) {
+		// 		results.push(task);
+		// 	}
+		// });
+		// if (results.length === 0) {
+		// 	setSnackbarOpen(true);
+		// } else showSearchResults(results);
 	};
 	const handleRefresh = async () => {
 		// todo: get this to work

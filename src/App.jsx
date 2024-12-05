@@ -39,6 +39,7 @@ export default function App() {
 	const [errorMsg, setErrorMsg] = useState("");
 
 	const [searchResults, setSearchResults] = useState([]);
+	const [query, setQuery] = useState("");
 
 	const [BMopen, setBMopen] = useState(false);
 
@@ -105,7 +106,6 @@ export default function App() {
 				polygons.push(task);
 			}
 		});
-		console.log("polygons", polygons);
 		return polygons;
 	};
 
@@ -124,9 +124,24 @@ export default function App() {
 			return showBounds(polygons);
 		}
 	};
+	const doSearch = (query, tasks, refresh = false) => {
+		setQuery(query);
+		var results = [];
 
+		tasks.forEach((task) => {
+			if (
+				task.task_title.toLowerCase().includes(query) ||
+				task.task_description.toLowerCase().includes(query)
+			) {
+				results.push(task);
+			}
+		});
+		if (refresh === true) return results;
+		if (results.length === 0) {
+			// todo: response in the chat area thing
+		} else showSearchResults(results);
+	};
 	const showTaskInList = (id) => {
-		console.log("show task in list", id);
 		setChosenTaskId(id);
 		setTaskListVisible(true);
 	};
@@ -260,9 +275,10 @@ export default function App() {
 					</div>
 
 					<SearchForm
-						showSearchResults={showSearchResults}
+						doSearch={doSearch}
 						taskListOpen={isTaskListVisible}
 						isBackground={!user.loggedIn}
+						query={query}
 					/>
 				</div>
 				<div className="task-map-wrapper">
@@ -288,6 +304,8 @@ export default function App() {
 						taskListName={taskListName}
 						setTaskListName={setTaskListName}
 						searchResults={searchResults}
+						searchQuery={query}
+						doSearch={doSearch}
 					/>
 
 					<Fab

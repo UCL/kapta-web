@@ -14,7 +14,11 @@ import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
-import { fetchMyTasks, fetchODTasks } from "./utils/apiQueries";
+import {
+	fetchAllVisibleTasks,
+	fetchMyTasks,
+	fetchODTasks,
+} from "./utils/apiQueries";
 import { DrawerCloseButton, PinButton } from "./utils/Buttons";
 import TaskCard from "./utils/TaskCard";
 export default function TaskList({
@@ -30,6 +34,8 @@ export default function TaskList({
 	taskListName,
 	setTaskListName,
 	searchResults,
+	searchQuery,
+	doSearch,
 }) {
 	const [tasks, setTasks] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -128,8 +134,10 @@ export default function TaskList({
 				fetchedTasks = await fetchMyTasks({ user });
 			} else if (taskListName == "opendata") {
 				fetchedTasks = await await fetchODTasks({ user });
+			} else if (taskListName == "search") {
+				const visibleTasks = await fetchAllVisibleTasks({ user });
+				fetchedTasks = doSearch(searchQuery, visibleTasks, true);
 			}
-			// todo: if it's search
 			setTasks(fetchedTasks);
 		} catch (error) {
 			console.error("Error fetching tasks:", error);
