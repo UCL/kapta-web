@@ -28,7 +28,7 @@ export default function TaskForm({
 		organisation: user.organisation || "",
 		logo: null,
 		private: false,
-		visible: false,
+		visible: true,
 		title: "",
 		description: "",
 	};
@@ -185,12 +185,12 @@ export default function TaskForm({
 								<p>Your campaign code: {initialValues.campaignCode}</p>
 							)}
 							{/* Visible on Kapta Web */}
-							<div>
+							{/* <div>
 								<label>
 									<Field type="checkbox" name="visible" as={Checkbox} />I want
 									the WhatsApp Maps of this task to be open data.
 								</label>
-							</div>
+							</div> */}
 
 							{/* Submit Button */}
 							<Button

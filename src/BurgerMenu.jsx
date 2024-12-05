@@ -5,6 +5,7 @@ import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import InfoIcon from "@mui/icons-material/Info";
 import GroupsIcon from "@mui/icons-material/Groups";
 import LogoutIcon from "@mui/icons-material/Logout";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import {
 	Drawer,
 	List,
@@ -19,7 +20,7 @@ import {
 import parse from "html-react-parser";
 import { CloseButton } from "./utils/Buttons";
 import "./styles/burger-menu.css";
-import { useUserStore, WA_CHAT_URL } from "./globals";
+import { GITHUB_URL, useUserStore, WA_CHAT_URL } from "./globals";
 import { KaptaSVGIconWhite } from "./utils/icons";
 
 export default function BurgerMenu({
@@ -31,6 +32,7 @@ export default function BurgerMenu({
 	const [expandedPanel, setExpandedPanel] = useState(false);
 	const [expandedSubPanel, setExpandedSubPanel] = useState(false);
 	const user = useUserStore();
+
 	const handlePosterClick = () => {
 		setPosterVisible(true);
 		setIsOpen(false);
@@ -70,7 +72,7 @@ export default function BurgerMenu({
 
 	const handleLogout = () => {
 		user.logout();
-		toggleDrawer(false);
+		toggleDrawer(false)({ type: null });
 	};
 	const viewProfile = () => {
 		console.log("todo: view profile");
@@ -115,7 +117,7 @@ export default function BurgerMenu({
 			title: "Kapta",
 			icon: <KaptaSVGIconWhite />,
 			subtitle:
-				"Kapta is a WhatsApp-based crowdsourcing platform to help solve local, national and global challenges through searching WhatsApp Maps and tasking WhatsApp Mappers",
+				"Kapta is a platform that brings people together to create and share WhatsApp Maps",
 			content: "",
 		},
 		{
@@ -133,7 +135,7 @@ export default function BurgerMenu({
 			hasSubTabs: true,
 			subTabs: [
 				{
-					title: "Case Study",
+					title: "Case Studies",
 					content: `<div><h4>Is this the first-ever WhatsApp Map?</h4><img src="/Poster_cs_1.svg" alt="Is this the first-ever WhatsApp Map?" onClick="${handlePosterClick}" style="cursor: pointer;" />
 					<p>The traditional method of assessing water infrastructure relies on field surveyors, a process that is often slow and costly. This can pose challenges for timely decision-making, especially in regions facing drought and hunger. In May 2024, pastoralists from various villages were engaged in the data collection process. Organised into WhatsApp groups and using Kapta, they facilitated faster and more efficient assessments by creating WhatsApp Maps on water infrastructure. Within just a few days, these WhatsApp mappers determined that 75% of the water infrastructure was non-functional, providing local authorities with accurate, ground-level information to take quicker and more informed action.</p></div><p><em>More case studies coming soon.</em></p>`,
 				},
@@ -273,6 +275,14 @@ Advisors:<ul>
 								info@kapta.earth
 							</Button>
 						</Typography>
+						<Button
+							startIcon={<GitHubIcon />}
+							onClick={() => (window.location.href = GITHUB_URL)}
+							variant="text"
+							color="secondary"
+						>
+							GitHub
+						</Button>
 					</div>
 					{user.loggedIn && (
 						<Button
@@ -285,7 +295,7 @@ Advisors:<ul>
 						</Button>
 					)}
 					<Typography variant="caption" id="legal-notice">
-						© 2024 Wisdom of the Crowd Labs, All rights reserved -{" "}
+						© 2024 Wisdom of the Crowd Labs (WCL), All rights reserved -{" "}
 						<a
 							onClick={(e) => {
 								toggleDrawer(false)(e);

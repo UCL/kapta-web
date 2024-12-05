@@ -9,6 +9,8 @@ export const REGION = import.meta.env.VITE_REGION;
 export const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 export const WA_CHAT_URL = import.meta.env.VITE_WA_CHAT_URL;
 
+export const GITHUB_URL = "https://github.com/UCL/kapta-web";
+
 export let cognito = null;
 export let hasCognito = false;
 if (WEB_POOL_ID !== "null" && CLIENT_ID !== "null") {
