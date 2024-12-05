@@ -5,9 +5,12 @@ import {
 	GlobalSignOutCommand,
 	ConfirmSignUpCommand,
 	ResendConfirmationCodeCommand,
+	ChangePasswordCommand,
+	RespondToAuthChallengeCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 
 import { cognito } from "../globals";
+import { ConstructionOutlined } from "@mui/icons-material";
 
 const signUp = async (values) => {
 	const client = new CognitoIdentityProviderClient(cognito);
@@ -85,9 +88,7 @@ const initiateAuth = async (email, password) => {
 	});
 	try {
 		const response = await client.send(command);
-		if (response.AuthenticationResult) {
-			return { response: response.AuthenticationResult };
-		}
+		return { response: response };
 	} catch (error) {
 		console.error("InitiateAuth Error:", error, error.name);
 		if (error.name === "UserNotFoundException") {
@@ -133,11 +134,50 @@ const resendVerificationCode = async (email) => {
 	}
 };
 
+const changePassword = async (session, values) => {
+	const client = new CognitoIdentityProviderClient(cognito);
+	const command = new ChangePasswordCommand({
+		PreviousPassword: values.oldPassword,
+		ProposedPassword: values.password,
+		AccessToken: session,
+	});
+	console.log("Change Password Command", command);
+	try {
+		const response = await client.send(command);
+		return response;
+	} catch (error) {
+		console.error("Error changing password:", error);
+		throw error;
+	}
+};
+
+const respondToPasswordChangeChallenge = async (session, values) => {
+	const client = new CognitoIdentityProviderClient(cognito);
+	const command = new RespondToAuthChallengeCommand({
+		ChallengeName: "NEW_PASSWORD_REQUIRED",
+		ClientId: cognito.userPoolClientId,
+		Session: session,
+		ChallengeResponses: {
+			NEW_PASSWORD: values.password,
+			USERNAME: values.email,
+		},
+	});
+	try {
+		const response = await client.send(command);
+		return { response: response };
+	} catch (error) {
+		console.error("Error responding to password change challenge:", error);
+		throw error;
+	}
+};
+
 export {
 	signUp,
+	changePassword,
 	confirmSignUp,
 	initiateAuth,
 	initiateAuthRefresh,
 	signOut,
 	resendVerificationCode,
+	respondToPasswordChangeChallenge,
 };
