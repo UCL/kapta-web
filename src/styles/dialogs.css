@@ -43,8 +43,9 @@
 
 #error-dialog {
 	background-color: #531919d1;
-	top: 24%;
+	top: 16%;
 	color: #f9e6e6;
+	z-index: 5;
 }
 
 #confirm-dialog {
