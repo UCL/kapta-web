@@ -21,3 +21,15 @@ export const slugify = (str) => {
 		.replace(/-+/g, "-"); // remove consecutive hyphens
 	return str;
 };
+
+export const checkPasswordStrength = (password) => {
+	const checks = {
+		minLength: password.length >= 8,
+		hasLowercase: /[a-z]/.test(password),
+		hasUppercase: /[A-Z]/.test(password),
+		hasDigit: /\d/.test(password),
+		hasSymbol: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
+	};
+
+	return checks;
+};
