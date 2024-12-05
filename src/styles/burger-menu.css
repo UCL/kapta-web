@@ -1,11 +1,15 @@
 .btn--burger-menu {
+	position: fixed !important;
 	height: fit-content;
 	margin-left: 1rem !important;
 	margin-top: 1rem !important;
-	z-index: 1;
+	z-index: 3;
 	justify-self: flex-start;
 	align-self: flex-start;
+	border: 1px solid var(--mui-palette-secondary-main) !important;
+	border-radius: 8px !important;
 }
+
 .bm__drawer {
 	.btn--logout {
 		margin-bottom: 4%;
@@ -28,9 +32,9 @@
 	}
 
 	a {
-		color: var(--tomato);
+		color: var(--mui-palette-secondary-main);
 		&:hover {
-			color: salmon;
+			color: var(--mui-palette-primary-main);
 		}
 	}
 
@@ -41,5 +45,16 @@
 	.bm__footer {
 		text-align: center;
 		margin-top: 2rem;
+
+		button {
+			text-transform: none;
+			font-size: inherit;
+		}
+	}
+
+	#legal-notice {
+		text-align: center;
+		margin-inline: 2%;
+		color: var(--mui-palette-secondary-main);
 	}
 }

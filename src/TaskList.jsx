@@ -25,7 +25,7 @@ export default function TaskList({
 	showNewTaskForm,
 	showBounds,
 	setFocusTask,
-	chosenTask,
+	chosenTaskId,
 	scrollFlashTask,
 	taskListName,
 	setTaskListName,
@@ -41,46 +41,54 @@ export default function TaskList({
 	const [displayedTask, setDisplayedTask] = useState(null);
 
 	useEffect(() => {
-		if (taskListName === "opendata") {
-			setIsLoading(true);
-			const fetchTasks = async () => {
-				var fetchedTasks = await fetchODTasks({ user });
-				setTasks(fetchedTasks);
-			};
-			fetchTasks();
-		} else if (taskListName === "mine") {
-			setIsLoading(true);
-			const fetchTasks = async () => {
-				var fetchedTasks = await fetchMyTasks({ user });
-				setTasks(fetchedTasks);
-			};
-			fetchTasks();
+		if (user?.idToken) {
+			if (taskListName === "opendata") {
+				setIsLoading(true);
+				const fetchTasks = async () => {
+					var fetchedTasks = await fetchODTasks({ user });
+					setTasks(fetchedTasks);
+				};
+				fetchTasks();
+			} else if (taskListName === "mine") {
+				setIsLoading(true);
+				const fetchTasks = async () => {
+					var fetchedTasks = await fetchMyTasks({ user });
+					setTasks(fetchedTasks);
+				};
+				fetchTasks();
+			}
+			setIsLoading(false);
 		}
-		setIsLoading(false);
 	}, [taskListName, user]);
 
 	useEffect(() => {
-		if (chosenTask && chosenTask.includes("opendata")) {
+		if (chosenTaskId && chosenTaskId.includes("opendata")) {
 			setTaskListName("opendata");
 		}
-		if (chosenTask && taskRefs.current[chosenTask]) {
-			scrollFlashTask(taskRefs);
-		}
+		const checkTaskRefs = setTimeout(() => {
+			if (taskRefs.current) {
+				if (chosenTaskId && taskRefs.current[chosenTaskId]) {
+					scrollFlashTask(taskRefs);
+				}
+			}
+		}, 100);
+		return () => clearTimeout(checkTaskRefs);
 	});
 
-	useEffect(() => {
-		// set pinned preference when component mounts
-		const storedPinnedPreference = localStorage.getItem(
-			"tasklistPinnedPreference"
-		);
-		if (storedPinnedPreference) {
-			setIsPinned(storedPinnedPreference);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	// set pinned preference when component mounts
+	// 	const storedPinnedPreference = localStorage.getItem(
+	// 		"tasklistPinnedPreference"
+	// 	);
+	// 	console.log(isPinned, storedPinnedPreference);
+	// 	if (storedPinnedPreference) {
+	// 		setIsPinned(...storedPinnedPreference);
+	// 	}
+	// }, []);
 
 	// Store pinned task in localStorage whenever it changes
 	useEffect(() => {
-		if (isPinned) {
+		if (isPinned !== undefined) {
 			localStorage.setItem("tasklistPinnedPreference", isPinned);
 		}
 	}, [isPinned]);
@@ -141,7 +149,6 @@ export default function TaskList({
 		taskRefs: taskRefs,
 	};
 
-	if (!isVisible) return null;
 	return (
 		<Drawer
 			anchor="right"
@@ -155,14 +162,16 @@ export default function TaskList({
 					<PinButton isPinned={isPinned} setIsPinned={setIsPinned} />
 
 					<ToggleButtonGroup
-						color="tomato"
+						color="primary"
 						value={taskListName}
 						exclusive
 						size="small"
 						onChange={handleChangeTaskList}
 					>
 						<ToggleButton value="mine">My Tasks</ToggleButton>
-						<ToggleButton value="opendata">Open Datasets</ToggleButton>
+						<ToggleButton value="opendata">
+							Explore Others&rsquo; Tasks
+						</ToggleButton>
 					</ToggleButtonGroup>
 					<IconButton
 						onClick={handleRefresh}

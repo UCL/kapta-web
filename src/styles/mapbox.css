@@ -8,6 +8,7 @@
 #map {
 	height: 100%;
 	grid-column: span 2;
+
 	&.splitscreen {
 		grid-column: span 1;
 		width: 62vw !important;
@@ -27,13 +28,16 @@
 			cursor: pointer;
 		}
 	}
+	.mapbox-improve-map {
+		display: none;
+	}
 }
 
 .mapboxgl-ctrl-attrib {
 	background-color: transparent !important;
 	font-size: 0.6rem;
-
-	.mapboxgl-ctrl-attrib-inner > a {
+	a,
+	& {
 		color: grey;
 	}
 }

@@ -10,7 +10,7 @@ export default function SearchResults({
 	setIsVisible,
 	results,
 	setFocusTask,
-	chosenTask,
+	chosenTaskId,
 	scrollFlashTask,
 }) {
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -22,25 +22,26 @@ export default function SearchResults({
 	const taskRefs = useRef({});
 
 	useEffect(() => {
-		if (chosenTask && taskRefs.current[chosenTask]) {
+		if (chosenTaskId && taskRefs.current[chosenTaskId]) {
 			scrollFlashTask(taskRefs);
 		}
 	});
 
-	useEffect(() => {
-		// set pinned preference when component mounts
-		const storedPinnedPreference = localStorage.getItem(
-			"resultsPinnedPreference"
-		);
-		if (storedPinnedPreference) {
-			setIsPinned(storedPinnedPreference);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	// set pinned preference when component mounts
+	// 	const storedPinnedPreference = localStorage.getItem(
+	// 		"resultsPinnedPreference"
+	// 	);
+	// 	if (storedPinnedPreference) {
+	// 		setIsPinned(...storedPinnedPreference);
+	// 	}
+	// }, []);
 
 	// Store pinned task in localStorage whenever it changes
 	useEffect(() => {
-		if (isPinned) {
+		if (isPinned !== undefined) {
 			localStorage.setItem("resultsPinnedPreference", isPinned);
+			console.log(localStorage.getItem("resultsPinnedPreference"));
 		}
 	}, [isPinned]);
 
@@ -83,8 +84,6 @@ export default function SearchResults({
 		showBounds: null,
 		taskRefs: taskRefs,
 	};
-
-	if (!isVisible) return null;
 
 	return (
 		<Drawer

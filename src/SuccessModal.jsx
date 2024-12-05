@@ -5,7 +5,6 @@ import { copyToClipboard } from "./utils/copyToClipboard";
 import { useAutoClose } from "./utils/autoCloseHook";
 
 export default function SuccessModal({
-	taskID = "",
 	taskTitle = "",
 	taskDescription = "",
 	campaignCode = "",
@@ -14,7 +13,7 @@ export default function SuccessModal({
 }) {
 	// if it's a not a task, the title will come through as taskTitle
 	let title;
-	if (isTask) title = "Your submission has been successful. See details below";
+	if (isTask) title = "";
 	else title = taskTitle;
 
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -37,16 +36,13 @@ export default function SuccessModal({
 					{" "}
 					<div className="task-info__container">
 						<p className="task-info">
-							<strong>{taskTitle}</strong> <small>{taskID}</small>
+							<strong>{taskTitle}</strong>
 						</p>
 						<p className="task-info">{taskDescription}</p>
 					</div>
 					<div>
 						<Divider />
-						<p>
-							Below is the campaign code for people to access your study on{" "}
-							Kapta Mobile and contribute to it.
-						</p>
+						<p>Click to copy the code.</p>
 						<div
 							className="campaign-code"
 							onClick={() => handleCopy(campaignCode)}

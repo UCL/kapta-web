@@ -100,7 +100,7 @@ export default function SignUpForm({
 				>
 					{({ isSubmitting, setFieldValue }) => (
 						<Form className="form signup__form" autoComplete="on">
-							<Typography variant="h4" color="orange">
+							<Typography variant="h4" color="primary">
 								Create Account
 							</Typography>
 							<div className="form__row">
@@ -211,7 +211,7 @@ export default function SignUpForm({
 							<Button
 								type="submit"
 								disabled={isSubmitting}
-								color="info"
+								color="primary"
 								variant="contained"
 							>
 								Sign Up

@@ -1,7 +1,7 @@
 import mapboxgl from "mapbox-gl";
 import { useEffect, useRef } from "react";
 import { MAPBOX_TOKEN } from "./globals";
-import { centroid } from "@turf/turf";
+import { centroid, polygon, bbox } from "@turf/turf";
 
 import "./styles/mapbox.css";
 
@@ -11,10 +11,10 @@ export function Map({
 	taskListOpen,
 	focusTask,
 	showTaskInList,
+	isBackground,
 }) {
 	const map = useRef(null);
 	const popupRef = useRef(null);
-	const longtAdjustment = 0.015; // used when splitscreen since transform mucks up the interaction
 
 	const addMapClickListener = () => {
 		// listen for click on a polygon
@@ -44,14 +44,18 @@ export function Map({
 				popupRef.current = popup;
 			}
 		});
+	};
 
-		// Change cursor style on hover
-		map.current.on("mouseenter", "polygons-layer", () => {
-			map.current.getCanvas().style.cursor = "pointer";
-		});
-
-		map.current.on("mouseleave", "polygons-layer", () => {
-			map.current.getCanvas().style.cursor = "";
+	const getAndFitBounds = (focusTask) => {
+		let bounds;
+		if (focusTask.type === "FeatureCollection") {
+			bounds = bbox(focusTask);
+		} else {
+			const turfPoly = polygon([focusTask.geo_bounds.coordinates]);
+			bounds = bbox(turfPoly);
+		}
+		map.current.fitBounds(bounds, {
+			padding: 200,
 		});
 	};
 
@@ -63,20 +67,29 @@ export function Map({
 		map.current = new mapboxgl.Map({
 			container: "map",
 			style: "mapbox://styles/mapbox/dark-v11",
-			zoom: 1.2,
-			center: [30, 50],
+			zoom: 1.8,
+			center: [35, -25],
 			projection: "globe",
+			attributionControl: true,
 		});
 		map.current.on("load", () => {
 			map.current.setFog({
 				color: "grey",
 				"high-color": "#232222",
-				"horizon-blend": 0.02,
+				"horizon-blend": 0.01,
 				"space-color": "#16161d",
 				"star-intensity": 0,
 			});
 		});
 
+		const attributionControl = map.current._controls.find(
+			(control) => control instanceof mapboxgl.AttributionControl
+		);
+
+		if (attributionControl) {
+			attributionControl._container.innerHTML =
+				'© <a href="https://www.mapbox.com/about/maps/">Mapbox</a>, <a href="http://www.openstreetmap.org/copyright">OpenStreetMap Contributors</a>';
+		}
 		// make this function available from when the map initialises
 		window.handlePopupDetailsClick = (id) => {
 			showTaskInList(id);
@@ -85,8 +98,15 @@ export function Map({
 
 	// resize the map when splitscreen
 	useEffect(() => {
+		// todo: this needs some polishing
 		if (map.current) {
-			map.current.resize();
+			const center = map.current.getCenter();
+			const zoom = map.current.getZoom();
+			map.current.resize().flyTo({
+				center: center,
+				zoom: zoom,
+				speed: 0.8,
+			});
 		}
 	}, [taskListOpen]);
 
@@ -94,103 +114,67 @@ export function Map({
 	useEffect(() => {
 		if (!map.current || !map.current.isStyleLoaded() || !polygonStore) return;
 
+		var newData;
+
+		// is search results
+		if (Array.isArray(polygonStore)) {
+			newData = {
+				type: "FeatureCollection",
+				features: polygonStore.map((polygon) => ({
+					type: "Feature",
+					geometry: {
+						type: "Polygon",
+						coordinates: [polygon.geo_bounds.coordinates],
+					},
+					properties: {
+						id: polygon.task_id,
+						title: polygon.task_title,
+						description: polygon.task_description,
+					},
+				})),
+			};
+		} else {
+			// single polygon
+			const newFeature = {
+				type: "Feature",
+				geometry: {
+					type: "Polygon",
+					coordinates: [polygonStore.geo_bounds.coordinates],
+				},
+				properties: {
+					id: polygonStore.task_id,
+					title: polygonStore.task_title,
+					description: polygonStore.task_description,
+				},
+			};
+
+			newData = {
+				type: "FeatureCollection",
+				features: [newFeature],
+			};
+		}
+
 		// source does not exist
 		if (!map.current.getSource("polygon-source")) {
-			// not an array of polygons (not search results)
-			if (!Array.isArray(polygonStore)) {
-				map.current.addSource("polygon-source", {
-					type: "geojson",
-					data: {
-						type: "Feature",
-						geometry: {
-							type: "Polygon",
-							coordinates: [polygonStore.geo_bounds.coordinates],
-						},
-						properties: {
-							id: polygonStore.task_id,
-							title: polygonStore.task_title,
-							description: polygonStore.task_description,
-						},
-					},
-				});
-			} else {
-				const newData = {
-					type: "FeatureCollection",
-					features: polygonStore.map((polygon) => ({
-						type: "Feature",
-						geometry: {
-							type: "Polygon",
-							coordinates: [polygon.geo_bounds.coordinates],
-						},
-						properties: {
-							id: polygon.task_id,
-							title: polygon.task_title,
-							description: polygon.task_description,
-						},
-					})),
-				};
-
-				map.current.addSource("polygon-source", {
-					type: "geojson",
-					data: newData,
-				});
-			}
+			map.current.addSource("polygon-source", {
+				type: "geojson",
+				data: newData,
+			});
 		} else {
+			// source already exists, update the data
+
 			// removing data points since new task
 			if (map.current.getLayer("datapoints-layer")) {
 				map.current.removeLayer("datapoints-layer");
 			}
+			// removing popup since new task
 			if (map.current && popupRef.current) {
 				popupRef.current.remove();
 				popupRef.current = null;
 			}
 
-			// source already exists, used when viewing task list and clicking between tasks
+			// getting and setting source
 			let source = map.current.getSource("polygon-source");
-			let existingData = source._data;
-
-			if (!existingData || existingData.type !== "FeatureCollection") {
-				existingData = {
-					type: "FeatureCollection",
-					features: [],
-				};
-			}
-
-			// Ensure polygonStore is an array so we can use .map() even if it's one item (the initial one)
-			const polygons = Array.isArray(polygonStore)
-				? polygonStore
-				: [polygonStore];
-			// Set structure like this, particular attention to the [] around coordinates, otherwise polygon will not show
-			const newFeatures = polygons.map((polygon) => ({
-				type: "Feature",
-				geometry: {
-					type: "Polygon",
-					coordinates: [polygon.geo_bounds.coordinates],
-				},
-				properties: {
-					id: polygon.task_id,
-					title: polygon.task_title,
-					description: polygon.task_description,
-				},
-			}));
-
-			// if the polygon is already on the map, don't add it again
-			const filteredNewFeatures = newFeatures.filter((newFeature) => {
-				return !existingData.features.some(
-					(existingFeature) =>
-						existingFeature.properties.id === newFeature.properties.id
-				);
-			});
-
-			const updatedFeatures = [
-				...existingData.features,
-				...filteredNewFeatures,
-			];
-
-			const newData = {
-				type: "FeatureCollection",
-				features: updatedFeatures,
-			};
 
 			source.setData(newData);
 		}
@@ -204,7 +188,7 @@ export function Map({
 					source: "polygon-source",
 					layout: {},
 					paint: {
-						"fill-color": "#ff6347",
+						"fill-color": "#087669",
 						"fill-opacity": 0.6,
 					},
 				});
@@ -215,7 +199,7 @@ export function Map({
 					type: "line",
 					source: "polygon-source",
 					paint: {
-						"line-color": "#e63621",
+						"line-color": "#075E54",
 						"line-width": 4,
 					},
 				});
@@ -235,48 +219,30 @@ export function Map({
 			}
 			map.current.off("click");
 		}
+		if (!Array.isArray(polygonStore)) {
+			getAndFitBounds(polygonStore);
+		} else {
+			// fly to first task of results but not zoom in
+			const taskWithGeoBounds = polygonStore.find((task) => task.geo_bounds);
 
-		const adjustedBounds = (bounds) => {
-			const sw = bounds.getSouthWest();
-			const ne = bounds.getNorthEast();
+			const turfPoly = polygon([taskWithGeoBounds.geo_bounds.coordinates]);
+			const centroidPoint = centroid(turfPoly);
 
-			// Shift bounds by adjusting the longitude
-			const newSw = new mapboxgl.LngLat(sw.lng + longtAdjustment, sw.lat);
-			const newNe = new mapboxgl.LngLat(ne.lng + longtAdjustment, ne.lat);
-
-			const adjustedBounds = new mapboxgl.LngLatBounds(newSw, newNe);
-
-			return adjustedBounds;
-		};
-		// fit to polygon and center it
-		const bounds = taskListOpen
-			? adjustedBounds(getBounds(polygonStore))
-			: getBounds(polygonStore);
-
-		if (bounds) {
-			map.current.fitBounds(bounds, {
-				padding: 200,
+			map.current.flyTo({
+				center: centroidPoint.geometry.coordinates,
+				essential: true,
+				zoom: 4,
 			});
 		}
 	}, [polygonStore, boundsVisible, taskListOpen]);
 
 	// fly to focused task and show data points
 	useEffect(() => {
-		// flying to task when multiple loaded
 		if (!map.current || !map.current.isStyleLoaded() || !focusTask) return;
 
+		// flying to task polygon when multiple loaded
 		if (focusTask && focusTask.geo_bounds) {
-			const centroidPoint = centroid(focusTask.geo_bounds);
-			let [longitude, latitude] = centroidPoint.geometry.coordinates;
-			if (taskListOpen) {
-				longitude += longtAdjustment;
-			}
-
-			map.current.flyTo({
-				center: [longitude, latitude],
-				essential: true, // not user-interruptible
-				padding: 200,
-			});
+			getAndFitBounds(focusTask);
 		}
 		// if focusTask is a feature collection (used for showing data points)
 		else if (focusTask && focusTask.type === "FeatureCollection") {
@@ -298,58 +264,21 @@ export function Map({
 					source: "datapoints-source",
 					paint: {
 						"circle-radius": 5,
-						"circle-color": "#c8ff00",
+						"circle-color": "#25D366",
 					},
 				});
 			}
 
-			// fly to it (in case they moved away)
-			const middleIndex = Math.floor(focusTask.features.length / 2);
-			const middleCoordinates =
-				focusTask.features[middleIndex].geometry.coordinates;
-
-			if (taskListOpen) {
-				middleCoordinates[0] += longtAdjustment;
-			}
-
-			map.current.flyTo({
-				center: middleCoordinates,
-				essential: true,
-				padding: 200,
-			});
+			getAndFitBounds(focusTask);
 		}
 	}, [focusTask]);
 
-	const getBounds = (polygonStore) => {
-		// expects either a single task object or an array of task objects with geo_bounds as the relevant part
-		var bounds = new mapboxgl.LngLatBounds();
-		if (Array.isArray(polygonStore)) {
-			// only an array if multiple, unclear why there are slightly different structures
-
-			polygonStore.forEach((object) => {
-				const geoBounds = object.geo_bounds;
-				if (geoBounds.type === "Polygon") {
-					geoBounds.coordinates.forEach((coord) => {
-						bounds.extend(coord);
-					});
-				} else {
-					geoBounds.forEach((item) => {
-						if (item.type === "Polygon") {
-							item.coordinates.forEach((coord) => {
-								bounds.extend(coord);
-							});
-						}
-					});
-				}
-			});
-		} else {
-			const coordinates = polygonStore.geo_bounds.coordinates;
-			coordinates.forEach((coord) => {
-				bounds.extend(coord);
-			});
-		}
-		return bounds;
-	};
-
-	return <div id="map" className={taskListOpen ? "splitscreen" : ""}></div>;
+	return (
+		<div
+			id="map"
+			className={
+				taskListOpen ? "splitscreen" : isBackground ? "background" : ""
+			}
+		></div>
+	);
 }

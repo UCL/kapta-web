@@ -1,16 +1,15 @@
 .task-request-form {
-	width: 75%;
+	width: 55%;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
 	justify-self: center;
-	align-self: start;
 	background-color: var(--intrinsic-grey--translucent);
 	z-index: 1;
 	padding-bottom: 3rem;
 	margin-top: -5rem;
 	color: var(--off-white);
-	border: 1px solid var(--tomato);
+	border: 1px solid var(--mui-palette-primary-main);
 	border-radius: 8px;
 
 	.form__body {
@@ -24,6 +23,7 @@
 
 .login__form--container,
 .signup__form--container {
+	z-index: 3;
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
@@ -37,6 +37,10 @@
 	display: flex;
 	flex-direction: column;
 	gap: 0.8rem;
+
+	div {
+		background-color: var(--intrinsic-grey--translucent);
+	}
 }
 
 .form__row {

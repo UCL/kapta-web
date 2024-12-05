@@ -9,7 +9,7 @@ import { CloseButton } from "./utils/Buttons";
 export default function LoginForm({
 	isVisible,
 	setIsVisible,
-	setSignUpVisible,
+	setSignUpVisible, // actually waitlist
 	setErrorMsg,
 	showConfirmModal,
 	showLoginSuccessModal,
@@ -51,7 +51,7 @@ export default function LoginForm({
 				<Formik onSubmit={handleSubmit} initialValues={initialValues}>
 					{({ isSubmitting }) => (
 						<Form className="form login__form">
-							<Typography variant="h4" color="orange">
+							<Typography variant="h4" color="primary">
 								Log in
 							</Typography>
 							<Field
@@ -80,7 +80,7 @@ export default function LoginForm({
 							<Button
 								type="submit"
 								disabled={isSubmitting}
-								color="info"
+								color="primary"
 								variant="contained"
 							>
 								Log in

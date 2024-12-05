@@ -1,14 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import PersonIcon from "@mui/icons-material/Person";
-import SettingsIcon from "@mui/icons-material/Settings";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import InfoIcon from "@mui/icons-material/Info";
-import PeopleIcon from "@mui/icons-material/People";
-import HelpIcon from "@mui/icons-material/Help";
-import NextPlanIcon from "@mui/icons-material/NextPlan";
+import GroupsIcon from "@mui/icons-material/Groups";
 import LogoutIcon from "@mui/icons-material/Logout";
-import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import {
 	Drawer,
 	List,
@@ -24,9 +20,43 @@ import parse from "html-react-parser";
 import { CloseButton } from "./utils/Buttons";
 import "./styles/burger-menu.css";
 import { useUserStore, WA_CHAT_URL } from "./globals";
+import { KaptaSVGIconWhite } from "./utils/icons";
 
-export default function BurgerMenu({ isOpen, setIsOpen }) {
+export default function BurgerMenu({
+	isOpen,
+	setIsOpen,
+	setNoticeVisible,
+	setPosterVisible,
+}) {
 	const [expandedPanel, setExpandedPanel] = useState(false);
+	const [expandedSubPanel, setExpandedSubPanel] = useState(false);
+	const user = useUserStore();
+	const handlePosterClick = () => {
+		setPosterVisible(true);
+		setIsOpen(false);
+	};
+	const mailto = "mailto:info@kapta.earth?subject=Kapta Web Feedback";
+	useEffect(() => {
+		const observer = new MutationObserver((mutationsList, observer) => {
+			for (let mutation of mutationsList) {
+				if (mutation.type === "childList") {
+					const imgElement = document.querySelector(
+						'img[alt="Is this the first-ever WhatsApp Map?"]'
+					);
+					if (imgElement) {
+						imgElement.addEventListener("click", handlePosterClick);
+						observer.disconnect(); // Stop observing once the element is found and event listener is attached
+					}
+				}
+			}
+		});
+
+		observer.observe(document.body, { childList: true, subtree: true });
+
+		return () => {
+			observer.disconnect(); // Cleanup observer on component unmount
+		};
+	}, [isOpen]);
 
 	const toggleDrawer = (open) => (event) => {
 		if (
@@ -37,7 +67,7 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 		}
 		setIsOpen(open);
 	};
-	const user = useUserStore();
+
 	const handleLogout = () => {
 		user.logout();
 		toggleDrawer(false);
@@ -48,6 +78,7 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 	const viewSettings = () => {
 		console.log("todo: view settings");
 	};
+
 	const navItems = [
 		{ text: "Logout", icon: <LogoutIcon />, function: handleLogout },
 		// { text: "Profile", icon: <PersonIcon />, function: viewProfile },
@@ -74,46 +105,88 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 			"https://www.ucl.ac.uk/advanced-research-computing/people/amanda-ho-lyn",
 		jedUrl: "https://www.durham.ac.uk/staff/jed-stevenson/",
 		desUrl: "https://et.linkedin.com/in/dessalegn-tekle-02b848ba",
+		satoUrl: "https://www.linkedin.com/in/satoki-kawabata/",
+		gabrielUrl: "",
+		jeromeUrl:
+			"https://www.ucl.ac.uk/anthropology/people/academic-and-teaching-staff/jerome-lewis",
 	};
-
 	const menuSections = [
+		{
+			title: "Kapta",
+			icon: <KaptaSVGIconWhite />,
+			subtitle:
+				"Kapta is a WhatsApp-based crowdsourcing platform to help solve local, national and global challenges through searching WhatsApp Maps and tasking WhatsApp Mappers",
+			content: "",
+		},
+		{
+			title: "Work with us",
+			icon: <GroupsIcon />,
+			subtitle:
+				"We are open to building partnerships. Let's explore how Kapta can support your work.",
+			content: `Contact us at <a href="${mailto}">
+				info@kapta.earth</a>`,
+		},
+		{
+			title: "Discover",
+			icon: <TravelExploreIcon />,
+			subtitle: "",
+			hasSubTabs: true,
+			subTabs: [
+				{
+					title: "Case Study",
+					content: `<div><h4>Is this the first-ever WhatsApp Map?</h4><img src="/Poster_cs_1.svg" alt="Is this the first-ever WhatsApp Map?" onClick="${handlePosterClick}" style="cursor: pointer;" />
+					<p>The traditional method of assessing water infrastructure relies on field surveyors, a process that is often slow and costly. This can pose challenges for timely decision-making, especially in regions facing drought and hunger. In May 2024, pastoralists from various villages were engaged in the data collection process. Organised into WhatsApp groups and using Kapta, they facilitated faster and more efficient assessments by creating WhatsApp Maps on water infrastructure. Within just a few days, these WhatsApp mappers determined that 75% of the water infrastructure was non-functional, providing local authorities with accurate, ground-level information to take quicker and more informed action.</p></div><p><em>More case studies coming soon.</em></p>`,
+				},
+				{
+					title: "Extreme Citizen Science",
+					content: `Kapta is inspired by <a href="https://www.ucl.ac.uk/geography/research/research-centres/extreme-citizen-science-excites">Extreme Citizen Science</a>, an inclusive approach to citizen science that enables people from all backgrounds, regardless of their literacy, technical, or scientific skills, to co-design and participate in scientific research addressing local challenges. It combines interdisciplinary methodologies and tailored technologies to empower communities, particularly in underrepresented or marginalised areas, to collect, visualise, analyse, and use data for informed decision-making and advocacy.`,
+				},
+			],
+		},
 		{
 			title: "About",
 			icon: <InfoIcon />,
-			subtitle: "Kapta Mobile is a Progressive Web App to create WhatsApp Maps",
-			content: "",
-		},
-		{
-			title: "People",
-			icon: <PeopleIcon />,
-			subtitle:
-				"Kapta is being developed by the University College London (UCL) Extreme Citizen Science (ExCiteS) research group and the Advanced Research Computing Centre (UCL ARC).",
-			content: `Currently the core Kapta team consists of:<br><ul className="bm__people-list"><li><a href='${urls.marcosUrl}'>Marcos Moreu, UCL Geography</a></li><li><a href='${urls.fabienUrl}'>Fabien Moustard, UCL Geography</a></li><li><a href='${urls.tomUrl}'>Tom Couch, UCL ARC</a></li><li><a href='${urls.mukiUrl}'>Muki Haklay, UCL Geography</a></li><li><a href='${urls.jonathanUrl}'>Jonathan Cooper, UCL ARC</a></li><li><a href='${urls.claireUrl}'>Claire Ellul, UCL CEGE</a></li><li><a href='${urls.amandaUrl}'>Amanda Ho-Lyn, UCL ARC</a></li><li><a href='${urls.jedUrl}'>Jed Stevenson, Durham University</a></li><li><a href='${urls.desUrl}'>Dessalegn Teckle, Addis Ababa University, NGO IPC</a></li></ul>`,
-		},
-		{
-			title: "Why Kapta?",
-			icon: <HelpIcon />,
-			subtitle:
-				"To popularise mapping and connect users and producers of ground information.",
-			content: `See our latest blog and where this started in 2010:<br><li><a href='${urls.whatsappMapsUrl}'>WhatsApp Maps? Connecting users and producers of ground information</a></li><br><li><a href='${urls.extremeCitizenUrl}'>Extreme Citizen Science in the Congo rainforest</a></li>`,
-		},
-		{
-			title: "What's Next?",
-			icon: <NextPlanIcon />,
-			subtitle:
-				"Kapta:A (de)centralised crowdsourcing system to connect users and producers of ground information.",
-			content: "",
-		},
-		{
-			title: "Disclaimer",
-			icon: <CampaignOutlinedIcon />,
-			subtitle:
-				"The Kapta team has made every effort to develop an app that parse WhatsApp chats to create WhatsApp Maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur.",
-			content: ` Please always make your own judgement about the accuracy of the maps and validate the information using other sources. If you encounter any issues or have feedback, please reach out to us at <a href="mailto:geog.excites@ucl.ac.uk?subject=Kapta Mobile Feedback">geog.excites@ucl.ac.uk</a> or via WhatsApp at <a href=${WA_CHAT_URL}>+34 678380944.</a>`,
+			subtitle: "",
+			hasSubTabs: true,
+			subTabs: [
+				{
+					title: "Ethics",
+					content: `<p>
+We prioritise enhancing the capabilities of individuals and communities impacted by our work, ensuring that every action serves a meaningful purpose and aligns with the public interest. Ethics is at the core of our decisions, helping us build trust and foster collective intelligence. By focusing on fairness, transparency, and inclusivity, we develop solutions that empower people to make better decisions in an increasingly complex world shaped by global environmental changes. Our work is guided by a commitment to contribute to a more equitable, sustainable, and socially responsible future for all.
+</p><p>We embrace open-source principles to promote collective progress and serve the public interest. By sharing our tools and methods openly, we enable others to adapt them to diverse challenges and encourage broader participation in knowledge sharing. This approach fosters collaboration across geographies and cultures, driving solutions that benefit society as a whole.</p>`,
+				},
+				{
+					title: "Careers",
+					content: `<p>Join our dynamic team! We combine the creativity of academic research with the agility of a company, guided by a shared commitment to ethics, citizen science technology and collective intelligence. If you are curious about our work and want to contribute to innovative solutions for real-world challenges, we would love to hear from you - reach out at <a href=${mailto}>info@kapta.earth</a>.</p>
+`,
+				},
+				{
+					title: "Team",
+					content: `<div>Founders:<ul>
+					<li><a href='${urls.fabienUrl}'>Fabien Moustard</a></li>
+					<li><a href='${urls.marcosUrl}'>Marcos Moreu</a></li></ul>
+Team:<ul><li><a href='${urls.tomUrl}'>Tom Couch,  Software development</a></li>
+<li><a href='${urls.amandaUrl}'>Amanda Ho-Lyn, Software development</a></li>
+<li><a href='${urls.jedUrl}'>Jed Stevenson, Field implementation </a></li>
+<li><a href='${urls.desUrl}'>Dessalegn Teckle, Field implementation</a></li>
+<li><a href='${urls.satoUrl}'>Satoki Kawabata, Strategic planning </a></li>
+<li><a href='${urls.gabrielUrl}'>Gabriel Dufourcq, Strategic planning </a></li></ul>
+Advisors:<ul>
+<li><a href='${urls.mukiUrl}'>Muki Haklay, UCL Geography</a></li>
+<li><a href='${urls.claireUrl}'>Claire Ellul, UCL  Civil Environmental and Geomatic Engineering</a></li>
+<li><a href='${urls.jeromeUrl}'>Jerome Lewis, UCL Anthropology</a></li>
+<li><a href='${urls.jonathanUrl}'>Jonathan Cooper, UCL Advanced Research Computing</a></li>
+
+</div>`,
+				},
+			],
 		},
 	];
 	const handleAccordionChange = (panel) => (event, isExpanded) => {
 		setExpandedPanel(isExpanded ? panel : false);
+	};
+	const handleSubAccordionChange = (subPanel) => (event, isExpanded) => {
+		setExpandedSubPanel(isExpanded ? subPanel : false);
 	};
 	return (
 		<>
@@ -155,21 +228,73 @@ export default function BurgerMenu({ isOpen, setIsOpen }) {
 								>
 									{section.subtitle}
 								</Typography>
-								<AccordionDetails>{parse(section.content)}</AccordionDetails>
+								<AccordionDetails>
+									{section.hasSubTabs
+										? section.subTabs.map((subTab, subIndex) => (
+												<Accordion
+													key={subTab.title}
+													expanded={
+														expandedSubPanel === `subPanel${index}${subIndex}`
+													}
+													onChange={handleSubAccordionChange(
+														`subPanel${index}${subIndex}`
+													)}
+												>
+													<AccordionSummary
+														expandIcon={<ExpandMoreIcon />}
+														aria-controls={`subPanel${index}${subIndex}a-content`}
+														id={`subPanel${index}${subIndex}a-header`}
+													>
+														<Typography variant="subtitle1">
+															{subTab.title}
+														</Typography>
+													</AccordionSummary>
+													<AccordionDetails>
+														<Typography variant="body2">
+															{parse(subTab.content)}
+														</Typography>
+													</AccordionDetails>
+												</Accordion>
+										  ))
+										: parse(section.content)}
+								</AccordionDetails>
 							</Accordion>
 						))}
 					</List>
 					<div className="bm__footer">
 						<Typography>Have feedback or want to get in touch?</Typography>
-						<Button>Contact Us</Button>
+						<Typography>
+							Contact us on{" "}
+							<Button onClick={() => (window.location.href = WA_CHAT_URL)}>
+								WhatsApp
+							</Button>{" "}
+							or email us at{" "}
+							<Button onClick={() => (window.location.href = mailto)}>
+								info@kapta.earth
+							</Button>
+						</Typography>
 					</div>
-					<Button
-						onClick={handleLogout}
-						endIcon={<LogoutIcon />}
-						className="btn--logout"
-					>
-						Logout
-					</Button>
+					{user.loggedIn && (
+						<Button
+							onClick={handleLogout}
+							endIcon={<LogoutIcon />}
+							className="btn--logout"
+							color="secondary"
+						>
+							Logout
+						</Button>
+					)}
+					<Typography variant="caption" id="legal-notice">
+						© 2024 Wisdom of the Crowd Labs, All rights reserved -{" "}
+						<a
+							onClick={(e) => {
+								toggleDrawer(false)(e);
+								setNoticeVisible(true);
+							}}
+						>
+							Legal Notice
+						</a>
+					</Typography>
 				</div>
 			</Drawer>
 		</>

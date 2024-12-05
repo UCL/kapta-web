@@ -5,10 +5,10 @@
 
 	--intrinsic-grey: #16161d;
 	--intrinsic-grey--translucent: #16161dd5;
+	--intrinsic-grey--translucent-2: #16161d69;
 	--off-white: #eae1e1;
-	--rose: var(--mui-palette-info-200);
+	--rose: var(--mui-palette-primary-light);
 	--dark-grey--translucent: #2a282888;
-	--tomato: var(--mui-palette-tomato-main);
 }
 html,
 body {
@@ -28,6 +28,7 @@ main {
 	height: 100vh;
 
 	.login-signup__wrapper {
+		z-index: 3;
 		justify-self: center;
 		display: flex;
 		flex-direction: column;
@@ -36,6 +37,42 @@ main {
 		justify-items: center;
 		justify-content: center;
 	}
+}
+
+.waitlist-widget {
+	z-index: 4;
+	align-self: center;
+	justify-self: center;
+	position: absolute;
+	background-color: var(--intrinsic-grey);
+	border: 1px solid var(--mui-palette-primary-main);
+	border-radius: 8px;
+}
+
+.background {
+	pointer-events: none !important;
+}
+.shield {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: var(--intrinsic-grey--translucent-2);
+	z-index: 2;
+}
+.kapta-logo--main {
+	z-index: 3;
+	position: fixed;
+	height: fit-content;
+	margin-left: 4.5rem;
+	margin-top: 1.5rem;
+	justify-self: flex-start;
+	align-self: flex-start;
+	width: 10vw;
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	opacity: 0.8;
+	pointer-events: none;
 }
 
 .task-map-wrapper {
@@ -65,5 +102,16 @@ main {
 	width: fit-content !important;
 	right: 4%;
 	bottom: 9%;
-	z-index: 2 !important;
+	z-index: 1 !important;
+	text-transform: none !important;
+}
+
+.temp-mobile-app {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-inline: 4%;
+	text-align: center;
 }

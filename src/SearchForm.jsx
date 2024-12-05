@@ -8,7 +8,11 @@ import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 
 import "./styles/search.css";
 
-export default function SearchForm({ showSearchResults, taskListOpen }) {
+export default function SearchForm({
+	showSearchResults,
+	taskListOpen,
+	isBackground,
+}) {
 	const user = useUserStore();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [tasks, setTasks] = useState([]);
@@ -20,10 +24,12 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 			return fetchedTasks;
 		};
 
-		fetchTasks().then((tasks) => {
-			const visibleTasks = tasks.filter((task) => task.visible === true);
-			setTasks(visibleTasks);
-		});
+		if (user?.idToken) {
+			fetchTasks().then((tasks) => {
+				const visibleTasks = tasks.filter((task) => task.visible === true);
+				setTasks(visibleTasks);
+			});
+		}
 	}, [user]);
 
 	const handleSubmit = async (values) => {
@@ -46,6 +52,7 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 		} else showSearchResults(results);
 	};
 	const handleRefresh = async () => {
+		// todo: get this to work
 		try {
 			const fetchTasks = async () => {
 				var fetchedTasks = await fetchAllTasks({ user });
@@ -65,27 +72,35 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 
 	const chipSuggestions = [
 		{
-			label: "Show me all the sanity tasks",
+			label: "Show me citizens complaints in Camden, London",
 			icon: <></>,
 			action: (setFieldValue) => {
-				setFieldValue("query", "sanity");
-				handleSubmit("sanity");
+				setFieldValue("query", "citizen complaint");
+				handleSubmit("citizen complaint");
 			},
 		},
 		{
-			label: "Display all tasks mentioning 'points'",
+			label: "Water points in Nyangatom, Ethiopia",
 			icon: <></>,
 			action: (setFieldValue) => {
-				setFieldValue("query", "points");
-				handleSubmit("points");
+				setFieldValue("query", "water point");
+				handleSubmit("water point");
 			},
 		},
 		{
-			label: "Where are the elves?",
+			label: "Information about postboxes",
 			icon: <></>,
 			action: (setFieldValue) => {
-				setFieldValue("query", "elf");
-				handleSubmit("elf");
+				setFieldValue("query", "postbox");
+				handleSubmit("postbox");
+			},
+		},
+		{
+			label: "Bakery recommendations",
+			icon: <></>,
+			action: (setFieldValue) => {
+				setFieldValue("query", "bakeries");
+				handleSubmit("bakeries");
 			},
 		},
 	];
@@ -95,10 +110,12 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 			<Formik onSubmit={handleSubmit} initialValues={{ query: "" }}>
 				{({ isSubmitting, setFieldValue }) => (
 					<Form
-						className={`form search__form ${taskListOpen ? "splitscreen" : ""}`}
+						className={`form search__form ${
+							taskListOpen ? "splitscreen" : isBackground ? "background" : ""
+						}`}
 					>
 						<Snackbar
-							anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+							anchorOrigin={{ vertical: "top", horizontal: "center" }}
 							className="no-tasks"
 							open={snackbarOpen}
 							autoHideDuration={4000}
@@ -122,7 +139,7 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 							<Field
 								type="text"
 								name="query"
-								label="Search WhatsApp maps ground data"
+								label="Search WhatsApp Maps"
 								as={TextField}
 								className="search__input"
 							/>
@@ -131,7 +148,7 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 							<Fab
 								type="submit"
 								disabled={isSubmitting}
-								color="info"
+								color="primary"
 								variant="contained"
 								className="search__submit__btn"
 							>

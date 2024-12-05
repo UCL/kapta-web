@@ -18,6 +18,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { getDataFromBucket } from "./apiQueries";
 import { useState } from "react";
 import JSZip from "jszip";
+import { slugify } from "./generalUtils";
 
 export default function TaskCard({
 	task,
@@ -52,15 +53,17 @@ export default function TaskCard({
 
 		if (data.response !== 200) {
 			// todo: show an error
+			console.error("Error downloading task data", data);
 			return;
 		} else {
 			const txtContent = data.content.txtFileContent;
 			const jsonContent = data.content.jsonFileContent;
 
 			const zip = new JSZip();
+			const downloadTitle = slugify(task.task_title);
 
-			zip.file(`${task.task_title}-${task.campaign_code}.txt`, txtContent);
-			zip.file(`${task.task_title}-${task.campaign_code}.geojson`, jsonContent);
+			zip.file(`${downloadTitle}-${task.campaign_code}.txt`, txtContent);
+			zip.file(`${downloadTitle}-${task.campaign_code}.geojson`, jsonContent);
 
 			setIsLoading({ download: false });
 
@@ -104,10 +107,12 @@ export default function TaskCard({
 	const cardActionBtns = [
 		{
 			text:
-				taskId === displayedTask?.task_id ? "Show data points" : "Show on Map",
+				taskId === displayedTask?.task_id && userID === task.created_by
+					? "Show data points"
+					: "Show on Map",
 			icon: <PinDropIcon />,
 			action:
-				taskId === displayedTask?.task_id
+				taskId === displayedTask?.task_id && userID === task.created_by
 					? (task) => showDataPoints(task)
 					: (task) => {
 							handleShowOnMap(task);
@@ -120,13 +125,14 @@ export default function TaskCard({
 		},
 
 		{
-			text: "Download Data",
+			text: userID === task.created_by ? "Download Data" : "Request Data",
 			icon: <DownloadIcon />,
 			action: (task) => handleDownload(task),
 			variant: "outlined",
-			color: "orange",
+			color: "primary",
 			loading: true,
 			typeName: "download",
+			disabled: userID !== task.created_by,
 		},
 	];
 
@@ -185,7 +191,7 @@ export default function TaskCard({
 					<p>{task.task_description}</p>
 				</CardContent>
 				<CardActions className="task-list__card-actions">
-					<ButtonGroup size="small" color="info">
+					<ButtonGroup size="small" color="primary">
 						{cardActionBtns.map((btn, index) =>
 							btn.loading === true ? (
 								<LoadingButton
