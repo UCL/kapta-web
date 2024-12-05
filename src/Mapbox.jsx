@@ -67,8 +67,8 @@ export function Map({
 		map.current = new mapboxgl.Map({
 			container: "map",
 			style: "mapbox://styles/mapbox/dark-v11",
-			zoom: 1.3,
-			center: [30, 50],
+			zoom: 1.8,
+			center: [35, -25],
 			projection: "globe",
 			attributionControl: true,
 		});
@@ -76,7 +76,7 @@ export function Map({
 			map.current.setFog({
 				color: "grey",
 				"high-color": "#232222",
-				"horizon-blend": 0.02,
+				"horizon-blend": 0.01,
 				"space-color": "#16161d",
 				"star-intensity": 0,
 			});
@@ -99,15 +99,15 @@ export function Map({
 	// resize the map when splitscreen
 	useEffect(() => {
 		// todo: this needs some polishing
-			if (map.current) {
-				const center = map.current.getCenter();
-				const zoom = map.current.getZoom();
-				map.current.resize().flyTo({
-					center: center,
-					zoom: zoom,
-					speed: 0.8,
-				});
-			}
+		if (map.current) {
+			const center = map.current.getCenter();
+			const zoom = map.current.getZoom();
+			map.current.resize().flyTo({
+				center: center,
+				zoom: zoom,
+				speed: 0.8,
+			});
+		}
 	}, [taskListOpen]);
 
 	// handle polygons
