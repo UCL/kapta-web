@@ -177,7 +177,7 @@ export default function TaskList({
 						<ToggleButton value="opendata">
 							Explore Others&rsquo; Tasks
 						</ToggleButton>
-						{searchResults && (
+						{searchResults.length > 0 && (
 							<ToggleButton value="search">Search Results</ToggleButton>
 						)}
 					</ToggleButtonGroup>
