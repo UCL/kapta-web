@@ -63,13 +63,13 @@ export default function TaskForm({
 		const campaignCode = generateCampaignCode();
 
 		values = { ...values, taskID: taskID, campaignCode: campaignCode };
-
 		try {
 			const response = await createTask({ user, values });
 			if (response) {
 				let msg = {
-					title: "Your task has been created",
+					title: `Your task ${values.campaignCode} has been created`,
 					campaignCode: values.campaignCode,
+					description: `Ask your WhatsApp Mappers to send the code ${values.campaignCode} to Kapta at +44 7473522912. Kapta will then guide them through the next steps.`,
 				};
 				showSuccess(msg);
 			}

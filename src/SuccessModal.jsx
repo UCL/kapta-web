@@ -13,7 +13,7 @@ export default function SuccessModal({
 }) {
 	// if it's a not a task, the title will come through as taskTitle
 	let title;
-	if (isTask) title = "Your submission has been successful. See details below";
+	if (isTask) title = "";
 	else title = taskTitle;
 
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -42,7 +42,7 @@ export default function SuccessModal({
 					</div>
 					<div>
 						<Divider />
-						<p>Use this code to upload and search WhatsApp Maps.</p>
+						<p>Click to copy the code.</p>
 						<div
 							className="campaign-code"
 							onClick={() => handleCopy(campaignCode)}

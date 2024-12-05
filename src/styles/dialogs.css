@@ -23,6 +23,7 @@
 	}
 	.task-info {
 		font-size: 1.2rem;
+		margin-inline: 4%;
 		small {
 			display: block;
 			font-size: 0.8rem;
@@ -36,13 +37,15 @@
 		color: var(--rose);
 		font-weight: 700;
 		padding-bottom: 1rem;
+		cursor: pointer;
 	}
 }
 
 #error-dialog {
 	background-color: #531919d1;
-	top: 24%;
+	top: 16%;
 	color: #f9e6e6;
+	z-index: 5;
 }
 
 #confirm-dialog {
