@@ -8,22 +8,36 @@
 #map {
 	height: 100%;
 	grid-column: span 2;
-	canvas {
-		transition: transform 0.3s;
-	}
+
 	&.splitscreen {
 		grid-column: span 1;
-		canvas {
-			transform: translateX(-18%);
+		width: 62vw !important;
+	}
+	.mapboxgl-popup-tip {
+		border-top-color: var(--intrinsic-grey);
+	}
+	.mapboxgl-popup-content {
+		background-color: var(--intrinsic-grey);
+		color: var(--off-white);
+		font-family: "Lato", sans-serif;
+		font-weight: 400;
+		font-size: 0.8rem;
+
+		#show-task-details {
+			color: var(--mui-palette-info-200);
+			cursor: pointer;
 		}
+	}
+	.mapbox-improve-map {
+		display: none;
 	}
 }
 
 .mapboxgl-ctrl-attrib {
 	background-color: transparent !important;
 	font-size: 0.6rem;
-
-	.mapboxgl-ctrl-attrib-inner > a {
+	a,
+	& {
 		color: grey;
 	}
 }

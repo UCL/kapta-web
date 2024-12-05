@@ -69,7 +69,6 @@ export const UserProvider = ({ children }) => {
 			if (refreshToken) {
 				const response = await initiateAuthRefresh(refreshToken);
 				const authResult = response.AuthenticationResult;
-				console.log("refresh auth result:", authResult);
 				setUserDetails({
 					accessToken: authResult.AccessToken,
 					idToken: authResult.IdToken,

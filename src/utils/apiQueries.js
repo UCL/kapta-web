@@ -20,7 +20,6 @@ export const fetchMyTasks = async ({ user }) => {
 };
 
 export const fetchMyODTasks = async ({ user }) => {
-	console.log(`${REQUEST_URL}/requests/opendata/createdby/${user.userId}`);
 	try {
 		const response = await fetch(
 			`${REQUEST_URL}/requests/opendata/createdby/${user.userId}`,
@@ -32,7 +31,6 @@ export const fetchMyODTasks = async ({ user }) => {
 			}
 		);
 		const result = await response.json();
-		console.log("result", result);
 		const fetchedTasks = JSON.parse(result);
 		return fetchedTasks;
 	} catch (error) {
@@ -117,6 +115,35 @@ export const updateTask = async ({ user, values }) => {
 
 		const result = await response.json();
 		return result;
+	} catch (error) {
+		console.error("Error:", error);
+	}
+};
+
+export const getDataFromBucket = async ({ user, task }) => {
+	let taskId = task.task_id;
+	const userID = user.idToken;
+	try {
+		const response = await fetch(`${REQUEST_URL}/requests/download/${taskId}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: userID,
+			},
+		});
+
+		if (!response.ok) {
+			throw new Error("Network response was not ok");
+		}
+
+		const result = await response.json();
+		const data = JSON.parse(result);
+		if (data.taskID === taskId) {
+			return { response: 200, content: data };
+		} else {
+			console.error("task details do not match");
+			return { response: 409 };
+		}
 	} catch (error) {
 		console.error("Error:", error);
 	}

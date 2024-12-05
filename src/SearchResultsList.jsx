@@ -1,7 +1,5 @@
-import { Drawer, Snackbar } from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
-import PinDropIcon from "@mui/icons-material/PinDrop";
-import { useRef, useState } from "react";
+import { CircularProgress, Drawer, Snackbar } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
@@ -12,11 +10,52 @@ export default function SearchResults({
 	setIsVisible,
 	results,
 	setFocusTask,
+	chosenTaskId,
+	scrollFlashTask,
 }) {
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMsg, setSnackbarMsg] = useState("Code copied to clipboard!");
 	const [isPinned, setIsPinned] = useState(false);
 	const SearchResultsRef = useRef(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [displayedTask, setDisplayedTask] = useState(null);
+	const taskRefs = useRef({});
+
+	useEffect(() => {
+		if (chosenTaskId && taskRefs.current[chosenTaskId]) {
+			scrollFlashTask(taskRefs);
+		}
+	});
+
+	// useEffect(() => {
+	// 	// set pinned preference when component mounts
+	// 	const storedPinnedPreference = localStorage.getItem(
+	// 		"resultsPinnedPreference"
+	// 	);
+	// 	if (storedPinnedPreference) {
+	// 		setIsPinned(...storedPinnedPreference);
+	// 	}
+	// }, []);
+
+	// Store pinned task in localStorage whenever it changes
+	useEffect(() => {
+		if (isPinned !== undefined) {
+			localStorage.setItem("resultsPinnedPreference", isPinned);
+			console.log(localStorage.getItem("resultsPinnedPreference"));
+		}
+	}, [isPinned]);
+
+	const handleRefresh = async () => {
+		// todo: refresh the results
+		setIsLoading(true);
+		try {
+			// let newResults = await refreshSearchResult();
+		} catch (error) {
+			console.error("Error fetching tasks:", error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
 	const handleCopy = async (text) => {
 		const success = await copyToClipboard(text);
@@ -25,51 +64,26 @@ export default function SearchResults({
 		}
 	};
 
-	const handleDownload = () => {
-		// TODO: get data from rds
-		console.log("handle download");
-	};
-
 	const openSnackbar = (msg) => {
 		setSnackbarOpen(true);
 		setSnackbarMsg(msg);
 	};
 
-	const handleShowOnMap = (task) => {
-		if (task.geo_bounds) {
-			setFocusTask(task);
-			if (!isPinned) setIsVisible(false);
-		} else {
-			openSnackbar("No location data available for this task");
-		}
-	};
-
-	const cardActionBtns = [
-		{
-			text: "Show on Map",
-			icon: <PinDropIcon />,
-			action: (task) => () => handleShowOnMap(task),
-			variant: "contained",
-		},
-		{
-			text: "Download Data",
-			icon: <DownloadIcon />,
-			action: (task) => () => handleDownload(task),
-			variant: "outlined",
-			color: "orange",
-		},
-	];
-
 	useClickOutside(SearchResultsRef, () => setIsVisible(false));
 
 	const taskCardProps = {
-		cardActionBtns: cardActionBtns,
 		handleCopy: handleCopy,
-		userID: null,
+		user: null,
 		handleEdit: null,
+		displayedTask: displayedTask,
+		setDisplayedTask: setDisplayedTask,
+		setFocusTask: setFocusTask,
+		openSnackbar: openSnackbar,
+		isPinned: isPinned,
+		setIsVisible: setIsVisible,
+		showBounds: null,
+		taskRefs: taskRefs,
 	};
-
-	if (!isVisible) return null;
 
 	return (
 		<Drawer
@@ -87,10 +101,18 @@ export default function SearchResults({
 					<PinButton isPinned={isPinned} setIsPinned={setIsPinned} />
 					Search Results
 				</div>
-				<div className="task-list__total">Total: {results.length || 0}</div>
-				{results.map((task) => (
-					<TaskCard key={task.task_id} task={task} {...taskCardProps} />
-				))}
+				{!isLoading && (
+					<div className="task-list__total">Total: {results?.length || 0}</div>
+				)}
+				{isLoading ? (
+					<div className="loader">
+						<CircularProgress />
+					</div>
+				) : (
+					results.map((task) => (
+						<TaskCard key={task.task_id} task={task} {...taskCardProps} />
+					))
+				)}
 			</div>
 			<Snackbar
 				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}

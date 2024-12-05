@@ -6,12 +6,13 @@
 	text-align: center;
 	border-radius: 8px;
 	padding-bottom: 3rem;
+	width: 50vw;
 }
 
 #success-dialog {
 	background-color: #2d5b39eb;
 	top: 20%;
-	width: 60vw;
+	max-width: 50rem;
 	color: white;
 
 	h3 {
@@ -20,11 +21,9 @@
 		font-size: 1.5rem;
 		color: #c9ff79;
 	}
-	.task-info__container {
-		border: 1px solid var(--rose);
-	}
 	.task-info {
 		font-size: 1.2rem;
+		margin-inline: 4%;
 		small {
 			display: block;
 			font-size: 0.8rem;
@@ -38,24 +37,30 @@
 		color: var(--rose);
 		font-weight: 700;
 		padding-bottom: 1rem;
+		cursor: pointer;
 	}
 }
 
 #error-dialog {
 	background-color: #531919d1;
-	top: 24%;
-	width: 50vw;
+	top: 16%;
 	color: #f9e6e6;
+	z-index: 5;
 }
 
 #confirm-dialog {
 	background-color: var(--dark-grey--translucent);
 	top: 20%;
-	width: 50vw;
 	color: #f9e6e6;
 	padding-inline: 3%;
 
 	.new-code {
 		margin-top: 1.5rem;
 	}
+}
+
+#legal-dialog {
+	background-color: var(--dark-grey--translucent);
+	border: 1px solid var(--mui-palette-primary-main);
+	line-height: 1.3rem;
 }

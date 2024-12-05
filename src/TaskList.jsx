@@ -8,9 +8,7 @@ import {
 	ToggleButtonGroup,
 	Tooltip,
 } from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
 import AddIcon from "@mui/icons-material/Add";
-import PinDropIcon from "@mui/icons-material/PinDrop";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
@@ -26,48 +24,74 @@ export default function TaskList({
 	showTaskForm,
 	showNewTaskForm,
 	showBounds,
+	setFocusTask,
+	chosenTaskId,
+	scrollFlashTask,
+	taskListName,
+	setTaskListName,
 }) {
 	const [tasks, setTasks] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [snackbarMsg, setSnackbarMsg] = useState("Code copied to clipboard!");
 
-	const [taskListName, setTaskListName] = useState("mine");
 	const taskListRef = useRef(null);
+	const taskRefs = useRef({});
 	const [isPinned, setIsPinned] = useState(false);
+	const [displayedTask, setDisplayedTask] = useState(null);
 
 	useEffect(() => {
-		if (isVisible) {
-			setIsLoading(true);
-			const fetchTasks = async () => {
-				var fetchedTasks = await fetchMyTasks({ user, setTasks });
-				setTasks(fetchedTasks);
-				setTaskListName("mine");
-				setIsLoading(false);
-			};
-			setIsLoading(true);
-			fetchTasks();
+		if (user?.idToken) {
+			if (taskListName === "opendata") {
+				setIsLoading(true);
+				const fetchTasks = async () => {
+					var fetchedTasks = await fetchODTasks({ user });
+					setTasks(fetchedTasks);
+				};
+				fetchTasks();
+			} else if (taskListName === "mine") {
+				setIsLoading(true);
+				const fetchTasks = async () => {
+					var fetchedTasks = await fetchMyTasks({ user });
+					setTasks(fetchedTasks);
+				};
+				fetchTasks();
+			}
+			setIsLoading(false);
 		}
-	}, [isVisible, user]);
-
-	useEffect(() => {
-		if (taskListName === "opendata") {
-			setIsLoading(true);
-			const fetchTasks = async () => {
-				var fetchedTasks = await fetchODTasks({ user });
-				setTasks(fetchedTasks);
-			};
-			fetchTasks();
-		} else if (taskListName === "mine") {
-			setIsLoading(true);
-			const fetchTasks = async () => {
-				var fetchedTasks = await fetchMyTasks({ user });
-				setTasks(fetchedTasks);
-			};
-			fetchTasks();
-		}
-		setIsLoading(false);
 	}, [taskListName, user]);
+
+	useEffect(() => {
+		if (chosenTaskId && chosenTaskId.includes("opendata")) {
+			setTaskListName("opendata");
+		}
+		const checkTaskRefs = setTimeout(() => {
+			if (taskRefs.current) {
+				if (chosenTaskId && taskRefs.current[chosenTaskId]) {
+					scrollFlashTask(taskRefs);
+				}
+			}
+		}, 100);
+		return () => clearTimeout(checkTaskRefs);
+	});
+
+	// useEffect(() => {
+	// 	// set pinned preference when component mounts
+	// 	const storedPinnedPreference = localStorage.getItem(
+	// 		"tasklistPinnedPreference"
+	// 	);
+	// 	console.log(isPinned, storedPinnedPreference);
+	// 	if (storedPinnedPreference) {
+	// 		setIsPinned(...storedPinnedPreference);
+	// 	}
+	// }, []);
+
+	// Store pinned task in localStorage whenever it changes
+	useEffect(() => {
+		if (isPinned !== undefined) {
+			localStorage.setItem("tasklistPinnedPreference", isPinned);
+		}
+	}, [isPinned]);
 
 	const openSnackbar = (msg) => {
 		setSnackbarOpen(true);
@@ -79,11 +103,6 @@ export default function TaskList({
 		if (success) {
 			openSnackbar("Code copied to clipboard!");
 		}
-	};
-
-	const handleDownload = () => {
-		// TODO: get data from s3 or db
-		console.log("handle download");
 	};
 
 	const handleEdit = (task) => {
@@ -114,41 +133,22 @@ export default function TaskList({
 		}
 	};
 
-	const handleShowOnMap = (task) => {
-		if (task.geo_bounds) {
-			showBounds(task.geo_bounds);
-			if (!isPinned) setIsVisible(false);
-		} else {
-			openSnackbar("No location data available for this task");
-		}
-	};
-
-	const cardActionBtns = [
-		{
-			text: "Show on Map",
-			icon: <PinDropIcon />,
-			action: (task) => () => handleShowOnMap(task),
-			variant: "contained",
-		},
-		{
-			text: "Download Data",
-			icon: <DownloadIcon />,
-			action: (task) => () => handleDownload(task),
-			variant: "outlined",
-			color: "orange",
-		},
-	];
-
 	useClickOutside(taskListRef, () => setIsVisible(false));
 
 	const taskCardProps = {
-		cardActionBtns: cardActionBtns,
 		handleCopy: handleCopy,
-		userID: user.userId,
+		user: user,
 		handleEdit: handleEdit,
+		displayedTask: displayedTask,
+		setDisplayedTask: setDisplayedTask,
+		setFocusTask: setFocusTask,
+		openSnackbar: openSnackbar,
+		isPinned: isPinned,
+		setIsVisible: setIsVisible,
+		showBounds: showBounds,
+		taskRefs: taskRefs,
 	};
 
-	if (!isVisible) return null;
 	return (
 		<Drawer
 			anchor="right"
@@ -162,14 +162,16 @@ export default function TaskList({
 					<PinButton isPinned={isPinned} setIsPinned={setIsPinned} />
 
 					<ToggleButtonGroup
-						color="tomato"
+						color="primary"
 						value={taskListName}
 						exclusive
 						size="small"
 						onChange={handleChangeTaskList}
 					>
 						<ToggleButton value="mine">My Tasks</ToggleButton>
-						<ToggleButton value="opendata">Open Datasets</ToggleButton>
+						<ToggleButton value="opendata">
+							Explore Others&rsquo; Tasks
+						</ToggleButton>
 					</ToggleButtonGroup>
 					<IconButton
 						onClick={handleRefresh}

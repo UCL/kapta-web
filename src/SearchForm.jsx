@@ -8,10 +8,15 @@ import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 
 import "./styles/search.css";
 
-export default function SearchForm({ showSearchResults, taskListOpen }) {
+export default function SearchForm({
+	showSearchResults,
+	taskListOpen,
+	isBackground,
+}) {
 	const user = useUserStore();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const [tasks, setTasks] = useState([]);
+	const [query, setQuery] = useState("");
 
 	useEffect(() => {
 		const fetchTasks = async () => {
@@ -19,16 +24,19 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 			return fetchedTasks;
 		};
 
-		fetchTasks().then((tasks) => {
-			const visibleTasks = tasks.filter((task) => task.visible === true);
-			setTasks(visibleTasks);
-		});
+		if (user?.idToken) {
+			fetchTasks().then((tasks) => {
+				const visibleTasks = tasks.filter((task) => task.visible === true);
+				setTasks(visibleTasks);
+			});
+		}
 	}, [user]);
 
 	const handleSubmit = async (values) => {
 		// for the given set of tasks (currently all where visible===true), check in title and then description for the query
 		// todo: how do we want to handle plurals? eg elf and elves mentioned
 		const q = values.query?.toLowerCase() || values;
+		setQuery(q);
 		var results = [];
 
 		tasks.forEach((task) => {
@@ -43,22 +51,40 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 			setSnackbarOpen(true);
 		} else showSearchResults(results);
 	};
+	const handleRefresh = async () => {
+		// todo: get this to work
+		try {
+			const fetchTasks = async () => {
+				var fetchedTasks = await fetchAllTasks({ user });
+				return fetchedTasks;
+			};
+
+			fetchTasks().then((tasks) => {
+				const visibleTasks = tasks.filter((task) => task.visible === true);
+				setTasks(visibleTasks);
+			});
+
+			handleSubmit(query);
+		} catch (error) {
+			console.error("Error fetching tasks:", error);
+		}
+	};
 
 	const chipSuggestions = [
 		{
-			label: "Show me all the sanitation tasks",
+			label: "Show me citizens complaints in Camden, London",
 			icon: <></>,
 			action: (setFieldValue) => {
-				setFieldValue("query", "sanitation");
-				handleSubmit("sanitation");
+				setFieldValue("query", "citizen complaint");
+				handleSubmit("citizen complaint");
 			},
 		},
 		{
-			label: "Display all tasks mentioning 'points'",
+			label: "Water points in Nyangatom, Ethiopia",
 			icon: <></>,
 			action: (setFieldValue) => {
-				setFieldValue("query", "points");
-				handleSubmit("points");
+				setFieldValue("query", "water point");
+				handleSubmit("water point");
 			},
 		},
 		{
@@ -77,14 +103,6 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 				handleSubmit("bakeries");
 			},
 		},
-		{
-			label: "Where are the elves?",
-			icon: <></>,
-			action: (setFieldValue) => {
-				setFieldValue("query", "elf");
-				handleSubmit("elf");
-			},
-		},
 	];
 
 	return (
@@ -92,10 +110,12 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 			<Formik onSubmit={handleSubmit} initialValues={{ query: "" }}>
 				{({ isSubmitting, setFieldValue }) => (
 					<Form
-						className={`form search__form ${taskListOpen ? "splitscreen" : ""}`}
+						className={`form search__form ${
+							taskListOpen ? "splitscreen" : isBackground ? "background" : ""
+						}`}
 					>
 						<Snackbar
-							anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+							anchorOrigin={{ vertical: "top", horizontal: "center" }}
 							className="no-tasks"
 							open={snackbarOpen}
 							autoHideDuration={4000}
@@ -119,7 +139,7 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 							<Field
 								type="text"
 								name="query"
-								label="Search WhatsApp maps ground data"
+								label="Search WhatsApp Maps"
 								as={TextField}
 								className="search__input"
 							/>
@@ -128,7 +148,7 @@ export default function SearchForm({ showSearchResults, taskListOpen }) {
 							<Fab
 								type="submit"
 								disabled={isSubmitting}
-								color="info"
+								color="primary"
 								variant="contained"
 								className="search__submit__btn"
 							>

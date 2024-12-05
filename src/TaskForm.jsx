@@ -7,10 +7,6 @@ import { CloseButton } from "./utils/Buttons";
 import { createTask, updateTask } from "./utils/apiQueries";
 // import * as Yup from "yup";
 
-// these will be dynamically taken from their login and generated
-const taskID = generateTaskId();
-const campaignCode = generateCampaignCode();
-
 // const validationSchema = Yup.object({
 // 	organisation: Yup.string().required("Organisation is required"), // in future maybe we turn this into a dropdown with "add new?" and generate a uuid
 // 	logo: Yup.mixed(),
@@ -63,15 +59,17 @@ export default function TaskForm({
 		// const imageBuffer = fs.readFileSync(imagePath);
 		// const base64Image = imageBuffer.toString('base64');
 
+		const taskID = generateTaskId();
+		const campaignCode = generateCampaignCode();
+
 		values = { ...values, taskID: taskID, campaignCode: campaignCode };
 		try {
 			const response = await createTask({ user, values });
 			if (response) {
 				let msg = {
-					title: values.title,
-					description: values.description,
-					taskID: values.taskID,
+					title: `Your task ${values.campaignCode} has been created`,
 					campaignCode: values.campaignCode,
+					description: `Ask your WhatsApp Mappers to send the code ${values.campaignCode} to Kapta at +44 7473522912. Kapta will then guide them through the next steps.`,
 				};
 				showSuccess(msg);
 			}
@@ -87,7 +85,6 @@ export default function TaskForm({
 				let msg = {
 					title: values.title,
 					description: values.description,
-					taskID: values.taskID,
 					campaignCode: values.campaignCode,
 				};
 				showSuccess(msg);
@@ -104,10 +101,12 @@ export default function TaskForm({
 				// validation schema currently not valid
 				onSubmit={taskValues ? handleEdit : handleSubmit}
 			>
-				{({ isSubmitting, setFieldValue }) => (
+				{({ isSubmitting, setFieldValue, values }) => (
 					<Form className="form task-request-form">
 						<CloseButton setIsVisible={setIsVisible} />
-						<h2 color="info">Tell us about your task</h2>
+						<h2 color="info">
+							{taskValues ? "Edit task details" : "Tell us about your task"}
+						</h2>
 						<div className="form__body">
 							{/* Hidden field for Created By */}
 							<Field type="hidden" name="createdBy" />
@@ -127,8 +126,8 @@ export default function TaskForm({
 								/>
 
 								{/* Logo */}
-
-								<Button
+								{/* this also isn't working, should fix */}
+								{/* <Button
 									variant="contained"
 									tabIndex={-1}
 									startIcon={<CloudUploadIcon />}
@@ -143,25 +142,18 @@ export default function TaskForm({
 											setFieldValue("logo", event.currentTarget.files[0]);
 										}}
 									/>
-								</Button>
+								</Button> */}
 							</Box>
 
 							{/* Private to Org */}
-							<div>
+							{/* <div>
 								<label>
 									<Field type="checkbox" name="private" as={Checkbox} />
 									Is the data private? (Only members of the organisation can
 									access)
 								</label>
-							</div>
+							</div> */}
 
-							{/* Visible on Kapta Web */}
-							<div>
-								<label>
-									<Field type="checkbox" name="visible" as={Checkbox} />
-									Does the request appear on Kapta Web searches?
-								</label>
-							</div>
 							{/* Title */}
 							<Field
 								name="title"
@@ -179,6 +171,8 @@ export default function TaskForm({
 								label="Description"
 								fullWidth
 								required
+								multiline
+								rows={2}
 							/>
 							<ErrorMessage
 								name="description"
@@ -190,16 +184,23 @@ export default function TaskForm({
 							{taskValues && (
 								<p>Your campaign code: {initialValues.campaignCode}</p>
 							)}
+							{/* Visible on Kapta Web */}
+							<div>
+								<label>
+									<Field type="checkbox" name="visible" as={Checkbox} />I want
+									the WhatsApp Maps of this task to be open data.
+								</label>
+							</div>
 
 							{/* Submit Button */}
 							<Button
 								type="submit"
-								disabled={isSubmitting}
+								disabled={!values.visible || isSubmitting}
 								color="success"
 								variant="contained"
 								className="btn--submit"
 							>
-								{taskValues ? "Edit Task" : "Submit Request"}
+								{taskValues ? "Update" : "Submit Request"}
 							</Button>
 						</div>
 					</Form>
