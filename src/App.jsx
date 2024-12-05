@@ -13,7 +13,6 @@ import ErrorModal from "./utils/ErrorModal";
 import ConfirmModal from "./utils/ConfirmationModal";
 import SuccessModal from "./SuccessModal";
 import BurgerMenu from "./BurgerMenu";
-import SearchResults from "./SearchResultsList";
 import LegalNotice from "./utils/LegalNoticeModal";
 import PosterModal from "./utils/PosterModal";
 import { KaptaSVGIconWhite } from "./utils/icons";
@@ -39,8 +38,8 @@ export default function App() {
 	const [successIsTask, setSuccessIsTask] = useState(false);
 	const [errorMsg, setErrorMsg] = useState("");
 
-	const [searchResultsVisible, setSearchResultsVisible] = useState(false);
 	const [searchResults, setSearchResults] = useState([]);
+	const [query, setQuery] = useState("");
 
 	const [BMopen, setBMopen] = useState(false);
 
@@ -107,7 +106,6 @@ export default function App() {
 				polygons.push(task);
 			}
 		});
-		console.log("polygons", polygons);
 		return polygons;
 	};
 
@@ -116,18 +114,34 @@ export default function App() {
 		if (results !== searchResults) {
 			setPolygonStore(null); // reset polygon store for each new search
 			setSearchResults(results);
+			setTaskListName("search");
 		}
-		if (!searchResultsVisible) {
-			setSearchResultsVisible(true);
+		if (!isTaskListVisible) {
+			setTaskListVisible(true);
 		}
 		const polygons = getPolygons(results);
 		if (polygons.length > 0) {
 			return showBounds(polygons);
 		}
 	};
+	const doSearch = (query, tasks, refresh = false) => {
+		setQuery(query);
+		var results = [];
 
+		tasks.forEach((task) => {
+			if (
+				task.task_title.toLowerCase().includes(query) ||
+				task.task_description.toLowerCase().includes(query)
+			) {
+				results.push(task);
+			}
+		});
+		if (results.length === 0) {
+			// todo: response in the chat area thing
+		}
+		showSearchResults(results);
+	};
 	const showTaskInList = (id) => {
-		console.log("show task in list", id);
 		setChosenTaskId(id);
 		setTaskListVisible(true);
 	};
@@ -264,16 +278,17 @@ export default function App() {
 					</div>
 
 					<SearchForm
-						showSearchResults={showSearchResults}
-						taskListOpen={isTaskListVisible || searchResultsVisible}
+						doSearch={doSearch}
+						taskListOpen={isTaskListVisible}
 						isBackground={!user.loggedIn}
+						query={query}
 					/>
 				</div>
 				<div className="task-map-wrapper">
 					<Map
 						boundsVisible={boundsVisible}
 						polygonStore={polygonStore}
-						taskListOpen={isTaskListVisible || searchResultsVisible}
+						taskListOpen={isTaskListVisible}
 						focusTask={focusTask}
 						showTaskInList={showTaskInList}
 						isBackground={!user.loggedIn}
@@ -291,16 +306,11 @@ export default function App() {
 						scrollFlashTask={scrollFlashTask}
 						taskListName={taskListName}
 						setTaskListName={setTaskListName}
+						searchResults={searchResults}
+						searchQuery={query}
+						doSearch={doSearch}
 					/>
 
-					<SearchResults
-						isVisible={user.loggedIn && searchResultsVisible}
-						setIsVisible={setSearchResultsVisible}
-						results={searchResults}
-						setFocusTask={setFocusTask}
-						chosenTaskId={chosenTaskId}
-						scrollFlashTask={scrollFlashTask}
-					/>
 					<Fab
 						size="medium"
 						variant="extended"
