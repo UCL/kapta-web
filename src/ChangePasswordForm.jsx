@@ -1,42 +1,40 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Button, TextField, Typography, useTheme } from "@mui/material";
-import DangerousIcon from "@mui/icons-material/Dangerous";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useState } from "react";
 import "./styles/forms.css";
-import { signUp } from "./utils/auth";
-import PasswordStrengthContainer from "./utils/PasswordStrengthContainer";
+import { respondToPasswordChangeChallenge } from "./utils/auth";
 import { checkPasswordStrength } from "./utils/generalUtils";
+import { useUserStore } from "./globals";
 import { CloseButton } from "./utils/Buttons";
+import PasswordStrengthContainer from "./utils/PasswordStrengthContainer";
 import * as Yup from "yup";
 
 
-export default function SignUpForm({
+
+export default function ChangePasswordForm({
 	isVisible,
 	setIsVisible,
-	showConfirmModal,
+	showLoginSuccessModal,
 	showFilledLoginForm,
+	prefilledEmail,
+	loginSession,
 }) {
+	const user = useUserStore();
 	useTheme();
 	const [passwordStrength, setPasswordStrength] = useState({});
 
 	if (!isVisible) return null;
 
 	const initialValues = {
-		givenName: "",
-		familyName: "",
-		email: "",
-		password: "",
-		preferredUsername: "",
-		phoneNumber: "",
-		confirmPassword: "",
-		organisation: "",
+		email: prefilledEmail || "",
 	};
 
-	const validationSchema = Yup.object({
-		givenName: Yup.string().required("Required"),
-		familyName: Yup.string().required("Required"),
-		email: Yup.string().email("Invalid email address").required("Required"),
+	const validationSchema = Yup.object().shape({
+		email: Yup.string()
+			.email("Invalid email address")
+			.required("Required"),
+		oldPassword: Yup.string()
+			.required("Required"),
 		password: Yup.string()
 			.test(
 				"password-strength",
@@ -52,24 +50,24 @@ export default function SignUpForm({
 			.required("Required"),
 		// todo: confirm pw doesn't seem to work when not matching
 	});
-	const handleSubmit = async (values) => {
-		if (values.phoneNumber) {
-			// make sure the phone number has a +
-			const formattedPhoneNumber = values.phoneNumber.startsWith("+")
-				? values.phoneNumber
-				: `+${values.phoneNumber}`;
-			values.phoneNumber = formattedPhoneNumber;
-		}
 
-		return signUp(values).then(({ response }) => {
+	const setUserDetailsAndShowModal = async (response) => {
+		// this doesn't work sometimes?
+		const details = await user.setUserDetails(response);
+		showLoginSuccessModal(`Welcome back, ${details.dName}`);
+		setIsVisible(false);
+	};
+
+	const handleSubmit = async (values) => {
+		console.log("Handling submit", values);
+		return respondToPasswordChangeChallenge(loginSession, values).then(({ response }) => {
 			if (!response) {
 				console.error("Error signing up");
 			}
 			if (response === 4469) {
 				showFilledLoginForm(values.email);
 			} else {
-				showConfirmModal(values.email);
-				setIsVisible(false);
+				setUserDetailsAndShowModal(response.AuthenticationResult);
 			}
 		});
 	};
@@ -87,50 +85,14 @@ export default function SignUpForm({
 				<Formik
 					onSubmit={handleSubmit}
 					initialValues={initialValues}
-					validationSchema={validationSchema}
+					validationSchena={validationSchema}
 				>
 					{({ isSubmitting, setFieldValue }) => (
 						<Form className="form signup__form" autoComplete="on">
 							<Typography variant="h4" color="primary">
-								Create Account
+								Please change your password
 							</Typography>
-							<div className="form__row">
-								<Field
-									type="text"
-									name="givenName"
-									label="First Name"
-									as={TextField}
-									required
-								/>
-								<ErrorMessage
-									name="givenName"
-									component="div"
-									className="error"
-								/>
-								<Field
-									type="text"
-									name="familyName"
-									label="Last Name"
-									as={TextField}
-									required
-								/>
-								<ErrorMessage
-									name="familyName"
-									component="div"
-									className="error"
-								/>
-								<Field
-									type="text"
-									name="preferredUsername"
-									label="Display Name (optional)"
-									as={TextField}
-								/>
-								<ErrorMessage
-									name="preferredUsername"
-									component="div"
-									className="error"
-								/>
-							</div>
+
 							<Field
 								type="email"
 								name="email"
@@ -146,8 +108,21 @@ export default function SignUpForm({
 
 							<Field
 								type="password"
+								name="oldPassword"
+								label="Old Password"
+								as={TextField}
+								required
+								inputProps={{
+									autoComplete: "old-password",
+								}}
+								autoComplete="old-password"
+							/>
+							<ErrorMessage name="password" component="div" className="error" />
+
+							<Field
+								type="password"
 								name="password"
-								label="Password"
+								label="New Password"
 								as={TextField}
 								required
 								inputProps={{
@@ -161,7 +136,7 @@ export default function SignUpForm({
 							<Field
 								type="password"
 								name="confirmPassword"
-								label="Confirm Password"
+								label="Confirm New Password"
 								as={TextField}
 								required
 							/>
@@ -170,33 +145,6 @@ export default function SignUpForm({
 								component="div"
 								className="error"
 							/>
-
-							<div className="form__row">
-								<Field
-									type="phone"
-									name="phoneNumber"
-									label="Phone Number (optional)"
-									as={TextField}
-									helperText="Please include your country code"
-								/>
-								<ErrorMessage
-									name="phoneNumber"
-									component="div"
-									className="error"
-								/>
-								<Field
-									type="text"
-									name="organisation"
-									label="Organisation (optional)"
-									as={TextField}
-									helperText=" "
-								/>
-								<ErrorMessage
-									name="organisation"
-									component="div"
-									className="error"
-								/>
-							</div>
 
 							{/* Submit Button */}
 							<Button

@@ -18,6 +18,7 @@ import LegalNotice from "./utils/LegalNoticeModal";
 import PosterModal from "./utils/PosterModal";
 import { KaptaSVGIconWhite } from "./utils/icons";
 import WaitlistWidget from "./utils/WaitlistWidget";
+import ChangePasswordForm from "./ChangePasswordForm";
 
 export default function App() {
 	const [isTaskFormVisible, setTaskFormVisible] = useState(false);
@@ -30,6 +31,8 @@ export default function App() {
 	const [email, setEmail] = useState("");
 	const [confirmModalVisible, setConfirmModalVisible] = useState(false);
 	const [cmRecipient, setCMRecipient] = useState(null);
+	const [loginSession, setLoginSession] = useState(null);
+	const [changePasswordVisible, setChangePasswordVisible] = useState(false);
 
 	const [successModalVisible, setSuccessModalVisible] = useState(false);
 	const [successMsg, setSuccessMsg] = useState(null);
@@ -80,6 +83,11 @@ export default function App() {
 		setSignUpFormVisible(false);
 		setEmail(email);
 		setLoginFormVisible(true);
+	};
+	const showFilledChangePasswordForm = (email) => {
+		setLoginFormVisible(false);
+		setEmail(email);
+		setChangePasswordVisible(true);
 	};
 	const showTaskSuccessModal = (message) => {
 		setSuccessModalVisible(true);
@@ -183,16 +191,27 @@ export default function App() {
 					isVisible={isLoginFormVisible}
 					setIsVisible={setLoginFormVisible}
 					setSignUpVisible={setWaitlistVisible}
+					setChangePasswordVisible={setChangePasswordVisible}
 					setErrorMsg={setErrorMsg}
 					showConfirmModal={showConfirmModal}
 					showLoginSuccessModal={showLoginSuccessModal}
 					prefilledEmail={email}
+					setLoginSession={setLoginSession}
+					showFilledChangePasswordForm={showFilledChangePasswordForm}
 				/>
 				<SignUpForm
 					isVisible={signUpFormVisible}
 					setIsVisible={setSignUpFormVisible}
 					showConfirmModal={showConfirmModal}
 					showFilledLoginForm={showFilledLoginForm}
+				/>
+				<ChangePasswordForm
+					isVisible={changePasswordVisible}
+					setIsVisible={setChangePasswordVisible}
+					showLoginSuccessModal={showLoginSuccessModal}
+					showFilledLoginForm={showFilledLoginForm}
+					prefilledEmail={email}
+					loginSession={loginSession}
 				/>
 				{confirmModalVisible && (
 					<ConfirmModal
