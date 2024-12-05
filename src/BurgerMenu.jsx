@@ -34,8 +34,8 @@ export default function BurgerMenu({
 	const handlePosterClick = () => {
 		setPosterVisible(true);
 		setIsOpen(false);
-		console.log("handlePosterClick");
 	};
+	const mailto = "mailto:info@kapta.earth?subject=Kapta Web Feedback";
 	useEffect(() => {
 		const observer = new MutationObserver((mutationsList, observer) => {
 			for (let mutation of mutationsList) {
@@ -123,7 +123,7 @@ export default function BurgerMenu({
 			icon: <GroupsIcon />,
 			subtitle:
 				"We are open to building partnerships. Let's explore how Kapta can support your work.",
-			content: `Contact us at <a href="mailto:info@kapta.earth?subject=Kapta Web Feedback">
+			content: `Contact us at <a href="${mailto}">
 				info@kapta.earth</a>`,
 		},
 		{
@@ -154,6 +154,11 @@ export default function BurgerMenu({
 					content: `<p>
 We prioritise enhancing the capabilities of individuals and communities impacted by our work, ensuring that every action serves a meaningful purpose and aligns with the public interest. Ethics is at the core of our decisions, helping us build trust and foster collective intelligence. By focusing on fairness, transparency, and inclusivity, we develop solutions that empower people to make better decisions in an increasingly complex world shaped by global environmental changes. Our work is guided by a commitment to contribute to a more equitable, sustainable, and socially responsible future for all.
 </p><p>We embrace open-source principles to promote collective progress and serve the public interest. By sharing our tools and methods openly, we enable others to adapt them to diverse challenges and encourage broader participation in knowledge sharing. This approach fosters collaboration across geographies and cultures, driving solutions that benefit society as a whole.</p>`,
+				},
+				{
+					title: "Careers",
+					content: `<p>Join our dynamic team! We combine the creativity of academic research with the agility of a company, guided by a shared commitment to ethics, citizen science technology and collective intelligence. If you are curious about our work and want to contribute to innovative solutions for real-world challenges, we would love to hear from you - reach out at <a href=${mailto}>info@kapta.earth</a>.</p>
+`,
 				},
 				{
 					title: "Team",
@@ -264,12 +269,7 @@ Advisors:<ul>
 								WhatsApp
 							</Button>{" "}
 							or email us at{" "}
-							<Button
-								onClick={() =>
-									(window.location.href =
-										"mailto:info@kapta.earth?subject=Kapta Web Feedback")
-								}
-							>
+							<Button onClick={() => (window.location.href = mailto)}>
 								info@kapta.earth
 							</Button>
 						</Typography>
