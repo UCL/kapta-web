@@ -69,7 +69,7 @@ export default function TaskList({
 			}
 			setIsLoading(false);
 		}
-	}, [taskListName, user]);
+	}, [taskListName, user, searchResults]);
 
 	useEffect(() => {
 		if (chosenTaskId && chosenTaskId.includes("opendata")) {

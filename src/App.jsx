@@ -136,7 +136,6 @@ export default function App() {
 				results.push(task);
 			}
 		});
-		if (refresh === true) return results; // if it's a refresh then just return the list of tasks directly
 		if (results.length === 0) {
 			// todo: response in the chat area thing
 		} else showSearchResults(results);
