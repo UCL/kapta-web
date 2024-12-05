@@ -14,7 +14,11 @@ import { useEffect, useRef, useState } from "react";
 import "./styles/task-list.css";
 import { copyToClipboard } from "./utils/copyToClipboard";
 import { useClickOutside } from "./utils/useClickOutside";
-import { fetchMyTasks, fetchODTasks } from "./utils/apiQueries";
+import {
+	fetchAllVisibleTasks,
+	fetchMyTasks,
+	fetchODTasks,
+} from "./utils/apiQueries";
 import { DrawerCloseButton, PinButton } from "./utils/Buttons";
 import TaskCard from "./utils/TaskCard";
 export default function TaskList({
@@ -29,6 +33,9 @@ export default function TaskList({
 	scrollFlashTask,
 	taskListName,
 	setTaskListName,
+	searchResults,
+	searchQuery,
+	doSearch,
 }) {
 	const [tasks, setTasks] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -56,10 +63,12 @@ export default function TaskList({
 					setTasks(fetchedTasks);
 				};
 				fetchTasks();
+			} else if (taskListName == "search") {
+				setTasks(searchResults);
 			}
 			setIsLoading(false);
 		}
-	}, [taskListName, user]);
+	}, [taskListName, user, searchResults]);
 
 	useEffect(() => {
 		if (chosenTaskId && chosenTaskId.includes("opendata")) {
@@ -124,6 +133,9 @@ export default function TaskList({
 				fetchedTasks = await fetchMyTasks({ user });
 			} else if (taskListName == "opendata") {
 				fetchedTasks = await await fetchODTasks({ user });
+			} else if (taskListName == "search") {
+				const visibleTasks = await fetchAllVisibleTasks({ user });
+				fetchedTasks = doSearch(searchQuery, visibleTasks, true);
 			}
 			setTasks(fetchedTasks);
 		} catch (error) {
@@ -172,6 +184,9 @@ export default function TaskList({
 						<ToggleButton value="opendata">
 							Explore Others&rsquo; Tasks
 						</ToggleButton>
+						{searchQuery && (
+							<ToggleButton value="search">Search Results</ToggleButton>
+						)}
 					</ToggleButtonGroup>
 					<IconButton
 						onClick={handleRefresh}

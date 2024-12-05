@@ -54,7 +54,6 @@ export default function ChangePasswordForm({
 	};
 
 	const handleSubmit = async (values) => {
-		console.log("Handling submit", values);
 		return respondToPasswordChangeChallenge(loginSession, values).then(
 			({ response }) => {
 				if (!response) {
