@@ -6,10 +6,8 @@ import { respondToPasswordChangeChallenge } from "./utils/auth";
 import { checkPasswordStrength } from "./utils/generalUtils";
 import { useUserStore } from "./globals";
 import { CloseButton } from "./utils/Buttons";
-import PasswordStrengthContainer from "./utils/PasswordStrengthContainer";
 import * as Yup from "yup";
-
-
+import PasswordChecker from "./utils/PasswordChecker";
 
 export default function ChangePasswordForm({
 	isVisible,
@@ -30,11 +28,8 @@ export default function ChangePasswordForm({
 	};
 
 	const validationSchema = Yup.object().shape({
-		email: Yup.string()
-			.email("Invalid email address")
-			.required("Required"),
-		oldPassword: Yup.string()
-			.required("Required"),
+		email: Yup.string().email("Invalid email address").required("Required"),
+		oldPassword: Yup.string().required("Required"),
 		password: Yup.string()
 			.test(
 				"password-strength",
@@ -60,16 +55,18 @@ export default function ChangePasswordForm({
 
 	const handleSubmit = async (values) => {
 		console.log("Handling submit", values);
-		return respondToPasswordChangeChallenge(loginSession, values).then(({ response }) => {
-			if (!response) {
-				console.error("Error signing up");
+		return respondToPasswordChangeChallenge(loginSession, values).then(
+			({ response }) => {
+				if (!response) {
+					console.error("Error signing up");
+				}
+				if (response === 4469) {
+					showFilledLoginForm(values.email);
+				} else {
+					setUserDetailsAndShowModal(response.AuthenticationResult);
+				}
 			}
-			if (response === 4469) {
-				showFilledLoginForm(values.email);
-			} else {
-				setUserDetailsAndShowModal(response.AuthenticationResult);
-			}
-		});
+		);
 	};
 
 	const handlePasswordChange = (e, setFieldValue) => {
@@ -158,7 +155,7 @@ export default function ChangePasswordForm({
 						</Form>
 					)}
 				</Formik>
-				<PasswordStrengthContainer passwordStrength={passwordStrength} />
+				<PasswordChecker passwordStrength={passwordStrength} />
 			</div>
 		</>
 	);

@@ -1,15 +1,12 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Button, TextField, Typography, useTheme } from "@mui/material";
-import DangerousIcon from "@mui/icons-material/Dangerous";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useState } from "react";
 import "./styles/forms.css";
 import { signUp } from "./utils/auth";
-import PasswordStrengthContainer from "./utils/PasswordStrengthContainer";
 import { checkPasswordStrength } from "./utils/generalUtils";
 import { CloseButton } from "./utils/Buttons";
 import * as Yup from "yup";
-
+import PasswordChecker from "./utils/PasswordChecker";
 
 export default function SignUpForm({
 	isVisible,
@@ -210,7 +207,7 @@ export default function SignUpForm({
 						</Form>
 					)}
 				</Formik>
-				<PasswordStrengthContainer passwordStrength={passwordStrength} />
+				<PasswordChecker passwordStrength={passwordStrength} />
 			</div>
 		</>
 	);

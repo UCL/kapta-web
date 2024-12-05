@@ -22,7 +22,7 @@ export const slugify = (str) => {
 	return str;
 };
 
-export function checkPasswordStrength(password) {
+export const checkPasswordStrength = (password) => {
 	const checks = {
 		minLength: password.length >= 8,
 		hasLowercase: /[a-z]/.test(password),
@@ -32,4 +32,4 @@ export function checkPasswordStrength(password) {
 	};
 
 	return checks;
-}
+};
