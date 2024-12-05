@@ -41,38 +41,6 @@ export default function SearchForm({
 		}
 		const q = values.query?.toLowerCase() || values;
 		doSearch(q, tasks);
-		// setQuery(q);
-		// var results = [];
-
-		// tasks.forEach((task) => {
-		// 	if (
-		// 		task.task_title.toLowerCase().includes(q) ||
-		// 		task.task_description.toLowerCase().includes(q)
-		// 	) {
-		// 		results.push(task);
-		// 	}
-		// });
-		// if (results.length === 0) {
-		// 	setSnackbarOpen(true);
-		// } else showSearchResults(results);
-	};
-	const handleRefresh = async () => {
-		// todo: get this to work
-		try {
-			const fetchTasks = async () => {
-				var fetchedTasks = await fetchAllVisibleTasks({ user });
-				return fetchedTasks;
-			};
-
-			fetchTasks().then((tasks) => {
-				const visibleTasks = tasks.filter((task) => task.visible === true);
-				setTasks(visibleTasks);
-			});
-
-			handleSubmit(query);
-		} catch (error) {
-			console.error("Error fetching tasks:", error);
-		}
 	};
 
 	const chipSuggestions = [
