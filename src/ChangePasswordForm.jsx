@@ -5,21 +5,12 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useState } from "react";
 import "./styles/forms.css";
 import { respondToPasswordChangeChallenge } from "./utils/auth";
+import { checkPasswordStrength } from "./utils/generalUtils";
 import { useUserStore } from "./globals";
 import { CloseButton } from "./utils/Buttons";
 import * as Yup from "yup";
 
-function checkPasswordStrength(password) {
-	const checks = {
-		minLength: password.length >= 8,
-		hasLowercase: /[a-z]/.test(password),
-		hasUppercase: /[A-Z]/.test(password),
-		hasDigit: /\d/.test(password),
-		hasSymbol: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
-	};
 
-	return checks;
-}
 
 export default function ChangePasswordForm({
 	isVisible,
