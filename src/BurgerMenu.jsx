@@ -285,7 +285,7 @@ Advisors:<ul>
 						</Button>
 					)}
 					<Typography variant="caption" id="legal-notice">
-						© 2024 Wisdom of the Crowd Labs, All rights reserved -{" "}
+						© 2024 Wisdom of the Crowd Labs (WCL), All rights reserved -{" "}
 						<a
 							onClick={(e) => {
 								toggleDrawer(false)(e);
