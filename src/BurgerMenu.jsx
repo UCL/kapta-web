@@ -70,7 +70,7 @@ export default function BurgerMenu({
 
 	const handleLogout = () => {
 		user.logout();
-		toggleDrawer(false);
+		toggleDrawer(false)({ type: null });
 	};
 	const viewProfile = () => {
 		console.log("todo: view profile");
@@ -115,7 +115,7 @@ export default function BurgerMenu({
 			title: "Kapta",
 			icon: <KaptaSVGIconWhite />,
 			subtitle:
-				"Kapta is a WhatsApp-based crowdsourcing platform to help solve local, national and global challenges through searching WhatsApp Maps and tasking WhatsApp Mappers",
+				"Kapta is a platform that brings people together to create and share WhatsApp Maps",
 			content: "",
 		},
 		{
