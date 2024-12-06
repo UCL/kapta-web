@@ -40,7 +40,7 @@ VITE_MAPBOX_TOKEN=
 
 # Legal disclaimer
 
-Copyright © 2024 [University College London](http://ucl.ac.uk)
+Copyright 2024 Wisdom of the Crowd Labs (WCL)
 
 Licensed under the **Apache License, Version 2.0** (the "License");
 you may not use this file except in compliance with the License.
