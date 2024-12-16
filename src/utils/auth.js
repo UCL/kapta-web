@@ -10,7 +10,6 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 
 import { cognito } from "../globals";
-import { ConstructionOutlined } from "@mui/icons-material";
 
 const signUp = async (values) => {
 	const client = new CognitoIdentityProviderClient(cognito);
