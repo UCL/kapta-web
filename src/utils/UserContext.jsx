@@ -81,7 +81,7 @@ export const UserProvider = ({ children }) => {
 	// Check for user tokens from localStorage and update user info
 	const checkForDetails = useCallback(async () => {
 		let userDetails = getLocalStorageTokens();
-		// check each of the tokens is there and not "null"
+		// check id and access tokens are there and not "null"
 
 		const userDetailsNotNull =
 			userDetails.idToken !== "null" &&
