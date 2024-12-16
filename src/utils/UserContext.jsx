@@ -40,7 +40,6 @@ export const UserProvider = ({ children }) => {
 		setIdToken(idToken);
 		setRefreshToken(refreshToken);
 		setLoggedIn(true);
-
 		setLocalStorage(idToken, accessToken, refreshToken); // the states won't have been updated in time, so use the original prop, same for the return (specific to the login flow)
 		return { dName, sub };
 	}, []);
@@ -56,9 +55,9 @@ export const UserProvider = ({ children }) => {
 
 	const getLocalStorageTokens = useCallback(() => {
 		return {
-			idToken: localStorage.getItem("idToken"),
-			accessToken: localStorage.getItem("accessToken"),
-			refreshToken: localStorage.getItem("refreshToken"),
+			idToken: localStorage.getItem("KW-idToken"),
+			accessToken: localStorage.getItem("KW-accessToken"),
+			refreshToken: localStorage.getItem("KW-refreshToken"),
 		};
 	}, []);
 
@@ -66,7 +65,7 @@ export const UserProvider = ({ children }) => {
 	const refresh = useCallback(
 		async (refreshToken) => {
 			// this might be getting called on app launch
-			if (refreshToken) {
+			if (refreshToken !== null && refreshToken !== "null") {
 				const response = await initiateAuthRefresh(refreshToken);
 				const authResult = response.AuthenticationResult;
 				setUserDetails({
@@ -83,20 +82,27 @@ export const UserProvider = ({ children }) => {
 	const checkForDetails = useCallback(async () => {
 		let userDetails = getLocalStorageTokens();
 		// check each of the tokens is there and not "null"
-		const userDetailsNotNull = Object.values(userDetails).every(
-			(value) => value !== null && value !== "null" && value !== undefined
-		);
+
+		const userDetailsNotNull =
+			userDetails.idToken !== "null" &&
+			userDetails.idToken !== undefined &&
+			userDetails.idToken !== null &&
+			userDetails.accessToken !== "null" &&
+			userDetails.accessToken !== undefined &&
+			userDetails.accessToken !== null;
 
 		if (userDetailsNotNull) {
 			const isValid = await isTokenValid(userDetails.idToken);
 			if (!isValid) {
-				await refresh(userDetails.refreshToken);
-				try {
-					userDetails = getLocalStorageTokens();
-					await isTokenValid();
-					setUserDetails(userDetails);
-				} catch (error) {
-					console.error("Error refreshing tokens", error);
+				if (userDetails.refreshToken && userDetails.refreshToken !== "null") {
+					await refresh(userDetails.refreshToken);
+					try {
+						userDetails = getLocalStorageTokens();
+						await isTokenValid();
+						setUserDetails(userDetails);
+					} catch (error) {
+						console.error("Error refreshing tokens", error);
+					}
 				}
 			} else {
 				setUserDetails(userDetails);
@@ -111,9 +117,9 @@ export const UserProvider = ({ children }) => {
 
 	// update localStorage values
 	const setLocalStorage = (idToken, accessToken, refreshToken) => {
-		localStorage.setItem("idToken", idToken || "null"); // Save as "null" if null
-		localStorage.setItem("accessToken", accessToken || "null");
-		localStorage.setItem("refreshToken", refreshToken || "null");
+		localStorage.setItem("KW-idToken", idToken || "null"); // Save as "null" if null
+		localStorage.setItem("KW-accessToken", accessToken || "null");
+		localStorage.setItem("KW-refreshToken", refreshToken || "null");
 	};
 
 	// Function to log out
@@ -129,9 +135,9 @@ export const UserProvider = ({ children }) => {
 			);
 		}
 		// Clear localStorage and state
-		localStorage.removeItem("accessToken");
-		localStorage.removeItem("idToken");
-		localStorage.removeItem("refreshToken");
+		localStorage.removeItem("KW-accessToken");
+		localStorage.removeItem("KW-idToken");
+		localStorage.removeItem("KW-refreshToken");
 		setIdToken(null);
 		setAccessToken(null);
 		setRefreshToken(null);
