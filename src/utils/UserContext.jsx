@@ -1,5 +1,6 @@
 import { useState, useCallback, createContext, useEffect } from "react";
 import { initiateAuthRefresh, signOut } from "./auth";
+import { ref } from "yup";
 
 // Create the User Context
 export const UserContext = createContext();
@@ -54,6 +55,7 @@ export const UserProvider = ({ children }) => {
 	}
 
 	const getLocalStorageTokens = useCallback(() => {
+		console.log("getting tokens from local storage");
 		return {
 			idToken: localStorage.getItem("KW-idToken"),
 			accessToken: localStorage.getItem("KW-accessToken"),
@@ -65,15 +67,15 @@ export const UserProvider = ({ children }) => {
 	const refresh = useCallback(
 		async (refreshToken) => {
 			// this might be getting called on app launch
-			if (refreshToken !== null && refreshToken !== "null") {
+			if (refreshToken && refreshToken !== "null") {
 				const response = await initiateAuthRefresh(refreshToken);
 				const authResult = response.AuthenticationResult;
 				setUserDetails({
 					accessToken: authResult.AccessToken,
 					idToken: authResult.IdToken,
-					refreshToken: authResult.RefreshToken,
+					refreshToken: refreshToken,
 				});
-			}
+			} else console.log("refresh token is null");
 		},
 		[setUserDetails]
 	);
@@ -117,6 +119,7 @@ export const UserProvider = ({ children }) => {
 
 	// update localStorage values
 	const setLocalStorage = (idToken, accessToken, refreshToken) => {
+		console.log("setting tokens in local storage");
 		localStorage.setItem("KW-idToken", idToken || "null"); // Save as "null" if null
 		localStorage.setItem("KW-accessToken", accessToken || "null");
 		localStorage.setItem("KW-refreshToken", refreshToken || "null");
