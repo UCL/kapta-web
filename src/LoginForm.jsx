@@ -31,7 +31,6 @@ export default function LoginForm({
 		const { email, password } = values;
 
 		return initiateAuth(email, password).then(({ response }) => {
-			console.log(response);
 			if (response === 4359) {
 				setIsVisible(false);
 				setSignUpVisible(true);
@@ -39,10 +38,15 @@ export default function LoginForm({
 			} else if (response === 4399) {
 				setErrorMsg("Please confirm your account before logging in");
 				showConfirmModal(email);
-			} else if (response.ChallengeName && response.ChallengeName == "NEW_PASSWORD_REQUIRED") {
+			} else if (
+				response.ChallengeName &&
+				response.ChallengeName == "NEW_PASSWORD_REQUIRED"
+			) {
 				setLoginSession(response.Session);
-				showFilledChangePasswordForm(response.ChallengeParameters?.userAttributes.email);
-		 	} else {
+				showFilledChangePasswordForm(
+					response.ChallengeParameters?.userAttributes.email
+				);
+			} else {
 				setUserDetailsAndShowModal(response.AuthenticationResult);
 			}
 		});

@@ -1,5 +1,6 @@
 import { useState, useCallback, createContext, useEffect } from "react";
 import { initiateAuthRefresh, signOut } from "./auth";
+import { ref } from "yup";
 
 // Create the User Context
 export const UserContext = createContext();
@@ -40,7 +41,6 @@ export const UserProvider = ({ children }) => {
 		setIdToken(idToken);
 		setRefreshToken(refreshToken);
 		setLoggedIn(true);
-
 		setLocalStorage(idToken, accessToken, refreshToken); // the states won't have been updated in time, so use the original prop, same for the return (specific to the login flow)
 		return { dName, sub };
 	}, []);
@@ -55,10 +55,11 @@ export const UserProvider = ({ children }) => {
 	}
 
 	const getLocalStorageTokens = useCallback(() => {
+		console.log("getting tokens from local storage");
 		return {
-			idToken: localStorage.getItem("idToken"),
-			accessToken: localStorage.getItem("accessToken"),
-			refreshToken: localStorage.getItem("refreshToken"),
+			idToken: localStorage.getItem("KW-idToken"),
+			accessToken: localStorage.getItem("KW-accessToken"),
+			refreshToken: localStorage.getItem("KW-refreshToken"),
 		};
 	}, []);
 
@@ -66,15 +67,15 @@ export const UserProvider = ({ children }) => {
 	const refresh = useCallback(
 		async (refreshToken) => {
 			// this might be getting called on app launch
-			if (refreshToken) {
+			if (refreshToken && refreshToken !== "null") {
 				const response = await initiateAuthRefresh(refreshToken);
 				const authResult = response.AuthenticationResult;
 				setUserDetails({
 					accessToken: authResult.AccessToken,
 					idToken: authResult.IdToken,
-					refreshToken: authResult.RefreshToken,
+					refreshToken: refreshToken,
 				});
-			}
+			} else console.log("refresh token is null");
 		},
 		[setUserDetails]
 	);
@@ -111,9 +112,10 @@ export const UserProvider = ({ children }) => {
 
 	// update localStorage values
 	const setLocalStorage = (idToken, accessToken, refreshToken) => {
-		localStorage.setItem("idToken", idToken || "null"); // Save as "null" if null
-		localStorage.setItem("accessToken", accessToken || "null");
-		localStorage.setItem("refreshToken", refreshToken || "null");
+		console.log("setting tokens in local storage");
+		localStorage.setItem("KW-idToken", idToken || "null"); // Save as "null" if null
+		localStorage.setItem("KW-accessToken", accessToken || "null");
+		localStorage.setItem("KW-refreshToken", refreshToken || "null");
 	};
 
 	// Function to log out
@@ -129,9 +131,9 @@ export const UserProvider = ({ children }) => {
 			);
 		}
 		// Clear localStorage and state
-		localStorage.removeItem("accessToken");
-		localStorage.removeItem("idToken");
-		localStorage.removeItem("refreshToken");
+		localStorage.removeItem("KW-accessToken");
+		localStorage.removeItem("KW-idToken");
+		localStorage.removeItem("KW-refreshToken");
 		setIdToken(null);
 		setAccessToken(null);
 		setRefreshToken(null);
