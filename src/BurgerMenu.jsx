@@ -94,8 +94,8 @@ export default function BurgerMenu({
 			"https://uclexcites-blog.translate.goog/2024/06/26/whatsapp-maps-connecting-users-and-producers-of-ground-information/?_x_tr_sl=auto&_x_tr_tl=es&_x_tr_hl=en-US&_x_tr_pto=wapp",
 		extremeCitizenUrl: "https://www.youtube.com/watch?v=IgQc7GQ1m_Y",
 		marcosUrl:
-			"https://www.ucl.ac.uk/geography/people/research-staff/marcos-moreu",
-		fabienUrl: "https://www.ucl.ac.uk/geography/fabien-moustard",
+			"https://linkedin.com/in/marcosmoreubadia",
+		fabienUrl: "https://linkedin.com/in/fabien-moustard-996998227",
 		tomUrl:
 			"https://www.ucl.ac.uk/advanced-research-computing/people/tom-couch",
 		mukiUrl: "https://www.ucl.ac.uk/geography/muki-haklay-facss",
@@ -118,7 +118,32 @@ export default function BurgerMenu({
 			icon: <KaptaSVGIconWhite />,
 			subtitle:
 				"Kapta is a platform that brings people together to create and share WhatsApp Maps",
-			content: "",
+			content: `<div>
+						<div style="position: relative; width: 90%; max-width: 900px; margin: 0 auto; padding-bottom: 50.625%; height: 0;">
+								<iframe 
+								src="https://www.youtube.com/embed/1XQMf5Gl4fo" 
+								title="YouTube video player" 
+								frameborder="0" 
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+								allowfullscreen
+								style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+								</iframe>
+							</div>
+
+							<p>
+								Scan this QR code to start creating WhatsApp Maps now with Kapta Assistant.  
+							</p>
+								<div style="display: flex; justify-content: center;">
+							<img 
+							src="/KaptaWA_qr-code.png" 
+							style="cursor: pointer; width: 100%; max-width: 200px; height: auto;"
+							/>
+						</div>
+
+							<p style="text-align: center;font-size: 0.9em; font-style: italic;">
+								Kapta Assistant is not a chatbot. When you use Kapta Assistant, you're talking to real people (see who we are below). While Kapta Assistant will eventually evolve into a chatbot, this is the first-ever assistant for creating WhatsApp Maps. Before we can train a machine, we need to first understand our users' needs.
+							</p>
+					</div>`,
 		},
 		{
 			title: "Work with us",
@@ -137,7 +162,9 @@ export default function BurgerMenu({
 				{
 					title: "Case Studies",
 					content: `<div><h4>Is this the first-ever WhatsApp Map?</h4><img src="/Poster_cs_1.svg" alt="Is this the first-ever WhatsApp Map?" onClick="${handlePosterClick}" style="cursor: pointer;" />
-					<p>The traditional method of assessing water infrastructure relies on field surveyors, a process that is often slow and costly. This can pose challenges for timely decision-making, especially in regions facing drought and hunger. In May 2024, pastoralists from various villages were engaged in the data collection process. Organised into WhatsApp groups and using Kapta, they facilitated faster and more efficient assessments by creating WhatsApp Maps on water infrastructure. Within just a few days, these WhatsApp mappers determined that 75% of the water infrastructure was non-functional, providing local authorities with accurate, ground-level information to take quicker and more informed action.</p></div><p><em>More case studies coming soon.</em></p>`,
+					<p>The traditional method of assessing water infrastructure relies on field surveyors, a process that is often slow and costly. This can pose challenges for timely decision-making, especially in regions facing drought and hunger. In May 2024, pastoralists from various villages were engaged in the data collection process. Organised into WhatsApp groups and using Kapta, they facilitated faster and more efficient assessments by creating WhatsApp Maps on water infrastructure. Within just a few days, these WhatsApp mappers determined that 75% of the water infrastructure was non-functional, providing local authorities with accurate, ground-level information to take quicker and more informed action.</p></div>
+					For more information about this case study, see the UCL Press release <a href="https://www.ucl.ac.uk/geography/news/2024/dec/first-ever-whatsapp-map">"Is this the first ever WhatsApp Map?"</a> and the blog post <a href="https://uclexcites.blog/2024/06/26/whatsapp-maps-connecting-users-and-producers-of-ground-information/"> "WhatsApp Maps? Connecting users and producers of ground information"</a>.
+					<p><em>More case studies coming soon.</em></p>`,
 				},
 				{
 					title: "Extreme Citizen Science",
@@ -219,7 +246,7 @@ Advisors:<ul>
 								<AccordionSummary
 									expandIcon={<ExpandMoreIcon />}
 									aria-controls={`panel${index}a-content`}
-									id={`panel${index}a-header`}
+									id={section.title.toLowerCase() === "kapta" ? "kapta-tab" : null}
 								>
 									<ListItemIcon>{section.icon}</ListItemIcon>
 									<Typography variant="h6">{section.title}</Typography>
@@ -295,15 +322,15 @@ Advisors:<ul>
 						</Button>
 					)}
 					<Typography variant="caption" id="legal-notice">
-						© 2024 Wisdom of the Crowd Labs (WCL), All rights reserved -{" "}
-						<a
+						© 2024 University College London (UCL), All rights reserved {" "}
+						{/* <a
 							onClick={(e) => {
 								toggleDrawer(false)(e);
 								setNoticeVisible(true);
 							}}
 						>
 							Legal Notice
-						</a>
+						</a> */}
 					</Typography>
 				</div>
 			</Drawer>
