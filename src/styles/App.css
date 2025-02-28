@@ -115,3 +115,19 @@ main {
 	margin-inline: 4%;
 	text-align: center;
 }
+.temp-mobile-app-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    color: #25d366;
+    background-color: transparent;
+	border: 1px solid #25d366;
+    cursor: pointer;
+    transition: background-color 0.3s;
+	margin-bottom: 20px;
+}
+.temp-mobile-app-button.white-background {
+    background-color: transparent;
+    color: rgb(250, 250, 252);
+	border: 1px solid #fcfdfd;
+}

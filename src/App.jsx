@@ -198,6 +198,19 @@ export default function App() {
 							>
 								Join Waitlist
 							</Button>
+							<Button
+								color="secondary"
+								variant="outlined"
+								onClick={() => {
+									setBMopen(true); // Open the burger menu
+									
+									setTimeout(() => {
+									  document.getElementById("kapta-tab")?.click(); // Simulate clicking the Kapta tab
+									}, 300); // Delay to ensure menu is open before switching tabs
+								  }}
+								>
+								Watch video
+							</Button>
 						</div>
 					)}
 				<WaitlistWidget
